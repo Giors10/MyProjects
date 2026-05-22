@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Self-Balancing Desk Robot · Giorgi Suramlishvili</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="self-balancing-robot.css" />
+</head>
+<body class="no-grid">
+  <div class="scroll-progress"><div class="bar"></div></div>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="../index.html">
+        <span class="mark-dot"></span>
+        Giorgi&nbsp;Suramlishvili
+      </a>
+      <div class="nav-links">
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#track">Experience</a>
+        <a href="../index.html#contact">Contact</a>
+      </div>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <span data-theme-label>DARK</span>
+      </button>
+      <button class="help-btn" data-help-toggle aria-label="Shortcuts &amp; easter eggs" title="Shortcuts &amp; easter eggs">?</button>
+    </div>
+  </nav>
+
+  <main class="page" data-screen-label="P4 Self-Balancing Robot">
+
+    <section class="detail-hero">
+      <span class="tick tl"></span>
+      <span class="tick tr"></span>
+      <div class="coord">
+        <span>FILE:<b>P-04</b></span>
+        <span>YEAR:<b>2025–26</b></span>
+        <span>REV:<b>WIP</b></span>
+      </div>
+
+      <nav class="crumbs">
+        <a href="../index.html">Index</a>
+        <span class="sep">/</span>
+        <a href="../index.html#work">Work</a>
+        <span class="sep">/</span>
+        <span class="current">P-04 · Self-Balancing Desk Robot</span>
+      </nav>
+
+      <span class="section-marker">§ PROJECT · A-LEVEL · IN PROGRESS</span>
+      <h1 class="detail-title">Self-Balancing<br />Desk Robot.</h1>
+      <p class="detail-sub">
+        A two-wheel desk companion designed to stay upright using <strong>LQR</strong> control and <strong>Kalman</strong> sensor fusion. This project is currently under active development.
+      </p>
+
+      <div class="spec-table">
+        <div class="cell"><span class="k">Year</span><span class="v">2025 — 26</span></div>
+        <div class="cell"><span class="k">Status</span><span class="v" style="color:var(--signal);">In progress</span></div>
+        <div class="cell"><span class="k">Context</span><span class="v">A-Level project</span></div>
+        <div class="cell"><span class="k">Stack</span><span class="v">ESP32 · LQR</span></div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE CONTROL LAB PLAYGROUND -->
+    <div class="robot-bento" data-reveal>
+      
+      <!-- LEFT BENTO: Parameters & Controls -->
+      <section class="bento-card">
+        <div class="card-header">
+          <h3>Controls</h3>
+          <span class="tag">SYS_CONFIG</span>
+        </div>
+        
+        <!-- Strategy Selector -->
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <span class="slider-label"><span class="k">CONTROL STRATEGY</span></span>
+          <div class="strategy-selector">
+            <button class="active" data-strat="lqr">LQR</button>
+            <button data-strat="pid">PID</button>
+            <button data-strat="off">OFF</button>
+          </div>
+        </div>
+
+        <!-- LQR Weights sliders -->
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="k">Q_POSITION (CART)</span>
+            <span class="v" id="lblQPos">100</span>
+          </div>
+          <input type="range" id="sliderQPos" class="tech-slider" min="10" max="500" value="100" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="k">Q_ANGLE (CHASSIS)</span>
+            <span class="v" id="lblQAng">450</span>
+          </div>
+          <input type="range" id="sliderQAng" class="tech-slider" min="50" max="2000" value="450" />
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="k">R_CONTROL (EFFORT)</span>
+            <span class="v" id="lblRCtrl">1.0</span>
+          </div>
+          <input type="range" id="sliderRCtrl" class="tech-slider" min="0.1" max="10.0" step="0.1" value="1.0" />
+        </div>
+
+        <!-- Inject Sensor Noise -->
+        <div class="slider-group">
+          <div class="slider-label">
+            <span class="k">IMU NOISE VARIANCE (σ)</span>
+            <span class="v" id="lblNoise">0.15</span>
+          </div>
+          <input type="range" id="sliderNoise" class="tech-slider" min="0.00" max="1.00" step="0.05" value="0.15" />
+        </div>
+
+        <!-- Action triggers -->
+        <div class="btn-grid">
+          <button id="btnToggleKalman" class="control-btn active">FUSION ON</button>
+          <button id="btnSelfDock" class="control-btn">SELF-DOCK</button>
+          <button id="btnAudioMute" class="control-btn">MUTE ALARMS</button>
+          <button id="btnResetBalance" class="control-btn btn-danger">RESET POS</button>
+        </div>
+      </section>
+
+      <!-- CENTER BENTO: Visual Simulator Canvas -->
+      <section class="bento-card center-panel" style="gap: 12px; padding: 16px;">
+        <div class="card-header" style="margin-bottom: 0;">
+          <h3>2D State Visualizer</h3>
+          <span class="tag">REAL_TIME_PHYSICS</span>
+        </div>
+        
+        <div class="simulator-wrap">
+          <!-- Live Alarm Siren Fault Overlay -->
+          <div id="faultOverlay" class="fault-overlay">
+            <span class="fault-text">⚠️ ALARM: TILT FAULT (ERR_ANGLE_LIMIT_EXCEEDED)</span>
+            <button id="btnResetBalanceOverlay" class="control-btn" style="padding: 4px 8px; font-size: 9px; background: rgba(239, 68, 68, 0.2); border-color: var(--danger-glow); color: var(--danger-glow);">RECOVER</button>
+          </div>
+          
+          <canvas id="simCanvas" class="simulator-canvas"></canvas>
+        </div>
+        <div style="font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); text-align: center; margin-top: 4px;">
+          &gt;&gt; HOLD &amp; DRAG CHASSIS CAPSULE TO INJECT EXTERNAL LATERAL FORCE &lt;&lt;
+        </div>
+      </section>
+
+      <!-- RIGHT BENTO: Telemetry & Live Scrolling Charts -->
+      <section class="bento-card">
+        <div class="card-header">
+          <h3>Telemetry</h3>
+          <span class="tag">STATE_SPACE</span>
+        </div>
+
+        <div class="telemetry-list">
+          <div class="telemetry-row">
+            <span class="k">Angle (θ)</span>
+            <span class="v" id="txtAngle">+0.00°</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="k">Est Angle (Kalman)</span>
+            <span class="v" id="txtEstAngle">+0.00°</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="k">Cart Position (x)</span>
+            <span class="v" id="txtPosition">0.00 m</span>
+          </div>
+          <div class="telemetry-row">
+            <span class="k">Motor Voltage (u)</span>
+            <span class="v" id="txtControl">0.00 V</span>
+          </div>
+          
+          <div class="status-row" style="margin-top: 6px;">
+            <span class="status-label">SYS_BALANCE</span>
+            <span class="status-value">
+              <span id="txtBalanceLabel">BALANCING ACTIVE</span>
+              <span id="dotBalance" class="status-glow-dot glow-active"></span>
+            </span>
+          </div>
+          <div class="status-row">
+            <span class="status-label">SENSOR_FUSION</span>
+            <span class="status-value">
+              <span id="txtKalmanLabel">FUSION ON</span>
+              <span id="dotKalman" class="status-glow-dot glow-active"></span>
+            </span>
+          </div>
+          <div class="status-row">
+            <span class="status-label">CHARGER_DOCK</span>
+            <span class="status-value">
+              <span id="txtBatteryLabel">DISCHARGING (55%)</span>
+              <span id="dotBattery" class="status-glow-dot"></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Sliding Canvas Plots -->
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 4px;">
+          <div class="chart-wrap">
+            <div class="chart-title">Tilt Angle (θ / Est θ)</div>
+            <canvas id="angleChartCanvas" class="chart-canvas"></canvas>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-title">Applied Voltage (u)</div>
+            <canvas id="voltChartCanvas" class="chart-canvas"></canvas>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+
+    <div class="next-proj">
+      <div class="next-side">
+        <span class="label">NEXT PROJECT</span>
+        <a class="next-link" href="light-switch.html">
+          Light Switch Control Device
+          <span class="arrow">→</span>
+        </a>
+      </div>
+      <a href="../index.html#work" class="mono" style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);">← back to index</a>
+    </div>
+
+    <footer class="footer">
+      <div>© <span data-year>2026</span> · Giorgi Suramlishvili · Bristol, UK</div>
+      <div>P-04 · SELF-BALANCING-ROBOT · REV WIP</div>
+    </footer>
+  </main>
+
+  <div class="hud" role="status" aria-label="System status">
+    <div class="cell"><span class="live"></span><span class="k">SYS</span><span class="v">ONLINE</span></div>
+    <div class="cell desktop-only"><span class="k">SECTION</span><span class="v" data-hud-section>—</span></div>
+    <div class="cell desktop-only"><span class="k">SCROLL</span><span class="v" data-hud-pct>000%</span></div>
+    <div class="right">
+      <div class="cell desktop-only"><span class="k">BUILD</span><span class="v">v5.0 / 2026</span></div>
+      <div class="cell"><span class="k">LOCAL</span><span class="v" data-hud-time>—</span></div>
+    </div>
+  </div>
+
+  <aside class="tweaks">
+    <div class="tweaks-head">
+      <span>// TWEAKS</span>
+      <button data-tweak-close aria-label="Close">×</button>
+    </div>
+    <div class="tweaks-body">
+      <div class="tweak-group">
+        <span class="k">Theme</span>
+        <div class="seg" data-tweak-theme>
+          <button data-val="light" class="active">Light</button>
+          <button data-val="dark">Dark</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <script>const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{"theme":"light"}/*EDITMODE-END*/;</script>
+  <script src="../site.js"></script>
+  <script src="self-balancing-robot.js"></script>
+
+  <!-- HELP OVERLAY -->
+  <div class="help-overlay" role="dialog" aria-hidden="true">
+    <div class="help-card">
+      <div class="help-head">
+        <span>// SHORTCUTS · EASTER EGGS</span>
+        <button class="close" data-help-close aria-label="Close">×</button>
+      </div>
+      <div class="help-body">
+        <h3>Shortcuts &amp; easter eggs.</h3>
+        <p>A few hidden things scattered around the site — use these to find them.</p>
+        <div class="help-grid">
+          <div class="kv"><span class="k">Toggle theme</span><kbd>T</kbd></div>
+          <div class="kv"><span class="k">Toggle grid</span><kbd>G</kbd> <span style="font-size:10px;color:var(--ink-3);">(off by default)</span></div>
+          <div class="kv"><span class="k">Show this overlay</span><kbd>?</kbd></div>
+          <div class="kv"><span class="k">Close overlay</span><kbd>Esc</kbd></div>
+          <div class="kv"><span class="k">Blueprint mode</span><span><kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd><kbd>B</kbd><kbd>A</kbd></span></div>
+          <div class="kv"><span class="k">Robot says hi</span><span>type <kbd>robot</kbd></span></div>
+          <div class="kv"><span class="k">Matrix rain</span><span>type <kbd>matrix</kbd></span></div>
+          <div class="kv"><span class="k">A friendly hello</span><span>type <kbd>hello</kbd></span></div>
+          <div class="kv"><span class="k">Freeze coords</span><span>click X/Y readout</span></div>
+          <div class="kv"><span class="k">Spinning logo</span><span>click the orange dot</span></div>
+          <div class="kv selectability-row">
+            <span class="k">Enable text selection</span>
+            <label class="switch-toggle" aria-label="Toggle text selectability">
+              <input type="checkbox" id="textSelectToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="help-foot">// stay curious</div>
+    </div>
+  </div>
+
+</body>
+</html>

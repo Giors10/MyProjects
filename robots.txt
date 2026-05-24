@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Personal portfolio. Crawl freely.

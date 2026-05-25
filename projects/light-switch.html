@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Smart light switch controller — an over-the-switch IoT device with capacitive touch, presence detection and MQTT control, by Giorgi Suramlishvili." />
+  <meta name="author" content="Giorgi Suramlishvili" />
+  <meta name="keywords" content="Giorgi Suramlishvili, smart light switch, ESP32-C6, IoT, MQTT, mmWave presence detection, home automation, PCB design, KiCad, Bristol engineering student" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="geo.region" content="GB-ENG" />
+  <meta name="geo.placename" content="Bristol, England" />
+  <meta name="theme-color" content="#f6f4ed" />
+  <title>Smart Light Switch · Giorgi Suramlishvili</title>
+  <link rel="canonical" href="https://giorgi.uk/projects/light-switch.html" />
+  <link rel="sitemap" type="application/xml" href="https://giorgi.uk/sitemap.xml" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta property="og:title" content="Smart Light Switch · Giorgi Suramlishvili" />
+  <meta property="og:description" content="An over-the-switch IoT device with 24GHz mmWave presence detection, MQTT control and Google Home integration. Built by Giorgi Suramlishvili, age 13." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://giorgi.uk/projects/light-switch.html" />
+  <meta property="og:image" content="https://giorgi.uk/portrait.jpg" />
+  <meta property="og:image:secure_url" content="https://giorgi.uk/portrait.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="449" />
+  <meta property="og:image:height" content="598" />
+  <meta property="og:image:alt" content="Smart Light Switch project by Giorgi Suramlishvili" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:site_name" content="Giorgi Suramlishvili" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Smart Light Switch · Giorgi Suramlishvili" />
+  <meta name="twitter:description" content="An over-the-switch IoT device with 24GHz mmWave presence detection, MQTT control and Google Home integration. Built by Giorgi Suramlishvili." />
+  <meta name="twitter:image" content="https://giorgi.uk/portrait.jpg" />
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://giorgi.uk/projects/light-switch.html#article",
+      "headline": "Smart Light Switch Control Device — Giorgi Suramlishvili",
+      "description": "An over-the-switch IoT device with 24GHz mmWave presence detection, capacitive touch, MQTT control and Google Home integration, built by Giorgi Suramlishvili.",
+      "url": "https://giorgi.uk/projects/light-switch.html",
+      "image": "https://giorgi.uk/portrait.jpg",
+      "dateCreated": "2023-01-01",
+      "datePublished": "2023-01-01",
+      "dateModified": "2026-05-24",
+      "inLanguage": "en-GB",
+      "author": {
+        "@type": "Person",
+        "@id": "https://giorgi.uk/#giorgi",
+        "name": "Giorgi Suramlishvili",
+        "url": "https://giorgi.uk/"
+      },
+      "about": ["IoT", "ESP32-C6", "MQTT", "Home Automation", "PCB Design", "KiCad", "mmWave Radar"],
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://giorgi.uk/#website",
+        "name": "Giorgi Suramlishvili",
+        "url": "https://giorgi.uk/"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Giorgi Suramlishvili",
+          "item": "https://giorgi.uk/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Projects",
+          "item": "https://giorgi.uk/#work"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Smart Light Switch",
+          "item": "https://giorgi.uk/projects/light-switch.html"
+        }
+      ]
+    }
+  ]
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="./light-switch.css" />
+</head>
+<body class="no-grid">
+  <div class="scroll-progress"><div class="bar"></div></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="../index.html">
+        <span class="mark-dot"></span>
+        Giorgi&nbsp;Suramlishvili
+      </a>
+      <div class="nav-links">
+        <div class="nav-item has-dropdown">
+          <a href="../index.html#work" aria-haspopup="true" aria-expanded="false">Work <span class="nav-caret" aria-hidden="true">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu" aria-label="Projects">
+            <a href="light-switch.html" role="menuitem" class="current" aria-current="page">Smart Light Switch</a>
+            <a href="blinds-control.html" role="menuitem">Smart Blinds Controller</a>
+            <a href="zaylo-remote.html" role="menuitem">Zaylo Remote App</a>
+            <a href="self-balancing-robot.html" role="menuitem">Self-Balancing Robot</a>
+          </div>
+        </div>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#track">Experience</a>
+        <a href="../index.html#contact">Contact</a>
+      </div>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <span data-theme-label>DARK</span>
+      </button>
+      <button class="help-btn" data-help-toggle aria-label="Shortcuts &amp; easter eggs" title="Shortcuts &amp; easter eggs">?</button>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main class="page">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="ls-hero">
+      <nav class="crumbs">
+        <a href="../index.html">Index</a>
+        <span class="sep">/</span>
+        <a href="../index.html#work">Work</a>
+        <span class="sep">/</span>
+        <span class="current">P-01 · Smart Light Switch</span>
+      </nav>
+
+      <div class="ls-hero-grid">
+        <div class="ls-hero-text">
+          <span class="block-marker">§ 01 · PROJECT</span>
+          <h1 class="ls-title">Smart Light Switch<span class="ls-dot">.</span></h1>
+          <p class="ls-tagline">A high-quality smart light switch — clamps over the wall plate, no rewiring needed.</p>
+          <p class="support-note">Still actively maintained &mdash; regularly updated &amp; supported.</p>
+          <p class="ls-sub">
+            24&nbsp;GHz mmWave radar presence detection, local sleep tracking,
+            five operating modes, a dual-arm mechanical toggle, and full
+            Alexa + Google Home integration — all running on a single <strong>ESP32-C6</strong>.
+          </p>
+
+          <div class="ls-hero-meta">
+            <div class="m-cell"><span class="k">Year</span><span class="v">2023</span></div>
+            <div class="m-cell"><span class="k">Status</span><span class="v live">Shipped · v3</span></div>
+            <div class="m-cell"><span class="k">MCU</span><span class="v">ESP32-C6</span></div>
+            <div class="m-cell"><span class="k">Sensing</span><span class="v">mmWave</span></div>
+          </div>
+        </div>
+
+        <figure class="ls-hero-photo" data-reveal>
+          <span class="frame-tick tl"></span><span class="frame-tick tr"></span>
+          <span class="frame-tick bl"></span><span class="frame-tick br"></span>
+          <img src="light-switch-photo.jpg" alt="Smart light switch controller installed over a UK wall switch" width="1343" height="1511" loading="eager" fetchpriority="high" decoding="async" />
+          <figcaption>
+            <span><b>FIG.01</b> · Smart light switch v3 installed over a UK 1-gang wall switch</span>
+            <span class="dim">128×64 OLED · SG90 servo · LD2410C radar · USB-C</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===================== OVERVIEW ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 02 · OVERVIEW</span>
+          <span class="bh-meta">non-invasive · over-the-switch</span>
+        </div>
+        <h2 class="bh-title">A smart switch that touches nothing live.</h2>
+      </header>
+      <div class="block-body two-col-prose">
+        <p>This non-invasive smart light switch controller is designed to sit directly <em>on top</em> of a standard physical rocker switch. By using a precise micro servo to physically toggle the switch, it bypasses the need for electrical rewiring, making it compatible with any home wiring standard.</p>
+        <p>Operating entirely from a USB-C input, the device integrates advanced radar presence sensing, local sleep tracking, smart blind synchronisation over MQTT, and native smart assistant connectivity, transforming a basic physical switch into a fully integrated smart home hub.</p>
+      </div>
+    </section>
+
+    <!-- ===================== ARCHITECTURE ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 03 · SYSTEM ARCHITECTURE</span>
+          <span class="bh-meta">RISC-V · Wi-Fi 6 · BLE 5 · I²C · UART · PWM</span>
+        </div>
+        <h2 class="bh-title">One microcontroller. Four buses. Two networks.</h2>
+        <p class="bh-lede">All components connect to the central ESP32-C6 processor. Sensors are on the left, actuators on the right, and cloud services below.</p>
+      </header>
+
+      <div class="block-body">
+        <div class="arch-diagram" data-arch>
+          <svg viewBox="0 0 1100 460" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+              <marker id="arrSig" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="var(--signal)"/>
+              </marker>
+            </defs>
+
+            <!-- center MCU -->
+            <g class="arch-node mcu" data-d="0">
+              <rect x="430" y="180" width="240" height="100" rx="2"/>
+              <text x="550" y="216" text-anchor="middle" class="n-title">ESP32-C6 Super Mini</text>
+              <text x="550" y="238" text-anchor="middle" class="n-sub">RISC-V · Wi-Fi 6 · BLE 5</text>
+              <text x="550" y="258" text-anchor="middle" class="n-pin">core</text>
+            </g>
+
+            <!-- LEFT: sensors -->
+            <g class="arch-node sensor" data-d="1">
+              <rect x="40" y="40" width="240" height="76" rx="2"/>
+              <text x="160" y="68" text-anchor="middle" class="n-title">LD2410C mmWave</text>
+              <text x="160" y="88" text-anchor="middle" class="n-sub">24 GHz · 9 gates · 6.75 m</text>
+              <text x="160" y="106" text-anchor="middle" class="n-pin">UART @ 256k · GPIO 0/20</text>
+            </g>
+
+            <g class="arch-node sensor" data-d="2">
+              <rect x="40" y="170" width="240" height="60" rx="2"/>
+              <text x="160" y="194" text-anchor="middle" class="n-title">TTP223 · action</text>
+              <text x="160" y="214" text-anchor="middle" class="n-pin">Digital In · GPIO 3</text>
+            </g>
+
+            <g class="arch-node sensor" data-d="3">
+              <rect x="40" y="250" width="240" height="60" rx="2"/>
+              <text x="160" y="274" text-anchor="middle" class="n-title">TTP223 · menu</text>
+              <text x="160" y="294" text-anchor="middle" class="n-pin">Digital In · GPIO 1</text>
+            </g>
+
+            <!-- RIGHT: actuators -->
+            <g class="arch-node actuator" data-d="4">
+              <rect x="820" y="120" width="240" height="76" rx="2"/>
+              <text x="940" y="148" text-anchor="middle" class="n-title">SG90 micro servo</text>
+              <text x="940" y="168" text-anchor="middle" class="n-sub">dual-arm linkage</text>
+              <text x="940" y="186" text-anchor="middle" class="n-pin">PWM · GPIO 2</text>
+            </g>
+
+            <g class="arch-node actuator" data-d="5">
+              <rect x="820" y="240" width="240" height="76" rx="2"/>
+              <text x="940" y="268" text-anchor="middle" class="n-title">SSD1306 OLED</text>
+              <text x="940" y="288" text-anchor="middle" class="n-sub">128×64 · monochrome</text>
+              <text x="940" y="306" text-anchor="middle" class="n-pin">I²C @ 400k · GPIO 21/22</text>
+            </g>
+
+            <!-- BOTTOM: cloud -->
+            <g class="arch-node cloud" data-d="6">
+              <rect x="170" y="370" width="220" height="60" rx="2"/>
+              <text x="280" y="394" text-anchor="middle" class="n-title">MQTT broker</text>
+              <text x="280" y="414" text-anchor="middle" class="n-pin">Local broker · Mosquitto</text>
+            </g>
+
+            <g class="arch-node cloud" data-d="7">
+              <rect x="440" y="370" width="220" height="60" rx="2"/>
+              <text x="550" y="394" text-anchor="middle" class="n-title">SinricPro cloud</text>
+              <text x="550" y="414" text-anchor="middle" class="n-pin">Alexa · Google Home</text>
+            </g>
+
+            <g class="arch-node cloud" data-d="8">
+              <rect x="710" y="370" width="220" height="60" rx="2"/>
+              <text x="820" y="394" text-anchor="middle" class="n-title">OpenWeatherMap</text>
+              <text x="820" y="414" text-anchor="middle" class="n-pin">sunrise · sunset · temp</text>
+            </g>
+
+            <!-- LINES sensors -> MCU -->
+            <path class="arch-line" data-d="1" d="M280 78 H 360 V 200 H 430"/>
+            <path class="arch-line" data-d="2" d="M280 200 H 430"/>
+            <path class="arch-line" data-d="3" d="M280 280 H 360 V 240 H 430"/>
+
+            <!-- MCU -> actuators -->
+            <path class="arch-line signal" data-d="4" d="M670 210 H 750 V 158 H 820" marker-end="url(#arrSig)"/>
+            <path class="arch-line signal" data-d="5" d="M670 250 H 750 V 278 H 820" marker-end="url(#arrSig)"/>
+
+            <!-- MCU -> cloud -->
+            <path class="arch-line dashed" data-d="6" d="M510 280 V 330 H 280 V 370"/>
+            <path class="arch-line dashed" data-d="7" d="M550 280 V 370"/>
+            <path class="arch-line dashed" data-d="8" d="M590 280 V 330 H 820 V 370"/>
+
+            <!-- legend labels along the lines -->
+            <g class="arch-edge-label" transform="translate(310, 194)">
+              <rect class="e-label-bg" x="-65" y="-13" width="130" height="26" rx="4" />
+              <text text-anchor="middle" y="4" class="arch-edge">presence · binary</text>
+            </g>
+            <g class="arch-edge-label" transform="translate(345, 68)">
+              <rect class="e-label-bg" x="-45" y="-13" width="90" height="26" rx="4" />
+              <text text-anchor="middle" y="4" class="arch-edge">telemetry</text>
+            </g>
+            <g class="arch-edge-label" transform="translate(780, 148)">
+              <rect class="e-label-bg" x="-25" y="-13" width="50" height="26" rx="4" />
+              <text text-anchor="middle" y="4" class="arch-edge sig">PWM</text>
+            </g>
+            <g class="arch-edge-label" transform="translate(780, 268)">
+              <rect class="e-label-bg" x="-25" y="-13" width="50" height="26" rx="4" />
+              <text text-anchor="middle" y="4" class="arch-edge sig">I²C</text>
+            </g>
+            <g class="arch-edge-label" transform="translate(556, 326)">
+              <rect class="e-label-bg" x="-60" y="-13" width="120" height="26" rx="4" />
+              <text text-anchor="middle" y="4" class="arch-edge dim">Wi-Fi 6 / TLS</text>
+            </g>
+          </svg>
+
+          <div class="arch-legend">
+            <span class="lg"><span class="sw box-sensor"></span>Sensors</span>
+            <span class="lg"><span class="sw box-mcu"></span>MCU</span>
+            <span class="lg"><span class="sw box-actuator"></span>Actuators</span>
+            <span class="lg"><span class="sw box-cloud"></span>Cloud / Net</span>
+            <span class="lg"><span class="sw line"></span>Data</span>
+            <span class="lg"><span class="sw line dashed"></span>Wireless</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== KEY FEATURES ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 04 · KEY FEATURES</span>
+          <span class="bh-meta">six pillars · all on-device</span>
+        </div>
+        <h2 class="bh-title">What's actually in the box.</h2>
+      </header>
+
+      <div class="block-body">
+        <div class="feature-grid">
+          <div class="fg-cell">
+            <span class="fg-num">01</span>
+            <span class="fg-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="monoline-svg">
+                <path d="M19.07 4.93a10 10 0 0 0-14.14 0M16.24 7.76a6 6 0 0 0-8.49 0"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12 12l3 3"></path>
+              </svg>
+            </span>
+            <h4>24&nbsp;GHz mmWave radar</h4>
+            <p>The sensor detects stationary people by measuring subtle chest movements from breathing — solving the classic problem where lights turn off when you sit still. Features a range of up to 6.75 metres.</p>
+          </div>
+          <div class="fg-cell">
+            <span class="fg-num">02</span>
+            <span class="fg-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="monoline-svg">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              </svg>
+            </span>
+            <h4>Local sleep tracking</h4>
+            <p>Processes sleep habits entirely on-device. Tracks sleep consistency, duration, cycle alignment, and bedtime timings without sending any data to the cloud.</p>
+          </div>
+          <div class="fg-cell">
+            <span class="fg-num">03</span>
+            <span class="fg-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="monoline-svg">
+                <rect x="3" y="3" width="7" height="9" rx="1"></rect>
+                <rect x="14" y="3" width="7" height="5" rx="1"></rect>
+                <rect x="14" y="12" width="7" height="9" rx="1"></rect>
+                <rect x="3" y="16" width="7" height="5" rx="1"></rect>
+              </svg>
+            </span>
+            <h4>Central State Machine</h4>
+            <p>Auto, Manual, Alarm, Bedtime, and Locked. All inputs — physical touch, MQTT commands, alarm schedules, presence detection, and safety triggers — flow through a central controller for smooth and predictable transitions.</p>
+          </div>
+          <div class="fg-cell">
+            <span class="fg-num">04</span>
+            <span class="fg-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="monoline-svg">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="m9 12 2 2 4-4"></path>
+              </svg>
+            </span>
+            <h4>Safe updates &amp; rollback</h4>
+            <p>New software updates are only saved after a successful boot and network connection. Configuration files are mirrored with checksums to prevent corruption, and failed updates automatically roll back.</p>
+          </div>
+          <div class="fg-cell">
+            <span class="fg-num">05</span>
+            <span class="fg-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="monoline-svg">
+                <path d="M12 20h.01"></path>
+                <path d="M8.5 16.5a5 5 0 0 1 7 0"></path>
+                <path d="M5 13a10 10 0 0 1 14 0"></path>
+                <path d="M1.5 9.5a15 15 0 0 1 21 0"></path>
+              </svg>
+            </span>
+            <h4>Universal connectivity</h4>
+            <p>Wi-Fi 6, simple Bluetooth setup, local MQTT support, smart assistant integration (Alexa &amp; Google Home), weather updates, and automatic time sync.</p>
+          </div>
+          <div class="fg-cell">
+            <span class="fg-num">06</span>
+            <span class="fg-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="monoline-svg">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </span>
+            <h4>Smart OLED display</h4>
+            <p>Automatically turns off when the room is empty to save energy and prevent screen burn-in. A drifting screensaver displays the time and weather when idle, moving around the screen to protect the pixels.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== INTERNAL LAYOUT ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 05 · INTERNAL LAYOUT</span>
+          <span class="bh-meta">PETG · Fusion 360</span>
+        </div>
+        <h2 class="bh-title">Initial plan drawings.</h2>
+      </header>
+
+      <div class="block-body">
+        <figure class="layout-figure">
+          <span class="frame-tick tl"></span><span class="frame-tick tr"></span>
+          <span class="frame-tick bl"></span><span class="frame-tick br"></span>
+          <img src="light-switch-design.png" alt="Initial engineering design drawings and plan sketches for the Smart Light Switch Control Device by Giorgi Suramlishvili" width="1744" height="1260" loading="lazy" decoding="async" />
+          <figcaption><b>FIG.02</b> · Initial plan drawings</figcaption>
+        </figure>
+      </div>
+    </section>
+
+
+    <!-- ===================== STATE DIAGRAM ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 06 · STATE DIAGRAM</span>
+          <span class="bh-meta">edges = events · solid = action · dashed = timer</span>
+        </div>
+        <h2 class="bh-title">Every transition, on one page.</h2>
+      </header>
+
+      <div class="block-body">
+        <div class="state-diagram" data-state-diagram>
+          <svg viewBox="0 0 1100 660" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <marker id="sd-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+              </marker>
+              <marker id="sd-arr-sig" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="var(--signal)"/>
+              </marker>
+            </defs>
+
+            <!-- ─── LAYER 1 · EDGE PATHS ─── -->
+
+            <g class="sd-edge" data-d="7">
+              <path d="M 78 270 H 355" marker-end="url(#sd-arr)"/>
+            </g>
+            <g class="sd-edge dashed" data-d="8">
+              <path d="M 60 288 V 470 H 80" marker-end="url(#sd-arr)"/>
+            </g>
+            <g class="sd-edge sig" data-d="9">
+              <path d="M 595 235 H 700 V 90 H 820" marker-end="url(#sd-arr-sig)"/>
+            </g>
+            <g class="sd-edge dashed" data-d="10">
+              <path d="M 820 120 H 780 V 290 H 595" marker-end="url(#sd-arr)"/>
+            </g>
+            <g class="sd-edge dashed" data-d="11">
+              <path d="M 595 248 H 650 V 280 H 820" marker-end="url(#sd-arr)"/>
+            </g>
+            <g class="sd-edge sig" data-d="12">
+              <path d="M 820 315 H 595" marker-end="url(#sd-arr-sig)"/>
+            </g>
+            <g class="sd-edge sig" data-d="13">
+              <path d="M 595 320 H 700 V 440 H 820" marker-end="url(#sd-arr-sig)"/>
+            </g>
+            <g class="sd-edge sig" data-d="14">
+              <path d="M 820 480 H 560 V 340" marker-end="url(#sd-arr-sig)"/>
+            </g>
+            <g class="sd-edge sig" data-d="15">
+              <path d="M 355 230 H 195 V 145" marker-end="url(#sd-arr-sig)"/>
+            </g>
+            <g class="sd-edge sig" data-d="16">
+              <path d="M 310 90 H 430 V 190" marker-end="url(#sd-arr-sig)"/>
+            </g>
+            <g class="sd-edge dashed" data-d="17">
+              <path d="M 195 415 V 370 H 400 V 340" marker-end="url(#sd-arr)"/>
+            </g>
+            <g class="sd-edge dashed" data-d="18">
+              <path d="M 455 340 V 490" marker-end="url(#sd-arr)"/>
+            </g>
+            <g class="sd-edge dashed" data-d="19">
+              <path d="M 545 490 V 340" marker-end="url(#sd-arr)"/>
+            </g>
+
+            <!-- ─── LAYER 2 · NODES (rendered on top of paths) ─── -->
+
+            <g class="sd-node start" data-d="0">
+              <circle cx="60" cy="270" r="18"/>
+              <text x="60" y="275" text-anchor="middle" class="n-pin">▶</text>
+              <text x="60" y="312" text-anchor="middle" class="n-tag">BOOT</text>
+            </g>
+
+            <g class="sd-node hub" data-sd-node="auto">
+              <rect x="355" y="190" width="240" height="150" rx="3"/>
+              <text x="475" y="228" text-anchor="middle" class="n-num">M0</text>
+              <text x="475" y="268" text-anchor="middle" class="n-title">AUTO</text>
+              <text x="475" y="300" text-anchor="middle" class="n-pin">presence-driven</text>
+            </g>
+
+            <g class="sd-node" data-sd-node="manual">
+              <rect x="820" y="35" width="230" height="110" rx="3"/>
+              <text x="935" y="67" text-anchor="middle" class="n-num">M1</text>
+              <text x="935" y="97" text-anchor="middle" class="n-title">MANUAL</text>
+              <text x="935" y="123" text-anchor="middle" class="n-pin">override</text>
+            </g>
+
+            <g class="sd-node" data-sd-node="alarm">
+              <rect x="820" y="225" width="230" height="110" rx="3"/>
+              <text x="935" y="257" text-anchor="middle" class="n-num">M2</text>
+              <text x="935" y="287" text-anchor="middle" class="n-title">ALARM</text>
+              <text x="935" y="313" text-anchor="middle" class="n-pin">silent wake</text>
+            </g>
+
+            <g class="sd-node" data-sd-node="bedtime">
+              <rect x="820" y="415" width="230" height="110" rx="3"/>
+              <text x="935" y="447" text-anchor="middle" class="n-num">M3</text>
+              <text x="935" y="477" text-anchor="middle" class="n-title">BEDTIME</text>
+              <text x="935" y="503" text-anchor="middle" class="n-pin">guard active</text>
+            </g>
+
+            <g class="sd-node" data-sd-node="locked">
+              <rect x="80" y="35" width="230" height="110" rx="3"/>
+              <text x="195" y="67" text-anchor="middle" class="n-num">M4</text>
+              <text x="195" y="97" text-anchor="middle" class="n-title">LOCKED</text>
+              <text x="195" y="123" text-anchor="middle" class="n-pin">frozen</text>
+            </g>
+
+            <g class="sd-node safe" data-d="6">
+              <rect x="80" y="415" width="230" height="110" rx="3"/>
+              <text x="195" y="447" text-anchor="middle" class="n-num">SAFE</text>
+              <text x="195" y="477" text-anchor="middle" class="n-title">SAFE MODE</text>
+              <text x="195" y="503" text-anchor="middle" class="n-pin">after 3 crashes</text>
+            </g>
+
+            <g class="sd-node" data-sd-node="daylight">
+              <rect x="385" y="490" width="220" height="110" rx="3"/>
+              <text x="495" y="522" text-anchor="middle" class="n-num">M5</text>
+              <text x="495" y="552" text-anchor="middle" class="n-title">DAYLIGHT</text>
+              <text x="495" y="578" text-anchor="middle" class="n-pin">radar suspended</text>
+            </g>
+
+            <!-- ─── LAYER 3 · EDGE LABELS (always on top) ─── -->
+
+            <g class="sd-edge-label" data-d="7" transform="translate(216, 270)">
+              <rect class="e-label-bg" x="-66" y="-16" width="132" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label">normal boot</text>
+            </g>
+            <g class="sd-edge-label" data-d="8" transform="translate(60, 380)">
+              <rect class="e-label-bg" x="-42" y="-16" width="84" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label dim">crash×3</text>
+            </g>
+            <g class="sd-edge-label" data-d="9" transform="translate(700, 162)">
+              <rect class="e-label-bg" x="-68" y="-16" width="136" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label sig">touch / mqtt</text>
+            </g>
+            <g class="sd-edge-label" data-d="10" transform="translate(780, 205)">
+              <rect class="e-label-bg" x="-62" y="-16" width="124" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label dim">timeout 1 min</text>
+            </g>
+            <g class="sd-edge-label" data-d="11" transform="translate(715, 280)">
+              <rect class="e-label-bg" x="-52" y="-16" width="104" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label dim">NTP time</text>
+            </g>
+            <g class="sd-edge-label" data-d="12" transform="translate(715, 315)">
+              <rect class="e-label-bg" x="-65" y="-16" width="130" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label sig">cancel touch → M1</text>
+            </g>
+            <g class="sd-edge-label" data-d="13" transform="translate(700, 380)">
+              <rect class="e-label-bg" x="-62" y="-16" width="124" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label sig">hold 400 ms</text>
+            </g>
+            <g class="sd-edge-label" data-d="14" transform="translate(630, 480)">
+              <rect class="e-label-bg" x="-62" y="-16" width="124" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label sig">hold 400 ms</text>
+            </g>
+            <g class="sd-edge-label" data-d="15" transform="translate(275, 230)">
+              <rect class="e-label-bg" x="-58" y="-16" width="116" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label sig">double tap</text>
+            </g>
+            <g class="sd-edge-label" data-d="16" transform="translate(370, 90)">
+              <rect class="e-label-bg" x="-58" y="-16" width="116" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label sig">double tap</text>
+            </g>
+            <g class="sd-edge-label" data-d="17" transform="translate(298, 370)">
+              <rect class="e-label-bg" x="-74" y="-16" width="148" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label dim">auto-recover 10m</text>
+            </g>
+            <g class="sd-edge-label" data-d="18" transform="translate(455, 420)">
+              <rect class="e-label-bg" x="-42" y="-16" width="84" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label dim">sunrise</text>
+            </g>
+            <g class="sd-edge-label" data-d="19" transform="translate(545, 420)">
+              <rect class="e-label-bg" x="-38" y="-16" width="76" height="32" rx="5" />
+              <text text-anchor="middle" y="5" class="e-label dim">sunset</text>
+            </g>
+          </svg>
+
+          <div class="state-legend">
+            <span class="lg"><span class="sw sig-line"></span>User event</span>
+            <span class="lg"><span class="sw dashed-line"></span>Timer / boot</span>
+            <span class="lg"><span class="sw box-hub"></span>Default state</span>
+            <span class="lg"><span class="sw box-safe"></span>Recovery state</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== mmWAVE ENGINE ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 07 · RADAR PRESENCE DETECTION</span>
+          <span class="bh-meta">Radar setup</span>
+        </div>
+        <h2 class="bh-title">Sees you, even when you don't move.</h2>
+        <p class="bh-lede">Traditional motion sensors only detect active movement. The switch's radar scans across 9 distance zones and uses a custom filtering process to detect even the tiniest movements, like breathing, while filtering out motor noise.</p>
+      </header>
+
+      <div class="block-body">
+        <div class="radar-wrap">
+          <div class="radar-viz" id="radarViz">
+            <svg viewBox="0 0 360 220" aria-hidden="true">
+              <defs>
+                <radialGradient id="sweepGrad" cx="50%" cy="100%" r="100%">
+                  <stop offset="0%" stop-color="var(--signal)" stop-opacity="0.42"/>
+                  <stop offset="60%" stop-color="var(--signal)" stop-opacity="0.10"/>
+                  <stop offset="100%" stop-color="var(--signal)" stop-opacity="0"/>
+                </radialGradient>
+                <clipPath id="halfClip">
+                  <path d="M0 220 L0 0 L360 0 L360 220 Z"/>
+                </clipPath>
+              </defs>
+              <g class="gates" clip-path="url(#halfClip)">
+                <circle cx="180" cy="220" r="28"  class="gate"/>
+                <circle cx="180" cy="220" r="56"  class="gate"/>
+                <circle cx="180" cy="220" r="84"  class="gate"/>
+                <circle cx="180" cy="220" r="112" class="gate"/>
+                <circle cx="180" cy="220" r="140" class="gate"/>
+                <circle cx="180" cy="220" r="168" class="gate"/>
+                <circle cx="180" cy="220" r="196" class="gate active-gate"/>
+                <circle cx="180" cy="220" r="224" class="gate"/>
+                <circle cx="180" cy="220" r="252" class="gate"/>
+              </g>
+              <g class="spokes" clip-path="url(#halfClip)">
+                <line x1="180" y1="220" x2="-72" y2="-32" class="spoke"/>
+                <line x1="180" y1="220" x2="60" y2="-32" class="spoke"/>
+                <line x1="180" y1="220" x2="180" y2="-40" class="spoke axis"/>
+                <line x1="180" y1="220" x2="300" y2="-32" class="spoke"/>
+                <line x1="180" y1="220" x2="432" y2="-32" class="spoke"/>
+              </g>
+              <g class="sweep-g" clip-path="url(#halfClip)">
+                <path d="M180 220 L180 0 A220 220 0 0 0 180 0 Z" fill="url(#sweepGrad)" class="sweep-fill"/>
+                <line x1="180" y1="220" x2="180" y2="-32" class="sweep-line"/>
+              </g>
+              <g class="target" transform="translate(232 108)">
+                <circle r="10" class="t-pulse"/>
+                <circle r="5" class="t-dot"/>
+                <text x="14" y="-8" class="t-label">PRESENT · gate 7 · 4.2 m</text>
+              </g>
+              <g class="scale">
+                <text x="180" y="214" text-anchor="middle">0</text>
+                <text x="208" y="214">1m</text>
+                <text x="236" y="214">2m</text>
+                <text x="264" y="214">3m</text>
+                <text x="292" y="214">4m</text>
+                <text x="320" y="214">5m</text>
+                <text x="348" y="214">6m</text>
+              </g>
+            </svg>
+            <div class="radar-readouts">
+              <div class="rr"><span class="rk">Range</span><span class="rv">4.2<i>m</i></span></div>
+              <div class="rr"><span class="rk">Gate</span><span class="rv">07<i>/9</i></span></div>
+              <div class="rr"><span class="rk">Movement</span><span class="rv">0.38</span></div>
+              <div class="rr"><span class="rk">Static</span><span class="rv">0.74</span></div>
+            </div>
+          </div>
+
+          <div class="radar-info">
+            <button class="acc-row open" data-acc>
+              <span class="acc-num">01</span>
+              <span class="acc-title">Dual-rate movement filter</span>
+              <span class="acc-arrow">+</span>
+            </button>
+            <div class="acc-body open"><p>Uses a fast filter to capture immediate movements for an instant turn-on, and a slower filter to track micro-movements (like breathing) to keep the light on when you are sitting still. Both filters are designed to run efficiently on the small processor.</p></div>
+
+            <button class="acc-row" data-acc>
+              <span class="acc-num">02</span>
+              <span class="acc-title">Smart sensitivity levels</span>
+              <span class="acc-arrow">+</span>
+            </button>
+            <div class="acc-body"><p>The sensor requires clear movement to turn the light on initially, preventing false triggers from drafty air or electronic noise. Once the light is on, the sensor becomes much more sensitive so it won't turn off while you are sitting still.</p></div>
+
+            <button class="acc-row" data-acc>
+              <span class="acc-num">03</span>
+              <span class="acc-title">Automatic calibration</span>
+              <span class="acc-arrow">+</span>
+            </button>
+            <div class="acc-body"><p>On startup, the system scans the room to measure background noise. Every 30 minutes when the room is empty, the sensor automatically recalibrates to adjust for environmental changes like temperature and humidity drift.</p></div>
+
+            <button class="acc-row" data-acc>
+              <span class="acc-num">04</span>
+              <span class="acc-title">Motor interference shielding</span>
+              <span class="acc-arrow">+</span>
+            </button>
+            <div class="acc-body"><p>When the mechanical motor moves to toggle the light switch, the sensor temporarily pauses detection to ignore the physical movement and electrical noise. After a brief 2.5-second cooldown, it smoothly resumes monitoring.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== HARDWARE TABLE ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 08 · HARDWARE &amp; WIRING</span>
+          <span class="bh-meta">strapping pins avoided · 8 GPIOs in use</span>
+        </div>
+        <h2 class="bh-title">Every pin, accounted for.</h2>
+      </header>
+
+      <div class="block-body">
+        <table class="wiring-table">
+          <thead><tr><th>Component</th><th>Model</th><th>GPIO</th><th>Protocol</th><th>Function</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Actuator</strong></td><td>SG90 Servo</td><td><span class="pin">GPIO 2</span></td><td>PWM</td><td>Dual-arm switch toggle</td></tr>
+            <tr><td><strong>Motion binary</strong></td><td>LD2410C mmWave</td><td><span class="pin">GPIO 14</span></td><td>Digital In</td><td>Hardware presence signal</td></tr>
+            <tr><td><strong>Radar RX</strong></td><td>LD2410C UART RX</td><td><span class="pin">GPIO 20</span></td><td>UART @ 256k</td><td>Telemetry &amp; config</td></tr>
+            <tr><td><strong>Radar TX</strong></td><td>LD2410C UART TX</td><td><span class="pin">GPIO 0</span></td><td>UART @ 256k</td><td>Telemetry &amp; config</td></tr>
+            <tr><td><strong>Touch (action)</strong></td><td>TTP223</td><td><span class="pin">GPIO 3</span></td><td>Digital In</td><td>Toggle / single tap</td></tr>
+            <tr><td><strong>Touch (menu)</strong></td><td>TTP223</td><td><span class="pin">GPIO 1</span></td><td>Digital In</td><td>Menu / calibration</td></tr>
+            <tr><td><strong>Display SDA</strong></td><td>SSD1306 128×64</td><td><span class="pin">GPIO 21</span></td><td>I²C @ 400k</td><td>OLED data line</td></tr>
+            <tr><td><strong>Display SCL</strong></td><td>SSD1306 128×64</td><td><span class="pin">GPIO 22</span></td><td>I²C @ 400k</td><td>OLED clock line</td></tr>
+          </tbody>
+        </table>
+        <p class="caption-note">Strapping pins 8 &amp; 9 (boot mode / log output), 4–7 and 15 (JTAG / flash SPI), 18–19 (USB-JTAG) all left floating to keep boot deterministic.</p>
+      </div>
+    </section>
+
+    <!-- ===================== SLEEP ENGINE ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 09 · SLEEP ANALYTICS</span>
+          <span class="bh-meta">Local sleep analysis</span>
+        </div>
+        <h2 class="bh-title">Personal sleep analytics, on a microcontroller.</h2>
+        <p class="bh-lede">Every morning, the switch calculates a sleep quality score based on four distinct measurements. All data is processed locally and never leaves the device.</p>
+      </header>
+
+      <div class="block-body">
+        <div class="sleep-wrap">
+          <div class="sleep-hero">
+            <svg viewBox="0 0 200 200" class="sleep-ring-hero" aria-hidden="true">
+              <circle cx="100" cy="100" r="86" class="ring-track"/>
+              <circle cx="100" cy="100" r="86" class="ring-fill" data-pct="84"/>
+            </svg>
+            <div class="sleep-hero-text">
+              <span class="sh-pct" data-count-up="84">0</span>
+              <span class="sh-of">/ 100</span>
+              <span class="sh-tag">composite · last night</span>
+            </div>
+          </div>
+
+          <div class="sleep-rings">
+            <div class="ring-card">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" class="ring-track"/>
+                <circle cx="40" cy="40" r="34" class="ring-fill" data-pct="92"/>
+              </svg>
+              <div class="ring-meta">
+                <span class="rm-w">40&thinsp;%</span>
+                <span class="rm-k">Duration</span>
+                <span class="rm-d">Target of 8 hours, scoring sleep length on a balanced curve.</span>
+              </div>
+            </div>
+            <div class="ring-card">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" class="ring-track"/>
+                <circle cx="40" cy="40" r="34" class="ring-fill" data-pct="78"/>
+              </svg>
+              <div class="ring-meta">
+                <span class="rm-w">35&thinsp;%</span>
+                <span class="rm-k">Consistency</span>
+                <span class="rm-d">Measures bedtime variation (aiming for less than 15 minutes of drift).</span>
+              </div>
+            </div>
+            <div class="ring-card">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" class="ring-track"/>
+                <circle cx="40" cy="40" r="34" class="ring-fill" data-pct="71"/>
+              </svg>
+              <div class="ring-meta">
+                <span class="rm-w">15&thinsp;%</span>
+                <span class="rm-k">Timing</span>
+                <span class="rm-d">Measures sleep timing relative to an optimal 11:00 PM target.</span>
+              </div>
+            </div>
+            <div class="ring-card">
+              <svg viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" class="ring-track"/>
+                <circle cx="40" cy="40" r="34" class="ring-fill" data-pct="88"/>
+              </svg>
+              <div class="ring-meta">
+                <span class="rm-w">10&thinsp;%</span>
+                <span class="rm-k">Sleep Cycles</span>
+                <span class="rm-d">Tracks 90-minute sleep cycles to encourage waking up at a natural cycle boundary.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="math-wrap">
+          <div class="math-card">
+            <span class="math-tag">CIRCULAR MEAN</span>
+            <p class="math-note">Bedtimes are mapped onto a circle so that times crossing midnight average correctly. Standard averages would incorrectly place 11:30 PM and 12:30 AM at noon.</p>
+            <div class="formula">
+              <math display="block">
+                <mover>
+                  <mi>θ</mi>
+                  <mo>¯</mo>
+                </mover>
+                <mo>=</mo>
+                <mi>atan2</mi>
+                <mo>(</mo>
+                <mrow>
+                  <mfrac>
+                    <mn>1</mn>
+                    <mi>N</mi>
+                  </mfrac>
+                  <munderover>
+                    <mo>∑</mo>
+                    <mrow>
+                      <mi>i</mi>
+                      <mo>=</mo>
+                      <mn>1</mn>
+                    </mrow>
+                    <mi>N</mi>
+                  </munderover>
+                  <mo>sin</mo>
+                  <msub>
+                    <mi>θ</mi>
+                    <mi>i</mi>
+                  </msub>
+                  <mo>,</mo>
+                  <mspace width="0.33em"/>
+                  <mfrac>
+                    <mn>1</mn>
+                    <mi>N</mi>
+                  </mfrac>
+                  <munderover>
+                    <mo>∑</mo>
+                    <mrow>
+                      <mi>i</mi>
+                      <mo>=</mo>
+                      <mn>1</mn>
+                    </mrow>
+                    <mi>N</mi>
+                  </munderover>
+                  <mo>cos</mo>
+                  <msub>
+                    <mi>θ</mi>
+                    <mi>i</mi>
+                  </msub>
+                </mrow>
+                <mo>)</mo>
+              </math>
+            </div>
+          </div>
+          <div class="math-card">
+            <span class="math-tag">DURATION SCORE</span>
+            <p class="math-note">Calculates a sleep duration score centered on the target goal, encouraging optimal sleep length.</p>
+            <div class="formula">
+              <math display="block">
+                <msub>
+                  <mi>Score</mi>
+                  <mi>dur</mi>
+                </msub>
+                <mo>=</mo>
+                <mn>100</mn>
+                <mo>·</mo>
+                <msup>
+                  <mi>e</mi>
+                  <mrow>
+                    <mo>−</mo>
+                    <mfrac>
+                      <msup>
+                        <mrow>
+                          <mo>(</mo>
+                          <mi>actual</mi>
+                          <mo>−</mo>
+                          <mi>target</mi>
+                          <mo>)</mo>
+                        </mrow>
+                        <mn>2</mn>
+                      </msup>
+                      <mrow>
+                        <mn>2</mn>
+                        <mo>·</mo>
+                        <msup>
+                          <mn>1.2</mn>
+                          <mn>2</mn>
+                        </msup>
+                      </mrow>
+                    </mfrac>
+                  </mrow>
+                </msup>
+              </math>
+            </div>
+          </div>
+        </div>
+
+        <ul class="bullets" style="margin-top:28px;">
+          <li><strong>Sleep deficit tracking:</strong> Keeps a running tally of lost sleep over the last 7 days compared to your sleep goal.</li>
+          <li><strong>Schedule shift detection:</strong> Warns when bedtime shifts by more than 1 hour between weekdays and weekends.</li>
+          <li><strong>Sleep pattern analysis:</strong> Categorises sleep habits dynamically as Regular, Night Owl, Early Bird, or Irregular.</li>
+          <li><strong>Bedtime suggestions:</strong> Suggests an optimal bedtime each evening based on wake times, sleep cycles, and average time to fall asleep.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================== BLIND AUTOMATIONS ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 10 · BLIND AUTOMATIONS</span>
+          <span class="bh-meta">Smart integrations</span>
+        </div>
+        <h2 class="bh-title">Integrating your smart home devices.</h2>
+        <p class="bh-lede">The smart light switch shares room occupancy data with a companion blinds controller over the local network to manage comfort automatically.</p>
+      </header>
+
+      <div class="block-body">
+        <div class="rules-grid">
+          <article class="rule-card">
+            <header>
+              <span class="r-num">01</span>
+              <h4>Automatic Solar Control</h4>
+            </header>
+            <p>When the motion sensor detects that the room has been empty for a set period, it sends a message over the local network to the companion blinds controller. The blinds then close automatically to keep out summer heat or trap warmth during winter. You can learn more about the blinds controller on its own portfolio page.</p>
+            <div class="r-spec">
+              <span><b>Trigger</b><i>room vacancy (mmWave sensor)</i></span>
+              <span><b>Target</b><i>close blinds (prevent heat/cold gain)</i></span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== CONNECTIVITY ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 11 · CONNECTIVITY</span>
+          <span class="bh-meta">Connections &amp; APIs</span>
+        </div>
+        <h2 class="bh-title">Smart connectivity, with or without internet.</h2>
+        <p class="bh-lede">While Wi-Fi is the primary connection, the switch is fully capable of offline operation. If Wi-Fi drops, a backup Bluetooth mode enables easy setup and recovery.</p>
+      </header>
+
+      <div class="block-body">
+        <div class="conn-grid">
+          <div class="conn-card pwa-card">
+            <span class="conn-pill">Companion Web App</span>
+            <h4>The companion web app</h4>
+            <p>A custom web application — installable on your phone, tablet, or computer — serves as the main control panel. You can toggle the light, adjust modes, manage schedules, view sleep scores, and fine-tune sensor settings. It communicates locally over your home network, making it completely private and offline-capable.</p>
+          </div>
+          <div class="conn-card">
+            <span class="conn-pill">BLE 5 + Wi-Fi 6</span>
+            <h4>Setup &amp; Recovery</h4>
+            <p>Easily configure the device over Bluetooth on first startup. If Wi-Fi goes offline, a backup Bluetooth recovery mode activates automatically, allowing you to update credentials or check status without taking the device off the wall.</p>
+          </div>
+          <div class="conn-card">
+            <span class="conn-pill">SinricPro</span>
+            <h4>Smart Assistant Support</h4>
+            <p>Control the switch with your voice using standard Alexa or Google Home commands via a secure cloud bridge, with no complicated setup required.</p>
+          </div>
+          <div class="conn-card">
+            <span class="conn-pill">MQTT</span>
+            <h4>Local Smart Home Integration</h4>
+            <p>Sends status updates (light state, motion levels, sleep scores, and temperature) to your local home server and accepts remote commands for advanced custom automation.</p>
+          </div>
+          <div class="conn-card">
+            <span class="conn-pill">REST</span>
+            <h4>Weather Updates</h4>
+            <p>Retrieves local sunrise, sunset, and temperature data to coordinate daylight savings and automation schedules. Time zones and daylight saving changes are handled locally after startup.</p>
+          </div>
+          <div class="conn-card future">
+            <span class="conn-pill future-pill">Planned</span>
+            <h4>Self-Balancing Robot Integration (Planned)</h4>
+            <p>A planned firmware update will pair the switch with the self-balancing desk robot over MQTT — using the robot as an auxiliary sensor to expand presence coverage into the rest of the room and forward voice commands. Topic schema is reserved; the integration ships in a later release.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== WI-FI 6 TWT ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 12 · WI-FI 6 TARGET WAKE TIME</span>
+          <span class="bh-meta">Wi-Fi 6 power scheduling</span>
+        </div>
+        <h2 class="bh-title">Saving energy with Wi-Fi 6.</h2>
+        <p class="bh-lede">The ESP32-C6 is one of the first hobbyist microcontrollers with native Wi-Fi 6. By using a feature called Target Wake Time (TWT), the switch schedules precise wake-up windows with your home router. The wireless radio sleeps in between, dramatically reducing power consumption.</p>
+      </header>
+
+      <div class="block-body">
+        <!-- TWT waveform diagram — full width -->
+        <div class="twt-viz">
+          <svg viewBox="0 0 820 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <!-- title -->
+            <text x="410" y="22" text-anchor="middle" font-family="var(--font-mono)" font-size="10" letter-spacing="0.14em" fill="var(--ink-3)" font-weight="500">RADIO POWER · TWT NEGOTIATED SCHEDULE</text>
+
+            <!-- y-axis labels -->
+            <text x="38" y="62" text-anchor="end" font-family="var(--font-mono)" font-size="9.5" fill="var(--signal)" font-weight="700" letter-spacing="0.06em">ON</text>
+            <text x="38" y="132" text-anchor="end" font-family="var(--font-mono)" font-size="9.5" fill="var(--ink-3)" font-weight="500" letter-spacing="0.06em">OFF</text>
+
+            <!-- horizontal baseline -->
+            <line x1="48" y1="130" x2="790" y2="130" stroke="var(--rule)" stroke-width="1" stroke-dasharray="4 3"/>
+
+            <!-- LAYER 1: sleep shading — low regions (bottom) -->
+            <rect x="48"  y="90" width="120" height="40" rx="0" fill="var(--paper-2)" opacity="0.7"/>
+            <rect x="218" y="90" width="170" height="40" rx="0" fill="var(--paper-2)" opacity="0.7"/>
+            <rect x="438" y="90" width="170" height="40" rx="0" fill="var(--paper-2)" opacity="0.7"/>
+            <rect x="658" y="90" width="132" height="40" rx="0" fill="var(--paper-2)" opacity="0.7"/>
+
+            <!-- sleep labels in low regions -->
+            <text x="108" y="116" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-3)" letter-spacing="0.1em" font-weight="500">SLEEP</text>
+            <text x="303" y="116" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-3)" letter-spacing="0.1em" font-weight="500">SLEEP</text>
+            <text x="523" y="116" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-3)" letter-spacing="0.1em" font-weight="500">SLEEP</text>
+            <text x="724" y="116" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-3)" letter-spacing="0.1em" font-weight="500">SLEEP</text>
+
+            <!-- LAYER 2: square-wave power trace (drawn BEFORE wake rects so rects mask it) -->
+            <polyline points="48,130 168,130 168,58 218,58 218,130 388,130 388,58 438,58 438,130 608,130 608,58 658,58 658,130 790,130"
+              fill="none" stroke="var(--signal)" stroke-width="2.2" stroke-linejoin="miter" opacity="0.85"/>
+
+            <!-- LAYER 3: wake window rects — opaque fill to fully block the polyline underneath -->
+            <rect x="168" y="42" width="50" height="48" rx="3" fill="color-mix(in srgb, var(--paper) 86%, var(--signal))" stroke="var(--signal)" stroke-width="1.2"/>
+            <rect x="388" y="42" width="50" height="48" rx="3" fill="color-mix(in srgb, var(--paper) 86%, var(--signal))" stroke="var(--signal)" stroke-width="1.2"/>
+            <rect x="608" y="42" width="50" height="48" rx="3" fill="color-mix(in srgb, var(--paper) 86%, var(--signal))" stroke="var(--signal)" stroke-width="1.2"/>
+
+            <!-- LAYER 4: text labels — always on top -->
+            <text x="193" y="62" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--signal)" font-weight="700" letter-spacing="0.08em">WAKE</text>
+            <text x="413" y="62" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--signal)" font-weight="700" letter-spacing="0.08em">WAKE</text>
+            <text x="633" y="62" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--signal)" font-weight="700" letter-spacing="0.08em">WAKE</text>
+
+            <text x="193" y="80" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--signal)" letter-spacing="0.04em" opacity="0.8">MQTT TX</text>
+            <text x="413" y="80" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--signal)" letter-spacing="0.04em" opacity="0.8">MQTT TX</text>
+            <text x="633" y="80" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--signal)" letter-spacing="0.04em" opacity="0.8">MQTT TX</text>
+
+            <!-- interval brackets below -->
+            <line x1="168" y1="148" x2="168" y2="158" stroke="var(--ink-3)" stroke-width="1"/>
+            <line x1="388" y1="148" x2="388" y2="158" stroke="var(--ink-3)" stroke-width="1"/>
+            <line x1="608" y1="148" x2="608" y2="158" stroke="var(--ink-3)" stroke-width="1"/>
+            <line x1="168" y1="155" x2="388" y2="155" stroke="var(--ink-3)" stroke-width="1"/>
+            <line x1="388" y1="155" x2="608" y2="155" stroke="var(--ink-3)" stroke-width="1"/>
+            <text x="278" y="174" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--ink-3)" letter-spacing="0.06em">TWT INTERVAL</text>
+            <text x="498" y="174" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--ink-3)" letter-spacing="0.06em">TWT INTERVAL</text>
+
+            <!-- x-axis label -->
+            <text x="410" y="196" text-anchor="middle" font-family="var(--font-mono)" font-size="9.5" letter-spacing="0.12em" fill="var(--ink-3)">TIME →</text>
+          </svg>
+        </div>
+
+        <!-- Stats row — 3 columns below diagram -->
+        <div class="twt-stats">
+          <div class="twt-stat">
+            <span class="twt-stat-v">70<i>%</i></span>
+            <span class="twt-stat-k">Idle Power Saving</span>
+            <span class="twt-stat-n">Radio sleeps between planned wake windows</span>
+          </div>
+          <div class="twt-stat">
+            <span class="twt-stat-v">&lt; 5<i>ms</i></span>
+            <span class="twt-stat-k">Wake Latency</span>
+            <span class="twt-stat-n">Wakes instantly to process commands</span>
+          </div>
+          <div class="twt-stat">
+            <span class="twt-stat-v">App</span>
+            <span class="twt-stat-k">App Control</span>
+            <span class="twt-stat-n">Toggle TWT power saving on or off via the app</span>
+          </div>
+        </div>
+
+        <!-- Prose below -->
+        <div class="twt-prose">
+          <p>Standard Wi-Fi keeps the wireless antenna active constantly, wasting energy for a device that only needs to communicate occasionally. With TWT enabled, the switch and router agree on specific microsecond windows to transfer data, allowing the radio to sleep most of the time.</p>
+          <p>This feature is optional and can be toggled in the companion web app. If disabled, the radio remains active for absolute minimum latency. In everyday use, keeping power saving enabled provides instant responses while reducing heat and saving energy.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SAFETY ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 13 · SAFETY &amp; RELIABILITY</span>
+          <span class="bh-meta">System fail-safes</span>
+        </div>
+        <h2 class="bh-title">Engineered for absolute safety and reliability.</h2>
+      </header>
+
+      <div class="block-body">
+        <div class="safety-grid">
+          <div class="safe-cell">
+            <span class="s-num">15<i>s</i></span>
+            <h4>Protective startup delay</h4>
+            <p>The motor is disabled for the first 15 seconds after booting while the power supply fully stabilizes. This prevents sudden power drops from resetting the device.</p>
+          </div>
+          <div class="safe-cell">
+            <span class="s-num">2<i>×</i></span>
+            <h4>Mirrored storage backup</h4>
+            <p>Settings are saved in two separate memory slots with verification checksums. If a power cut occurs during a save, the device automatically restores your settings from the backup slot on startup.</p>
+          </div>
+          <div class="safe-cell">
+            <span class="s-num">3<i>↻</i></span>
+            <h4>Automatic safe mode</h4>
+            <p>If the device experiences 3 consecutive unexpected restarts, it pauses the motor, Wi-Fi, and sensor, displaying a warning on the screen. It automatically attempts a normal recovery after 10 minutes.</p>
+          </div>
+          <div class="safe-cell">
+            <span class="s-num">↺</span>
+            <h4>Automatic software rollback</h4>
+            <p>New updates are only permanently saved after the device successfully starts up and connects to the network. If an update fails or causes a crash, it automatically reverts to the previous working version.</p>
+          </div>
+        </div>
+
+        <!-- EEPROM mirror diagram -->
+        <div class="eeprom-figure" data-reveal>
+          <span class="ef-title">EEPROM dual-slot mirror</span>
+          <div class="eeprom-bar">
+            <span class="slot slot-a">
+              <span class="s-k">SLOT A · primary</span>
+              <span class="s-meta">magic · payload · CRC32</span>
+            </span>
+            <span class="pad"></span>
+            <span class="slot slot-b">
+              <span class="s-k">SLOT B · backup</span>
+              <span class="s-meta">magic · payload · CRC32</span>
+            </span>
+            <span class="pad"></span>
+            <span class="flag">
+              <span class="s-k">WRITE FLAG</span>
+              <span class="s-meta">active during write</span>
+            </span>
+          </div>
+          <p class="ef-note">If the primary settings slot fails validation on startup, the device automatically loads the backup settings.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FUTURE UPDATES ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 14 · FUTURE UPDATES</span>
+          <span class="bh-meta">Roadmap</span>
+        </div>
+        <h2 class="bh-title">Self-Balancing Robot Integration</h2>
+      </header>
+      <div class="block-body two-col-prose">
+        <p>A future software update will connect the switch with the <a href="self-balancing-robot.html" style="color:var(--signal);">self-balancing desk robot</a>. This will allow you to use the robot's voice command system to toggle the lights or check your sleep stats without opening the app.</p>
+        <p>Connecting both devices over your home network will also allow the robot to serve as an extra motion sensor, helping to cover blind spots and coordinate automations across your entire room.</p>
+      </div>
+    </section>
+
+    <!-- ===================== § 15 · COMPANION APP ===================== -->
+    <section class="block" data-reveal>
+      <header class="block-head">
+        <div class="bh-row">
+          <span class="bh-marker">§ 15 · REMOTE CONTROL</span>
+          <span class="bh-meta">Zaylo companion app integration</span>
+        </div>
+        <h2 class="bh-title">Interactive Companion Dashboard.</h2>
+        <p class="bh-lede">Manage all devices, view sleep quality scores, and configure mmWave radar parameters remotely.</p>
+      </header>
+      <div class="block-body">
+        <div style="border: 1px solid var(--rule); padding: 32px; background: var(--paper-2); display: flex; flex-direction: column; gap: 20px; position: relative; overflow: hidden;">
+          <div style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--signal); text-transform: uppercase;">// LIVE ECOSYSTEM LINK</div>
+          <h3 style="font-size: 20px; margin: 0; font-weight: 500;">Zaylo Remote Dashboard Emulator</h3>
+          <p style="font-size: 14px; line-height: 1.6; color: var(--ink-2); margin: 0; max-width: 680px;">
+            The physical Smart Light Switch controller integrates seamlessly with the <strong>Zaylo Remote</strong> application over sub-100ms MQTT WebSockets. Explore the companion app interface, test the live light relay toggles in our high-fidelity web emulator.
+          </p>
+          <div style="margin-top: 10px;">
+            <a href="zaylo-remote.html" class="ctrl-btn active" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none; padding: 12px 24px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;">
+              <span>Launch Interactive App Emulator</span>
+              <span style="font-size: 14px;">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== NEXT ===================== -->
+    <div class="next-proj">
+      <div class="next-side">
+        <span class="label">NEXT PROJECT</span>
+        <a class="next-link" href="blinds-control.html">
+          Blinds Control Device
+          <span class="arrow">→</span>
+        </a>
+      </div>
+      <a href="../index.html#work" class="mono back-link">← back to index</a>
+    </div>
+
+    <footer class="footer">
+      <div>© <span data-year>2026</span> · Giorgi Suramlishvili · Bristol, UK</div>
+      <div>P-01 · SMART LIGHT SWITCH · v3</div>
+    </footer>
+  </main>
+
+  <!-- HUD -->
+  <div class="hud" role="status" aria-label="System status">
+    <div class="cell"><span class="live"></span><span class="k">SYS</span><span class="v">ONLINE</span></div>
+    <div class="cell desktop-only"><span class="k">SECTION</span><span class="v" data-hud-section>—</span></div>
+    <div class="cell desktop-only"><span class="k">SCROLL</span><span class="v" data-hud-pct>000%</span></div>
+    <div class="right">
+      <div class="cell desktop-only"><span class="k">BUILD</span><span class="v">V0.0 / 2026</span></div>
+      <div class="cell"><span class="k">LOCAL</span><span class="v" data-hud-time>—</span></div>
+    </div>
+  </div>
+
+  <!-- TWEAKS -->
+  <aside class="tweaks">
+    <div class="tweaks-head">
+      <span>// TWEAKS</span>
+      <button data-tweak-close aria-label="Close">×</button>
+    </div>
+    <div class="tweaks-body">
+      <div class="tweak-group">
+        <span class="k">Theme</span>
+        <div class="seg" data-tweak-theme>
+          <button data-val="light" class="active">Light</button>
+          <button data-val="dark">Dark</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HELP OVERLAY -->
+  <div class="help-overlay" role="dialog" aria-hidden="true">
+    <div class="help-card">
+      <div class="help-head">
+        <span>// SHORTCUTS · EASTER EGGS</span>
+        <button class="close" data-help-close aria-label="Close">×</button>
+      </div>
+      <div class="help-body">
+        <h3>Shortcuts &amp; easter eggs.</h3>
+        <p>A few hidden things scattered around the site.</p>
+        <div class="help-grid">
+          <div class="kv"><span class="k">Toggle theme</span><kbd>T</kbd></div>
+          <div class="kv"><span class="k">Toggle grid</span><kbd>G</kbd> <span style="font-size:10px;color:var(--ink-3);">(off by default)</span></div>
+          <div class="kv"><span class="k">Show this overlay</span><kbd>?</kbd></div>
+          <div class="kv"><span class="k">Close overlay</span><kbd>Esc</kbd></div>
+          <div class="kv"><span class="k">Blueprint mode</span><span><kbd>↑</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd><kbd>←</kbd><kbd>→</kbd><kbd>B</kbd><kbd>A</kbd></span></div>
+          <div class="kv"><span class="k">Robot says hi</span><span>type <kbd>robot</kbd></span></div>
+          <div class="kv"><span class="k">Matrix rain</span><span>type <kbd>matrix</kbd></span></div>
+          <div class="kv selectability-row">
+            <span class="k">Enable text selection</span>
+            <label class="switch-toggle" aria-label="Toggle text selectability">
+              <input type="checkbox" id="textSelectToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="help-foot">// stay curious</div>
+    </div>
+  </div>
+
+  <script>const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{"theme":"light"}/*EDITMODE-END*/;</script>
+  <script src="../site.js"></script>
+  <script src="./light-switch.js"></script>
+</body>
+</html>

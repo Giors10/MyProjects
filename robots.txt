@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://giorgi.uk/sitemap.xml
+
+# Personal portfolio of Giorgi Suramlishvili. Crawl freely.

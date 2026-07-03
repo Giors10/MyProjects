@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiFi list UI harness</title>
+<style>
+  :root{
+    --bg-glass: rgba(255,255,255,0.05);
+    --border-glass: rgba(255,255,255,0.10);
+    --text-primary: #f5f7fa;
+    --text-secondary: #c2c8d2;
+    --text-tertiary: #8a92a0;
+    --blind-accent: #14b8a6;
+    --radius-lg: 14px;
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  body{ margin:0; background:#0b1220; color:var(--text-primary); font-family:var(--font-family); padding:24px; }
+  .modal-card{ max-width:430px; margin:0 auto; background:#141c2b; border:1px solid var(--border-glass); border-radius:18px; padding:18px; }
+  h3{ margin:0 0 14px; font-size:16px; }
+  /* mirror the modal's scanned section */
+  #scannedWiFiSection{ display:flex; flex-direction:column; gap:10px; background:rgba(0,0,0,0.2); border:1px solid var(--border-glass); border-radius:var(--radius-lg); padding:14px; }
+  #scannedNetworksList{ display:flex; flex-direction:column; gap:8px; max-height:320px; overflow-y:auto; padding-right:4px; }
+  .hdr{ display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .hdr span:first-child{ font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.05em; }
+  .hdr span:last-child{ font-size:11px; color:var(--text-tertiary); }
+</style>
+</head>
+<body>
+  <div class="modal-card">
+    <h3>Wi-Fi Connection Settings — scanned list</h3>
+    <div id="scannedWiFiSection">
+      <div class="hdr"><span>Scanned Networks</span><span>Select network below</span></div>
+      <div id="scannedNetworksList"></div>
+    </div>
+  </div>
+<script>
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  // Representative scan results: short/long SSIDs, wifi6 on/off, secured/open, signal range
+  const networks = [
+    { s:'Zaylo_Home_5G', r:-42, e:true, ax:true },
+    { s:'A-Very-Long-Network-Name-That-Should-Truncate-Nicely', r:-58, e:true, ax:true },
+    { s:'BT-Hub-9KJ2', r:-71, e:true, ax:false },
+    { s:'GuestOpen', r:-83, e:false, ax:false },
+    { s:'TALKTALK0F3A_5GHz_Extra', r:-66, e:true, ax:true },
+    { s:'☕ Café Wi-Fi', r:-77, e:true, ax:false },
+  ];
+  const list = document.getElementById('scannedNetworksList');
+  const filtered = networks.filter(n => n.s && n.s.trim().length > 0).sort((a,b)=>b.r-a.r);
+  list.innerHTML = filtered.map(net => {
+    let rssiText='Weak', activeBars=1;
+    if(net.r>=-50){rssiText='Excellent';activeBars=4;}
+    else if(net.r>=-65){rssiText='Good';activeBars=3;}
+    else if(net.r>=-80){rssiText='Fair';activeBars=2;}
+    const wifi6Badge = net.ax ? `<span style="flex-shrink: 0; white-space: nowrap; font-size: 9px; font-weight: 800; background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%); color: white; padding: 2px 7px; border-radius: 5px; text-transform: uppercase; letter-spacing: 0.04em; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25); line-height: 1.5;">WiFi&nbsp;6</span>` : '';
+    const lockIcon = net.e ? `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); opacity: 0.8; flex-shrink: 0;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>` : `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-tertiary); opacity: 0.5; flex-shrink: 0;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>`;
+    const signalIcon = `<svg width="16" height="12" viewBox="0 0 16 12" fill="none" style="flex-shrink: 0; align-self: center; margin-left: auto;"><rect x="0" y="9" width="2.5" height="3" rx="0.5" fill="${activeBars>=1?'var(--blind-accent)':'var(--text-tertiary)'}" opacity="${activeBars>=1?'1':'0.3'}"/><rect x="4.5" y="6" width="2.5" height="6" rx="0.5" fill="${activeBars>=2?'var(--blind-accent)':'var(--text-tertiary)'}" opacity="${activeBars>=2?'1':'0.3'}"/><rect x="9" y="3" width="2.5" height="9" rx="0.5" fill="${activeBars>=3?'var(--blind-accent)':'var(--text-tertiary)'}" opacity="${activeBars>=3?'1':'0.3'}"/><rect x="13.5" y="0" width="2.5" height="12" rx="0.5" fill="${activeBars>=4?'var(--blind-accent)':'var(--text-tertiary)'}" opacity="${activeBars>=4?'1':'0.3'}"/></svg>`;
+    return `<div class="wifi-network-item" data-ssid="${escapeHtml(net.s)}" style="display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-radius: var(--radius-lg); background: var(--bg-glass); border: 1px solid var(--border-glass); cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+      <span style="flex-shrink: 0; display: flex; align-items: center;">${lockIcon}</span>
+      <div style="display: flex; flex-direction: column; gap: 3px; flex: 1 1 auto; min-width: 0;">
+        <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+          <span style="flex: 0 1 auto; min-width: 0; font-size: 14px; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(net.s)}</span>
+          ${wifi6Badge}
+        </div>
+        <span style="font-size: 11px; color: var(--text-tertiary);">${rssiText} · ${net.r} dBm</span>
+      </div>
+      <span style="flex-shrink: 0; display: flex; align-items: center;">${signalIcon}</span>
+    </div>`;
+  }).join('');
+</script>
+</body>
+</html>

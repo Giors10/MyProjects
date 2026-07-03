@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Inverted Pendulum Control Systems — a physics research paper by Giorgi Suramlishvili deriving PID and LQR control for a self-balancing robot, from the state-space model and A/B matrices to the Riccati equation and a fully worked numerical example." />
+  <meta name="author" content="Giorgi Suramlishvili" />
+  <meta name="keywords" content="Giorgi Suramlishvili, inverted pendulum, PID control, LQR control, control theory, state-space model, Riccati equation, eigenvalues, Kalman filter, self-balancing robot, physics research paper, A-Level Physics, Bristol" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="geo.region" content="GB-ENG" />
+  <meta name="geo.placename" content="Bristol, England" />
+  <meta name="theme-color" content="#f6f4ed" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0d0c0a" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="light dark" />
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('gs-theme');
+        if (theme === 'dark' || theme === 'light') {
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.style.colorScheme = theme;
+        }
+      } catch (_) {}
+    })();
+  </script>
+  <title>Inverted Pendulum Control Systems · Giorgi Suramlishvili</title>
+  <link rel="canonical" href="https://giorgi.uk/projects/inverted-pendulum.html" />
+  <link rel="sitemap" type="application/xml" href="https://giorgi.uk/sitemap.xml" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+  <meta property="og:title" content="Inverted Pendulum Control Systems · Giorgi Suramlishvili" />
+  <meta property="og:description" content="A physics research paper deriving PID and LQR control for a self-balancing robot — state-space model, A/B matrices, controllability, the Riccati equation, and a worked example. By Giorgi Suramlishvili." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://giorgi.uk/projects/inverted-pendulum.html" />
+  <meta property="og:image" content="https://giorgi.uk/portrait.jpg" />
+  <meta property="og:image:secure_url" content="https://giorgi.uk/portrait.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="449" />
+  <meta property="og:image:height" content="598" />
+  <meta property="og:image:alt" content="Inverted Pendulum Control Systems — research paper by Giorgi Suramlishvili" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:site_name" content="Giorgi Suramlishvili" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Inverted Pendulum Control Systems · Giorgi Suramlishvili" />
+  <meta name="twitter:description" content="PID and LQR control for a self-balancing robot, derived from first principles — with a fully worked numerical example. A physics research paper by Giorgi Suramlishvili." />
+  <meta name="twitter:image" content="https://giorgi.uk/portrait.jpg" />
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "ScholarlyArticle",
+      "@id": "https://giorgi.uk/projects/inverted-pendulum.html#article",
+      "headline": "Inverted Pendulum Control Systems",
+      "alternativeHeadline": "Deriving PID and LQR control for a self-balancing robot",
+      "description": "A physics research paper by Giorgi Suramlishvili covering PID control of an inverted pendulum and a full derivation of the Linear Quadratic Regulator (LQR): the state-space model, the A and B matrices, controllability, the algebraic Riccati equation, and a fully worked numerical example.",
+      "url": "https://giorgi.uk/projects/inverted-pendulum.html",
+      "image": "https://giorgi.uk/portrait.jpg",
+      "dateCreated": "2026-05-01",
+      "datePublished": "2026-05-01",
+      "dateModified": "2026-06-20",
+      "inLanguage": "en-GB",
+      "learningResourceType": "Research paper",
+      "author": {
+        "@type": "Person",
+        "@id": "https://giorgi.uk/#giorgi",
+        "name": "Giorgi Suramlishvili",
+        "url": "https://giorgi.uk/"
+      },
+      "about": ["Inverted Pendulum", "PID Control", "LQR Control", "Control Theory", "State-Space Model", "Riccati Equation", "Eigenvalues", "Kalman Filter", "Physics", "Robotics"],
+      "keywords": "inverted pendulum, PID, LQR, control theory, state space, Riccati equation, eigenvalues, self-balancing robot",
+      "isPartOf": {
+        "@type": "WebSite",
+        "@id": "https://giorgi.uk/#website",
+        "name": "Giorgi Suramlishvili",
+        "url": "https://giorgi.uk/"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Giorgi Suramlishvili", "item": "https://giorgi.uk/" },
+        { "@type": "ListItem", "position": 2, "name": "Projects", "item": "https://giorgi.uk/#work" },
+        { "@type": "ListItem", "position": 3, "name": "Inverted Pendulum Control Systems", "item": "https://giorgi.uk/projects/inverted-pendulum.html" }
+      ]
+    }
+  ]
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous" />
+  <link rel="stylesheet" href="../styles.css?v=10" />
+  <link rel="stylesheet" href="inverted-pendulum.css" />
+</head>
+<body class="no-grid">
+  <div class="scroll-progress"><div class="bar"></div></div>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="../index.html">
+        <span class="mark-dot"></span>
+        Giorgi&nbsp;Suramlishvili
+      </a>
+      <div class="nav-links">
+        <div class="nav-item has-dropdown">
+          <a href="../index.html#work" aria-haspopup="true" aria-expanded="false">Work <span class="nav-caret" aria-hidden="true">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu" aria-label="Projects">
+            <a href="light-switch.html" role="menuitem">Smart Light Switch</a>
+            <a href="blinds-control.html" role="menuitem">Smart Blinds Controller</a>
+            <a href="zaylo-remote.html" role="menuitem">Zaylo Remote App</a>
+            <a href="self-balancing-robot.html" role="menuitem">Self-Balancing Robot</a>
+            <a href="inverted-pendulum.html" role="menuitem" class="current" aria-current="page">Inverted Pendulum</a>
+          </div>
+        </div>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#track">Experience</a>
+        <a href="../index.html#contact">Contact</a>
+      </div>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <span data-theme-label>DARK</span>
+      </button>
+      <button class="help-btn" data-help-toggle aria-label="Shortcuts &amp; easter eggs" title="Shortcuts &amp; easter eggs">?</button>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main class="page">
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="detail-hero paper-hero" data-screen-label="01 Paper">
+      <span class="tick tl"></span>
+      <span class="tick tr"></span>
+      <div class="coord">
+        <span>FILE:<b>P-05</b></span>
+        <span>YEAR:<b>2026</b></span>
+        <span>REV:<b>1.0</b></span>
+      </div>
+
+      <nav class="crumbs">
+        <a href="../index.html">Index</a>
+        <span class="sep">/</span>
+        <a href="../index.html#work">Work</a>
+        <span class="sep">/</span>
+        <span class="current">P-05 &middot; Inverted Pendulum Control Systems</span>
+      </nav>
+
+      <div class="paper-hero-grid">
+        <div class="paper-hero-copy">
+          <span class="section-marker">&sect; RESEARCH PAPER &middot; PHYSICS &middot; CONTROL THEORY</span>
+        <h1 class="detail-title" style="margin-top:18px;" aria-label="Inverted Pendulum Control Systems.">Inverted Pendulum<br />Control Systems.</h1>
+
+          <div class="tag-row">
+            <span class="paper-tag signal">Control theory</span>
+            <span class="paper-tag">PID</span>
+            <span class="paper-tag">LQR</span>
+            <span class="paper-tag">State space</span>
+            <span class="paper-tag">Riccati</span>
+            <span class="paper-tag">Kalman filter</span>
+          </div>
+
+          <p class="paper-lede">
+            How do you keep something that <strong>wants</strong> to fall over standing perfectly upright?
+            This paper works through it from first principles &mdash; starting with <strong>PID</strong>,
+            then deriving the <strong>Linear Quadratic Regulator</strong> for a two-wheeled balancing robot:
+            the state-space model, the <em>A</em> and <em>B</em> matrices, controllability, the algebraic
+            Riccati equation, and a fully worked numerical example.
+          </p>
+
+          <div class="paper-hero-actions">
+            <a class="btn" href="#intro">
+              <span>Read the paper</span>
+              <span class="arrow">&darr;</span>
+            </a>
+            <a class="btn ghost" href="inverted-pendulum-pid-control.pdf" target="_blank" rel="noopener">
+              <span>Download PDF</span>
+              <span class="arrow">&#8599;</span>
+            </a>
+          </div>
+
+          <div class="byline">
+            <span>Author:&nbsp;<b>Giorgi Suramlishvili</b></span>
+            <span>Field:&nbsp;<b>Physics / Control</b></span>
+            <span>Length:&nbsp;<b>16 pages</b></span>
+            <span>Read:&nbsp;<b>~18 min</b></span>
+          </div>
+        </div>
+
+        <!-- HERO FIGURE: animated free-body inverted pendulum -->
+        <figure class="hero-figure" aria-label="Free-body diagram of an inverted pendulum on a cart">
+          <span class="fig-tag">FIG.01 / FREE-BODY</span>
+          <span class="fig-readout">&theta; &rarr; <b>0</b> rad<br />balance loop</span>
+          <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg" role="img">
+            <g class="pp-stage">
+              <!-- ground -->
+              <line class="d-stroke" x1="30" y1="300" x2="330" y2="300" stroke-width="2" />
+              <g class="d-dim" stroke-width="1">
+                <line x1="54" y1="300" x2="44" y2="312" /><line x1="84" y1="300" x2="74" y2="312" />
+                <line x1="114" y1="300" x2="104" y2="312" /><line x1="144" y1="300" x2="134" y2="312" />
+                <line x1="174" y1="300" x2="164" y2="312" /><line x1="204" y1="300" x2="194" y2="312" />
+                <line x1="234" y1="300" x2="224" y2="312" /><line x1="264" y1="300" x2="254" y2="312" />
+                <line x1="294" y1="300" x2="284" y2="312" /><line x1="324" y1="300" x2="314" y2="312" />
+              </g>
+              <!-- vertical reference -->
+              <line class="d-faint" x1="180" y1="252" x2="180" y2="92" stroke-width="1.4" stroke-dasharray="3 7" />
+              <text class="d-label-sm" x="186" y="98">vertical</text>
+              <!-- theta arc + label -->
+              <path class="d-accent" d="M180,196 A56,56 0 0 0 166,198" stroke-width="1.8" fill="none" />
+              <text class="d-label d-label-accent" x="156" y="216">&theta;</text>
+              <!-- friction (opposes rightward recovery) -->
+              <line class="d-dim" x1="210" y1="300" x2="250" y2="300" stroke-width="2" />
+              <polygon class="d-fill-ink" points="250,300 240,295 240,305" opacity="0.5" />
+              <text class="d-label-sm" x="214" y="318">friction</text>
+              <!-- cart -->
+              <rect class="d-stroke d-fill-paper" x="128" y="252" width="104" height="44" rx="7" stroke-width="2" />
+              <circle class="d-stroke d-fill-paper" cx="156" cy="300" r="14" stroke-width="2" />
+              <circle class="d-fill-accent" cx="156" cy="300" r="3.2" />
+              <circle class="d-stroke d-fill-paper" cx="204" cy="300" r="14" stroke-width="2" />
+              <circle class="d-fill-accent" cx="204" cy="300" r="3.2" />
+              <!-- control force F (drives base under the falling mass) -->
+              <g class="pp-correct">
+                <line class="d-accent" x1="128" y1="274" x2="74" y2="274" stroke-width="2.6" />
+                <polygon class="d-fill-accent" points="74,274 85,268 85,280" />
+                <text class="d-label d-label-accent" x="60" y="270">F</text>
+              </g>
+              <text class="d-label-sm" x="58" y="291">control force</text>
+              <!-- pole -->
+              <line class="d-pole" x1="180" y1="252" x2="144" y2="107" stroke-width="5" stroke-linecap="round" />
+              <!-- centre-of-mass bob with pulsing halo -->
+              <circle class="pp-glow d-fill-accent" cx="144" cy="107" r="17" />
+              <circle class="d-stroke d-fill-paper" cx="144" cy="107" r="11" stroke-width="2.4" />
+              <circle class="d-fill-ink" cx="144" cy="107" r="3.4" />
+              <!-- mg arrow (always points down) -->
+              <line class="d-pole" x1="144" y1="122" x2="144" y2="174" stroke-width="2.4" />
+              <polygon class="d-fill-ink" points="144,174 139,164 149,164" />
+              <text class="d-label" x="118" y="150">mg</text>
+              <!-- disturbance (dashed) -->
+              <g class="pp-disturb">
+                <line class="d-dim" x1="136" y1="98" x2="96" y2="98" stroke-width="1.8" stroke-dasharray="4 4" />
+                <polygon class="d-fill-ink" points="96,98 106,93 106,103" opacity="0.6" />
+              </g>
+              <text class="d-label-sm" x="62" y="88">disturbance</text>
+            </g>
+          </svg>
+        </figure>
+      </div>
+
+      <div class="spec-table">
+        <div class="cell"><span class="k">Subject</span><span class="v">Control</span></div>
+        <div class="cell"><span class="k">Methods</span><span class="v">PID &middot; LQR</span></div>
+        <div class="cell"><span class="k">Format</span><span class="v">16-pg paper</span></div>
+        <div class="cell"><span class="k">Status</span><span class="v" style="color:var(--pp-good,#1f9d63);">Complete</span></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PAPER LAYOUT
+         ============================================================ -->
+    <div class="paper-layout">
+      <aside class="paper-toc" id="toc">
+        <button class="toc-mobile-btn" data-toc-toggle aria-expanded="false">
+          <span>Contents</span><span class="chev">&#9662;</span>
+        </button>
+        <div class="paper-toc-inner">
+          <div class="toc-label">Contents</div>
+          <ul class="toc-list">
+            <li><a class="toc-link" href="#intro"><span class="tn">01</span><span>What is an inverted pendulum?</span></a></li>
+            <li><a class="toc-link" href="#pid"><span class="tn">02</span><span>PID control</span></a></li>
+            <li><a class="toc-link" href="#pitfalls"><span class="tn">03</span><span>Windup &amp; noise</span></a></li>
+            <li><a class="toc-link" href="#lqr"><span class="tn">04</span><span>LQR control system</span></a></li>
+            <li><a class="toc-link" href="#statespace"><span class="tn">05</span><span>The state vector</span></a></li>
+            <li><a class="toc-link" href="#matrices"><span class="tn">06</span><span>The A &amp; B matrices</span></a></li>
+            <li><a class="toc-link" href="#feedback"><span class="tn">07</span><span>Feedback control</span></a></li>
+            <li><a class="toc-link" href="#poleplacement"><span class="tn">08</span><span>Why this isn&rsquo;t the end</span></a></li>
+            <li><a class="toc-link" href="#lqr-math"><span class="tn">09</span><span>The Riccati equation</span></a></li>
+            <li><a class="toc-link" href="#worked"><span class="tn">10</span><span>How it works</span></a></li>
+            <li><a class="toc-link" href="#robot"><span class="tn">11</span><span>Putting it in a robot</span></a></li>
+          </ul>
+          <div class="read-meta">
+            <div><b>11</b> sections &middot; <b>16</b> pages</div>
+            <div><b>~18 min</b> read</div>
+            <div style="margin-top:8px;">Maths typeset with KaTeX.</div>
+          </div>
+        </div>
+      </aside>
+
+      <article class="paper-article">
+
+        <!-- ====================================================
+             01 · WHAT IS AN INVERTED PENDULUM?
+             ==================================================== -->
+        <section class="psec" id="intro" data-reveal data-screen-label="02 Concept">
+          <span class="psec-kicker">&sect;01 &middot; Definition</span>
+          <h2 class="psec-title"><span class="psec-num">01</span> What is an inverted pendulum?</h2>
+
+          <p class="lead"><span class="drop">A</span>n inverted pendulum is a pendulum in which its centre of mass is above the pivot point, making it unstable and prone to toppling without active control systems.</p>
+
+          <p>It can be controlled by moving the base. A basic example of this is balancing a ruler or a pencil on the tip of your finger by moving your finger so that the pencil&rsquo;s centre of mass stays above the pivot. The schematic at the top of the page (<strong>Figure&nbsp;1</strong>) displays the forces acting on the pendulum: gravity <span class="eq-chip">\(mg\)</span> pulling the mass down, an external <strong>disturbance</strong>, ground <strong>friction</strong>, and the <strong>control force</strong> <span class="eq-chip">\(F\)</span> applied through the base.</p>
+
+          <div class="sketch-strip" data-reveal>
+            <img src="inverted-pendulum-sketch.png" alt="Original hand-drawn free-body diagram of an inverted pendulum on a cart, showing the disturbance force, gravity mg, the control force, friction and the tilt angle theta." loading="lazy" decoding="async" />
+            <div class="ss-text">
+              <span class="label">Figure 1 &middot; original diagram (made by Giorgi)</span>
+              <p>My original diagram of the inverted pendulum and the forces acting on it &mdash; recreated as the live schematic at the top of the page.</p>
+            </div>
+          </div>
+
+          <h3><span class="h3-mark">&rsaquo;</span> Measurements</h3>
+          <p>The diagram shown above (Figure&nbsp;1) displays the forces acting on the pendulum. To control the pendulum, we need a way to calculate the force and acceleration required to move the base, given the angle, angular velocity, and mass, to ensure that the centre of mass is always above the base. To get these measurements in robotics, you need to use an <strong>IMU</strong>, which contains:</p>
+
+          <div class="vardefs" data-reveal>
+            <div class="vardefs-head">Inside the IMU</div>
+            <div class="vardef">
+              <div class="sym">Accel.</div>
+              <div class="def">An <b>accelerometer</b> &mdash; measures linear acceleration and gravity; it is used to determine the static tilt angle relative to the ground.</div>
+            </div>
+            <div class="vardef">
+              <div class="sym">Gyro.</div>
+              <div class="def">A <b>gyroscope</b> &mdash; measures the rate of rotation (angular velocity) around the axes, telling the controller how fast the pendulum is falling.</div>
+            </div>
+            <div class="vardef">
+              <div class="sym">EKF</div>
+              <div class="def">An <b>Extended Kalman Filter</b> &mdash; to estimate the tilt angle, providing a highly accurate, real-time estimation of the pendulum&rsquo;s tilt angle, velocity, and position by fusing noisy sensor data.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ====================================================
+             02 · PID CONTROL
+             ==================================================== -->
+        <section class="psec" id="pid" data-reveal data-screen-label="03 PID">
+          <span class="psec-kicker">&sect;02 &middot; How to control an inverted pendulum</span>
+          <h2 class="psec-title"><span class="psec-num">02</span> PID control <span style="font-size:0.6em;color:var(--ink-3);">(Proportional&ndash;Integral&ndash;Derivative)</span></h2>
+
+          <p>The error term is the difference between the pendulum being perfectly upright when it is directly above the pivot point <span class="eq-chip">\(0\)</span>&nbsp;rads and the pendulum&rsquo;s actual angle at that moment.</p>
+
+          <h3><span class="h3-mark">P</span> Proportional</h3>
+          <div class="eq center">\[ K_{p}\, e(t) \]</div>
+          <p>The first part of PID control is the <strong>proportional</strong> term, known as the P value, and its equation is shown above. This applies a correcting force based on how far the pendulum is leaning away from the centre position (the error). A larger angle produces a greater corrective force, while a smaller angle produces a smaller one. Although this helps the pendulum respond quickly, proportional control alone can make the system unstable. This is because the pendulum may swing past the centre point at too high a speed, causing repeated side-to-side oscillations and making the robot unstable.</p>
+
+          <h3><span class="h3-mark">I</span> Integral</h3>
+          <div class="eq center">\[ K_{i}\int e(t)\,dt \]</div>
+          <p>The next part is the <strong>integral</strong> term, or I value, shown with the equation above. In some situations, proportional control may not produce sufficient force to fully balance the pendulum when the angle error is very small. Small continuous forces, such as gravity or friction, can still cause the pendulum to drift away from the centre over time. To fix this, the integral term tracks the total error over a period of time and adds a small extra correction to remove any remaining offset. However, the integral effect is normally kept quite low, because if too much past error is accumulated the system can become unstable and the pendulum movement may become even more erratic.</p>
+
+          <h3><span class="h3-mark">D</span> Derivative</h3>
+          <div class="eq center">\[ K_{d}\frac{de(t)}{dt} \]</div>
+          <p>To help control this erratic movement, the <strong>derivative</strong> term is added and it is the equation shown above. The D value looks at the rate of change of the error rather than just the size of the error itself, acting as a braking force to slow the pendulum as it approaches the upright position. When the pendulum is moving rapidly towards the target angle, the derivative term produces an opposing effect that reduces the speed of the correction, as the rate of the error will be decreasing, creating a negative value. This makes the overall movement smoother and reduces overshoot and excessive oscillation.</p>
+
+          <p>Combining all these terms gives us the following equation, which can be used to control an inverted pendulum smoothly. (<span class="eq-chip">\(u(t)\)</span> in a two-wheeled robot would be the motor voltage.)</p>
+          <div class="eq center"><span class="eq-num">PID</span>\[ u(t) = K_{p}\, e(t) + K_{i}\int e(t)\,dt + K_{d}\frac{de(t)}{dt} \]</div>
+
+          <figure class="figbox" data-reveal>
+            <div class="fig-head"><span>Fig.02 &middot; PID control loop</span><span class="fig-id">CLOSED LOOP</span></div>
+            <div class="fig-stage">
+              <svg viewBox="0 0 680 222" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Block diagram of a PID control loop: the setpoint enters a summing junction, the error drives the PID controller, whose output moves the pendulum plant, and the measured angle is fed back through the IMU and Kalman filter.">
+                <text class="d-label" x="14" y="66">&theta;<tspan font-size="8" dy="3">ref</tspan><tspan dy="-3"> = 0</tspan></text>
+                <line class="d-stroke pp-flow" x1="84" y1="62" x2="103" y2="62" stroke-width="2" />
+                <circle class="d-stroke d-fill-paper" cx="124" cy="62" r="17" stroke-width="2" />
+                <line class="d-stroke" x1="124" y1="52" x2="124" y2="72" stroke-width="1.4" />
+                <line class="d-stroke" x1="114" y1="62" x2="134" y2="62" stroke-width="1.4" />
+                <text class="d-label d-label-accent" x="101" y="48">+</text>
+                <text class="d-label" x="103" y="92" style="fill:var(--ink-3);">&minus;</text>
+                <line class="d-stroke pp-flow" x1="141" y1="62" x2="214" y2="62" stroke-width="2" />
+                <polygon class="d-fill-ink" points="214,62 204,57 204,67" />
+                <text class="d-label d-label-accent" x="166" y="52">e(t)</text>
+                <rect class="d-stroke d-fill-paper" x="214" y="24" width="160" height="78" rx="5" stroke-width="2" />
+                <text class="d-label" x="232" y="46" font-weight="600" style="fill:var(--ink);">PID controller</text>
+                <text class="d-label-sm" x="232" y="64">P&#160;&middot;&#160;K<tspan dy="3" font-size="8">p</tspan><tspan dy="-3"> e</tspan></text>
+                <text class="d-label-sm" x="232" y="79">I&#160;&middot;&#160;K<tspan dy="3" font-size="8">i</tspan><tspan dy="-3"> &#8747;e dt</tspan></text>
+                <text class="d-label-sm" x="232" y="94">D&#160;&middot;&#160;K<tspan dy="3" font-size="8">d</tspan><tspan dy="-3"> de/dt</tspan></text>
+                <line class="d-stroke pp-flow" x1="374" y1="62" x2="452" y2="62" stroke-width="2" />
+                <polygon class="d-fill-ink" points="452,62 442,57 442,67" />
+                <text class="d-label d-label-accent" x="398" y="52">u(t)</text>
+                <text class="d-label-sm" x="386" y="80">motor V</text>
+                <rect class="d-stroke d-fill-paper" x="452" y="24" width="150" height="78" rx="5" stroke-width="2" />
+                <text class="d-label" x="470" y="58" font-weight="600" style="fill:var(--ink);">Pendulum</text>
+                <text class="d-label-sm" x="470" y="76">(the plant)</text>
+                <line class="d-stroke pp-flow" x1="602" y1="62" x2="660" y2="62" stroke-width="2" />
+                <polygon class="d-fill-ink" points="660,62 650,57 650,67" />
+                <text class="d-label d-label-accent" x="638" y="52">&theta;</text>
+                <polyline class="d-dim" points="642,62 642,182 124,182 124,79" fill="none" stroke-width="1.8" stroke-dasharray="5 5" />
+                <polygon class="d-fill-ink" points="124,79 119,90 129,90" opacity="0.7" />
+                <rect class="d-stroke d-fill-paper" x="328" y="166" width="132" height="32" rx="4" stroke-width="1.6" />
+                <text class="d-label-sm" x="346" y="186">IMU + Kalman</text>
+                <circle class="pp-pulse d-fill-accent" cx="642" cy="122" r="3.2" />
+              </svg>
+            </div>
+          </figure>
+          <p class="figcap"><b>Fig.02</b> &mdash; the setpoint and the measured angle meet at the summing junction; the error drives the PID controller, whose output moves the plant; the IMU and Kalman filter close the loop.</p>
+        </section>
+
+        <!-- ====================================================
+             03 · WINDUP & NOISE
+             ==================================================== -->
+        <section class="psec" id="pitfalls" data-reveal data-screen-label="04 Pitfalls">
+          <span class="psec-kicker">&sect;03 &middot; Potential issues with PID and how to fix them</span>
+          <h2 class="psec-title"><span class="psec-num">03</span> Potential issues with PID</h2>
+
+          <h3><span class="h3-mark">&rsaquo;</span> Windup</h3>
+          <p>One potential problem with using PID control is an <strong>integral windup</strong>. This is because in a real-world scenario, motors have a physical limit where they can reach a maximum RPM, and if the system experiences a constant error, such as the pendulum being knocked over, this error will build up through the integral, causing it to request a higher RPM than is physically possible by the motor. However, the main issue is that when the robot returns to its correct position, the controller has to unwind all the accumulated excess error, causing the pendulum to overshoot significantly and fall over.</p>
+          <div class="note warn">
+            <span class="note-label">Fix &middot; clamping (anti-windup)</span>
+            <p>To fix this, an anti-windup method is used, with the most popular being <strong>clamping</strong>. Clamping is where it conditionally turns off the integrator by setting its error input to zero when two things happen: the controller outputs its saturation limit, and the error is trying to push the controller even further into that saturation limit. The integral is then turned back on when the error sign changes from + to &minus; or &minus; to +.</p>
+          </div>
+
+          <h3><span class="h3-mark">&rsaquo;</span> Noise</h3>
+          <p>Another huge issue is <strong>noise</strong>, which can be caused by motor vibration, sensor inaccuracies, external factors, etc. One of the biggest issues is high-frequency noise, as even when the amplitude is low, it can create a very high derivative value in the PID control, causing inaccuracies. This can be fixed through a filter.</p>
+          <div class="note tip">
+            <span class="note-label">Fix &middot; the extended Kalman filter</span>
+            <p>One of the best filters you can use is the extended Kalman filter. A Kalman filter removes noise by continuously comparing a mathematical prediction of a system&rsquo;s state, such as the precise tilt angle, against the actual, jittery sensor measurements it receives. It mathematically blends these two values using a dynamic weight called the <strong>Kalman gain</strong>, trusting whichever source currently has less uncertainty to calculate a smooth, accurate estimate of the true state.</p>
+          </div>
+        </section>
+
+        <!-- ====================================================
+             04 · LQR CONTROL SYSTEM
+             ==================================================== -->
+        <section class="psec" id="lqr" data-reveal data-screen-label="05 LQR">
+          <span class="psec-kicker">&sect;04 &middot; A more capable controller</span>
+          <h2 class="psec-title"><span class="psec-num">04</span> LQR control system</h2>
+
+          <p>An LQR system, compared to a PID control system, is a lot more complex. Developed 38&nbsp;years after PID, in the 1960s, an LQR system model offers much better performance in terms of stability and control. However, it requires more computation and, in robots &mdash; unlike PID &mdash; requires encoders on the motors.</p>
+          <div class="note">
+            <span class="note-label">What follows</span>
+            <p>The rest of this paper is the <em>maths behind LQR</em>: the state vector, the equation \(\dot{X} = AX + Bu\), deriving the A and B matrices, full-state feedback, why a naive approach falls short, the Riccati equation, and finally a fully worked example with real numbers.</p>
+          </div>
+        </section>
+
+        <!-- ====================================================
+             05 · STATE VECTOR  +  EIGENVALUES / X' = AX + Bu
+             ==================================================== -->
+        <section class="psec" id="statespace" data-reveal data-screen-label="06 State">
+          <span class="psec-kicker">&sect;05 &middot; Maths behind LQR</span>
+          <h2 class="psec-title"><span class="psec-num">05</span> The state vector</h2>
+
+          <p>To begin with, you have a state vector <span class="eq-chip">\(X\)</span>, and for a self-balancing robot it would be represented with 4 variables &mdash; a \(4\times1\) vector:</p>
+          <div class="eq center">\[ X = \begin{bmatrix} x \\[2pt] \dot{x} \\[2pt] \theta \\[2pt] \dot{\theta} \end{bmatrix} \]</div>
+
+          <p>The state vector is useful because it encapsulates the system&rsquo;s exact physical state, allowing the Linear Quadratic Regulator (LQR) to compute the single, mathematically optimal motor torque required to keep the robot upright. These are the definitions for the terms shown:</p>
+
+          <div class="vardefs" data-reveal>
+            <div class="vardefs-head">The four states</div>
+            <div class="vardef">
+              <div class="sym">\(x\)</div>
+              <div class="def"><b>Position</b> &mdash; the displacement from the robot&rsquo;s wheels to the designated reference origin point, telling the robot where it is relative to its starting point, which is recorded using the robot&rsquo;s encoder. This value is used by the robot so it doesn&rsquo;t drift, and tries to move back to its original starting position.</div>
+            </div>
+            <div class="vardef">
+              <div class="sym">\(\dot{x}\)</div>
+              <div class="def"><b>Velocity</b> &mdash; represents the first time derivative of the position and is used by the LQR for momentum, as the system has to know the instantaneous speed of the robot to calculate the counter-torque required to apply without the system falling over.</div>
+            </div>
+            <div class="vardef">
+              <div class="sym">\(\theta\)</div>
+              <div class="def"><b>Tilt angle</b> &mdash; the angle deviation from the robot&rsquo;s perfect vertical position, used by the LQR to ensure stability, as any deviation creates a gravitational torque pulling the robot down. The LQR heavily penalises this variable in its cost function (the \(Q\) matrix) to keep the tilt as small as possible.</div>
+            </div>
+            <div class="vardef">
+              <div class="sym">\(\dot{\theta}\)</div>
+              <div class="def"><b>Angular velocity</b> &mdash; the first time derivative of the angle deviation, representing how fast the robot is falling or recovering. This is used much like the derivative function in PID, ensuring the robot doesn&rsquo;t overshoot: if it has a large tilt angle but is already rotating back, it knows it is recovering and will not overshoot with excessive motor power.</div>
+            </div>
+          </div>
+
+          <h3><span class="h3-mark">&rsaquo;</span> Eigenvalues: <span style="font-family:var(--font-display);">how the robot knows if it is stable</span></h3>
+          <p>In terms of how the robot knows if it is stabilised or falling, it uses <strong>eigenvalues</strong> &mdash; a scalar value, <span class="eq-chip">\(\lambda\)</span>. It is used to see if a robot is stabilised due to this equation:</p>
+          <div class="eq center">\[ \dot{x} = \lambda x \]</div>
+          <p>This is important because the rate of change of \(x\) with respect to time equals \(\lambda x\), which says that the rate at which \(x\) changes is proportional to \(x\). This is an exponential function and can be represented as:</p>
+          <div class="eq center">\[ x(t) = x(0)\,e^{\lambda t} \]</div>
+          <p>This shows that if \(\lambda &gt; 0\) the robot will be unstable, as \(e^{\lambda t}\) will increase exponentially as time passes. If \(\lambda = 0\) or \(\lambda &lt; 0\), it will be stable or stabilising respectively, as it would be decreasing to 0. The matrix \(A\) will have 4 distinct eigenvectors \((v_1,v_2,v_3,v_4)\) and also 4 distinct eigenvalues \((\lambda_1,\lambda_2,\lambda_3,\lambda_4)\). And to show the robot&rsquo;s stability, we can sum each mode:</p>
+          <div class="eq center">\[ x(t) = C_{1}e^{\lambda_{1}t}v_{1} + C_{2}e^{\lambda_{2}t}v_{2} + C_{3}e^{\lambda_{3}t}v_{3} + C_{4}e^{\lambda_{4}t}v_{4} \]</div>
+          <p>where \(C\) is the coefficient of the term when \(t = 0\).</p>
+
+          <figure class="figbox" data-reveal>
+            <div class="fig-head"><span>Fig.03 &middot; the sign of &lambda; decides everything</span><span class="fig-id">e^&lambda;t</span></div>
+            <div class="fig-stage">
+              <svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two exponential curves from the same starting tilt: a red curve with positive lambda growing without bound (unstable) and a green curve with negative lambda decaying back to equilibrium (stable).">
+                <line class="d-stroke" x1="70" y1="186" x2="650" y2="186" stroke-width="1.6" />
+                <polygon class="d-fill-ink" points="650,186 640,181 640,191" />
+                <line class="d-stroke" x1="70" y1="196" x2="70" y2="28" stroke-width="1.6" />
+                <polygon class="d-fill-ink" points="70,28 65,38 75,38" />
+                <text class="d-label-sm" x="624" y="204">time t</text>
+                <text class="d-label-sm" x="44" y="34">x(t)</text>
+                <line class="d-faint" x1="70" y1="150" x2="648" y2="150" stroke-width="1.2" stroke-dasharray="3 6" />
+                <text class="d-label-sm" x="590" y="146">equilibrium</text>
+                <circle class="d-fill-ink" cx="96" cy="120" r="3.4" />
+                <text class="d-label-sm" x="86" y="112">x(0)</text>
+                <path class="pp-trace" style="stroke:var(--pp-bad);fill:none;" d="M96,120 C 200,118 250,96 300,64 S 372,20 408,16" stroke-width="3" />
+                <text class="d-label d-label-accent" x="416" y="22">&lambda; &gt; 0</text>
+                <text class="d-label-sm d-label-accent" x="416" y="36">topples</text>
+                <path class="pp-trace t2" style="stroke:var(--pp-good);fill:none;" d="M96,120 C 220,142 360,149 470,150 S 600,150 636,150" stroke-width="3" />
+                <text class="d-label d-label-good" x="540" y="170">&lambda; &lt; 0 &middot; settles</text>
+              </svg>
+            </div>
+          </figure>
+          <p class="figcap"><b>Fig.03</b> &mdash; both start from the same small tilt. A stable controller forces every eigenvalue into the &ldquo;settles&rdquo; regime.</p>
+
+          <p>Putting everything together: <span class="eq-chip">\(\dot{X} = AX + Bu\)</span>.</p>
+          <div class="eq center"><span class="eq-num">&lowast;</span>\[ \dot{X} = AX + Bu \]</div>
+          <div class="vardefs" data-reveal>
+            <div class="vardefs-head">Where</div>
+            <div class="vardef"><div class="sym">\(X\)</div><div class="def">is the <b>state vector</b> \((4\times1)\).</div></div>
+            <div class="vardef"><div class="sym">\(u\)</div><div class="def">is the <b>control input</b>, which is just one number, and is the force that the motor pushes at the ground.</div></div>
+            <div class="vardef"><div class="sym">\(A\)</div><div class="def">is the <b>system matrix</b> \((4\times4)\), which captures the robot&rsquo;s own dynamics: what the robot will do naturally by itself.</div></div>
+            <div class="vardef"><div class="sym">\(B\)</div><div class="def">is the <b>input matrix</b> \((4\times1)\), which shows that if the robot is pushed with force \(u\), what states it affects and by how much.</div></div>
+          </div>
+          <div class="note">
+            <span class="note-label">In words</span>
+            <p>So, to put the equation into words: the rate of change&nbsp;=&nbsp;the physics of the robot alone&nbsp;\((AX)\)&nbsp;+&nbsp;what you are commanding the robot to do&nbsp;\((Bu)\).</p>
+          </div>
+        </section>
+
+        <!-- ====================================================
+             06 · THE A & B MATRICES
+             ==================================================== -->
+        <section class="psec" id="matrices" data-reveal data-screen-label="07 A &amp; B">
+          <span class="psec-kicker">&sect;06 &middot; The A matrix &amp; the B vector</span>
+          <h2 class="psec-title"><span class="psec-num">06</span> Deriving A and B</h2>
+
+          <p>The first row of the matrix \(A\) takes out the robot&rsquo;s rate of change of position \((\dot{x})\) from the state vector. As the first term in the \(\dot{X}\) vector in the equation \(\dot{X} = AX + Bu\) is \(\dot{x}\), we simply take \(\dot{x}\) from the state vector \(X\):</p>
+          <div class="eq center">\[ \text{row 1 of } A = \begin{bmatrix} 0 &amp; 1 &amp; 0 &amp; 0 \end{bmatrix} \;\Rightarrow\; \dot{x} = 0\!\cdot\! x + 1\!\cdot\!\dot{x} + 0\!\cdot\!\theta + 0\!\cdot\!\dot{\theta} \]</div>
+          <p>Row 3 will just be \(\begin{bmatrix} 0 &amp; 0 &amp; 0 &amp; 1 \end{bmatrix}\), as we need \(\dot{\theta}\) from the state vector, which is just its 4th variable, since the 3rd variable in the \(\dot{X}\) vector is \(\dot{\theta}\).</p>
+
+          <p>For row 2, we are looking to obtain \(\ddot{x}\) in terms of \(\theta\) (the angle deviation from the perfect vertical position). And for row 4, we are looking to get \(\ddot{\theta}\) from \(\theta\). In order to find these, we begin applying Newton&rsquo;s laws: one for the horizontal motion of the whole thing, one for the rotation of the body about its centre of mass. These are all the new terms in the following equations:</p>
+
+          <div class="vardefs" data-reveal>
+            <div class="vardefs-head">New terms</div>
+            <div class="vardef"><div class="sym">\(M\)</div><div class="def">The total mass of the wheels and base.</div></div>
+            <div class="vardef"><div class="sym">\(m\)</div><div class="def">The body mass.</div></div>
+            <div class="vardef"><div class="sym">\(l\)</div><div class="def">The distance from the wheel axle up to the body&rsquo;s centre of mass.</div></div>
+            <div class="vardef"><div class="sym">\(I\)</div><div class="def">The moment of inertia of the body about its own centre of mass.</div></div>
+            <div class="vardef"><div class="sym">\(g\)</div><div class="def">The acceleration due to gravity (equal to 9.81).</div></div>
+            <div class="vardef"><div class="sym">\(F\)</div><div class="def">The horizontal drive force generated at the ground by the wheel motors (interchangeable with the control input \(u\)).</div></div>
+          </div>
+
+          <div class="eq center"><span class="eq-num">1</span>\[ (M+m)\,\ddot{x} - m\,l\,\ddot{\theta}\cos\theta + m\,l\,\dot{\theta}^{2}\sin\theta = F \]</div>
+          <div class="eq center"><span class="eq-num">2</span>\[ (I+m\,l^{2})\,\ddot{\theta} - m\,l\,\ddot{x}\cos\theta - m\,g\,l\sin\theta = 0 \]</div>
+          <p>Equation (1) is total horizontal force = mass &times; acceleration for the system. Equation (2) is the rotational law for the body. The crucial term is \(-m\,g\,l\sin\theta\), which is gravity and is what topples the robot.</p>
+
+          <p>However, the problem with these equations is that they are not linear due to the \(\sin\theta\), \(\cos\theta\) and \(\dot{\theta}^{2}\) terms, and eigenvalues and \(AX + Bu\) are built for a linear system. To make the equations linear, we can use the <strong>small-angle approximation</strong>, since a balancing robot only needs to deal with small values of \(\theta\), and a good control system will keep \(\theta\) within a few degrees:</p>
+          <div class="eq center">\[ \sin\theta \approx \theta, \qquad \cos\theta = 1, \qquad \dot{\theta}^{2} \approx 0 \]</div>
+
+          <figure class="figbox" data-reveal>
+            <div class="fig-head"><span>Fig.04 &middot; small-angle approximation</span><span class="fig-id">sin&theta; &asymp; &theta;</span></div>
+            <div class="fig-stage">
+              <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The line y equals theta and the curve y equals sine theta lie on top of each other for small angles near the origin, and diverge as theta grows.">
+                <rect x="92" y="40" width="78" height="120" fill="var(--signal-soft)" />
+                <line class="d-stroke" x1="92" y1="160" x2="648" y2="160" stroke-width="1.6" />
+                <polygon class="d-fill-ink" points="648,160 638,155 638,165" />
+                <line class="d-stroke" x1="92" y1="172" x2="92" y2="34" stroke-width="1.6" />
+                <polygon class="d-fill-ink" points="92,34 87,44 97,44" />
+                <text class="d-label-sm" x="652" y="176">&theta;</text>
+                <path class="d-accent pp-trace" d="M92,160 L440,40" stroke-width="2.6" fill="none" />
+                <text class="d-label d-label-accent" x="446" y="44">y = &theta;</text>
+                <path class="d-pole pp-trace t2" d="M92,160 C 210,92 300,66 372,66 C 470,66 540,96 612,140" stroke-width="2.6" fill="none" />
+                <text class="d-label" x="612" y="120" style="fill:var(--ink-2);">y = sin&theta;</text>
+                <text class="d-label-sm" x="100" y="56">&theta; &asymp; sin&theta;</text>
+                <text class="d-label-sm" x="104" y="184">small-angle</text>
+              </svg>
+            </div>
+          </figure>
+          <p class="figcap"><b>Fig.04</b> &mdash; inside the shaded band the straight line and the sine curve are indistinguishable, so the linear model is faithful while the robot stays near upright.</p>
+
+          <p>Now, by substituting the small-angle approximations into equations (1) and (2), we get these 2 linear equations:</p>
+          <div class="eq center">\[ (M+m)\,\ddot{x} - m\,l\,\ddot{\theta} = F \]</div>
+          <div class="eq center">\[ (I+m\,l^{2})\,\ddot{\theta} - m\,l\,\ddot{x} = m\,g\,l\,\theta \]</div>
+
+          <p>Now we need to remove the two unknowns with one equation &mdash; that is, \(\ddot{x} = \,\ldots\) without having another \(\ddot{x}\) or \(\ddot{\theta}\) inside the equation. To do this, we solve it simultaneously and get a common denominator \(p\), and get the following equations:</p>
+          <div class="eq center"><span class="eq-num">4</span>\[ p \equiv I(M+m) + M\,m\,l^{2} \]</div>
+          <p>And the results are:</p>
+          <div class="eq center"><span class="eq-num">5</span>\[ \ddot{x} = \frac{m^{2}g\,l^{2}}{p}\,\theta + \frac{I+m\,l^{2}}{p}\,F \]</div>
+          <div class="eq center"><span class="eq-num">6</span>\[ \ddot{\theta} = \frac{m\,g\,l(M+m)}{p}\,\theta + \frac{m\,l}{p}\,F \]</div>
+
+          <p>Therefore, for row 2 it will be \(\begin{bmatrix} 0 &amp; 0 &amp; \frac{m^{2}gl^{2}}{p} &amp; 0 \end{bmatrix}\), and for row 4 it will be \(\begin{bmatrix} 0 &amp; 0 &amp; \frac{mgl(M+m)}{p} &amp; 0 \end{bmatrix}\), giving the final matrix:</p>
+
+          <div class="matrix-grid" data-reveal>
+            <div class="matrix-card"><span class="mc-tag">System matrix A</span>
+              \[ A = \begin{bmatrix} 0 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; \dfrac{m^{2}gl^{2}}{p} &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \\ 0 &amp; 0 &amp; \dfrac{mgl(M+m)}{p} &amp; 0 \end{bmatrix} \]
+            </div>
+            <div class="matrix-card"><span class="mc-tag">Input vector B</span>
+              \[ B = \begin{bmatrix} 0 \\[4pt] \dfrac{I+ml^{2}}{p} \\[6pt] 0 \\[4pt] \dfrac{ml}{p} \end{bmatrix} \]
+            </div>
+          </div>
+          <p>For vector \(B\), the first row is 0, as we already get the \(\dot{x}\) value from the \(AX\) part of the equation. Row 3 is also 0, as once again we get \(\dot{\theta}\) from the \(AX\) part in \(\dot{X} = AX + Bu\). And for rows 2 and 4, we can use the values on the right-hand side of equations (5) and (6) (\(F\) can be interchanged with \(u\)).</p>
+
+          <h3><span class="h3-mark">&rsaquo;</span> Showing that the system with matrix A will be unstable</h3>
+          <p>By looking at just the angle and switching the motor off, so therefore \(F = 0\), we get the equation:</p>
+          <div class="eq center">\[ \ddot{\theta} = \frac{mgl(M+m)}{p}\,\theta = \omega^{2}\theta, \qquad \omega^{2} \equiv \frac{mgl(M+m)}{p} &gt; 0 \]</div>
+          <p>Unstable: \(\ddot{\theta} = \omega^{2}\theta\). &nbsp;Stable: \(\ddot{\theta} = -\omega^{2}\theta\). It is unstable because, when the growth-rate coefficient is positive, it leads to exponential growth. So the angle doesn&rsquo;t swing back and forth; it just blows up instantly until the robot hits the floor.</p>
+        </section>
+
+        <!-- ====================================================
+             07 · FEEDBACK CONTROL
+             ==================================================== -->
+        <section class="psec" id="feedback" data-reveal data-screen-label="08 Feedback">
+          <span class="psec-kicker">&sect;07 &middot; Steering &lambda; to be negative</span>
+          <h2 class="psec-title"><span class="psec-num">07</span> Feedback control</h2>
+
+          <p>We know that the control system is naturally unstable, and we now need to make it stable through <strong>feedback</strong>, where it measures the state and feeds back to determine the control input.</p>
+
+          <h3><span class="h3-mark">&rsaquo;</span> Full-state feedback: <span style="font-family:var(--font-mono);font-size:0.8em;">u = &minus;KX</span></h3>
+          <p>One of the best ways to create a simple, powerful feedback rule is to make the control flow through a weighted combination of all the values in the state vector, and is shown as:</p>
+          <div class="eq center">\[ u = -KX, \qquad K = \begin{bmatrix} k_{1} &amp; k_{2} &amp; k_{3} &amp; k_{4} \end{bmatrix} \]</div>
+          <p>In addition, we use a negative \(K\) to counter the robot&rsquo;s movement by pushing it in the opposite direction. The \(k\) values inside the \(K\) vector are referred to as <strong>gains</strong>. Now, by substituting \(u = -KX\) into the original equation, we get:</p>
+          <div class="eq center">\[ \dot{X} = (A - BK)\,X \]</div>
+          <p>So, in order for the robot to be stable, the eigenvalues of \((A - BK)\) need to be negative, using the same logic shown in the \(\dot{X} = AX + Bu\) section, so the control system needs to use the \(BK\) value to steer the eigenvalues to be negative.</p>
+
+          <h3><span class="h3-mark">&rsaquo;</span> Is the robot controllable?</h3>
+          <p>To see if the robot is controllable, we use the <strong>controllability matrix</strong>, which is the following:</p>
+          <div class="eq center">\[ \mathcal{C} = \begin{bmatrix} B &amp; AB &amp; A^{2}B &amp; A^{3}B \end{bmatrix} \]</div>
+          <p>Here, \(B\) is the direction your input pushes immediately, \(AB\) is where the push is a moment later, then \(A^{2}B\) is a moment after that, and so on. Then, using MATLAB, we can calculate the rank, which shows how many dimensions of the state equation can be controlled. So if the rank is equal to 4, the system is controllable, and if it is less than 4, it is not controllable. We will assume our robot is controllable.</p>
+        </section>
+
+        <!-- ====================================================
+             08 · WHY THIS ISN'T THE END
+             ==================================================== -->
+        <section class="psec" id="poleplacement" data-reveal data-screen-label="09 Limits">
+          <span class="psec-kicker">&sect;08 &middot; The catch</span>
+          <h2 class="psec-title"><span class="psec-num">08</span> Why this isn&rsquo;t the end</h2>
+
+          <p>Firstly, an aggressive controller commands forces larger than the motor can output. As soon as the motor reaches its saturation limit, the linear design &mdash; which assumes the motor can output unlimited force &mdash; no longer describes what the LQR system wants.</p>
+
+          <p>In addition to this, the gains can be calculated through <strong>pole placement</strong>, where you first decide what you want your 4 eigenvalues to be (all negative, to ensure the robot is stable) and write them as a polynomial&rsquo;s solutions:</p>
+          <div class="eq center">\[ (\lambda-\lambda_{1})(\lambda-\lambda_{2})(\lambda-\lambda_{3})(\lambda-\lambda_{4}) \]</div>
+          <p>and through this you get a quartic. Then you take the quartic from the equation \(\det(A - BK - \lambda I) = 0\), whose coefficients contain the unknown gains \(k_{1},k_{2},k_{3},k_{4}\), and you set the coefficients to equal each other, creating four different equations with four unknowns. By solving them simultaneously, you can find the \(k\) values.</p>
+          <div class="eq center">\[ \det(A - BK - \lambda I) = 0 \]</div>
+
+          <div class="note warn">
+            <span class="note-label">Problem 1 &middot; the gains are coupled</span>
+            <p>When you set the two quartics to equal each other, you see that multiple \(k_{1},k_{2},k_{3},k_{4}\) values sit in one coefficient, so changing only one of the four gains shifts the other coefficients, which shifts all four eigenvalues at once. Therefore the four gains cannot be treated as 4 independent dials &mdash; there is no single gain that will control a single eigenvalue, and so you cannot tune the controller by changing one gain and watching just one eigenvalue respond.</p>
+          </div>
+          <div class="note warn">
+            <span class="note-label">Problem 2 &middot; it never says <em>where</em> to place them</span>
+            <p>The pole-placement method does not tell you where the four eigenvalues should be placed to make the robot behave well, as many different sets of negative eigenvalues all keep the robot stable. The behaviours you actually care about &mdash; how quickly the angle settles, how far the robot drifts along the floor, and how sensitive it is to sensor noise &mdash; don&rsquo;t correspond neatly to individual eigenvalues either.</p>
+          </div>
+          <p>So designing a good controller this way becomes a process of trial and error: you guess a set of target eigenvalues, solve for the \(k\) values, simulate the result, and adjust. This gives no principled way of knowing whether the gains you finally settle on are the best ones possible, and also makes the process very time-intensive.</p>
+        </section>
+
+        <!-- ====================================================
+             09 · THE LINEAR QUADRATIC REGULATOR (RICCATI)
+             ==================================================== -->
+        <section class="psec" id="lqr-math" data-reveal data-screen-label="10 Riccati">
+          <span class="psec-kicker">&sect;09 &middot; The Linear Quadratic Regulator</span>
+          <h2 class="psec-title"><span class="psec-num">09</span> The Linear Quadratic Regulator</h2>
+          <p>To fix the issues, we need to find another way to compute which stabilising gain \(k_{1},k_{2},k_{3},k_{4}\) is the best out of all the stabilising gains.</p>
+
+          <h3><span class="h3-mark">1</span> Scoring a controller with a cost function</h3>
+          <p>So here we essentially try to compute a value that tells us how good the controller is &mdash; basically saying how good the \(k\) values are &mdash; where the lower the number, the better it is. There are two things that negatively impact the run:</p>
+          <ul class="pp-bullets">
+            <li>The state being away from zero, as we want \(\theta\) and \(x\) to be as close to zero as possible &mdash; we want it to be upright, still, and in place.</li>
+            <li>Using a lot of control effort, because large motor forces drain the robot&rsquo;s battery, can cause overheating, and the motors sometimes hit their physical limit, leading to harsh movements.</li>
+          </ul>
+          <p>In order to create this scoring system, we need to be able to turn a vector into a single number value, and to do this we use the <strong>quadratic form</strong>. Given a vector \(X\) and a square matrix \(Q\), by calculating \(Qx\) and then \(x^{\mathsf{T}}(Qx)\) we get the following, which gives us a single value:</p>
+          <div class="eq center">\[ X^{\mathsf{T}}QX = q_{1}x_{1}^{2} + q_{2}x_{2}^{2} + \cdots + q_{n}x_{n}^{2} \]</div>
+          <p>as a \(1 \times n\) row times an \(n \times n\) matrix times an \(n \times 1\) column gives a \(1 \times 1\) result. Now we can look at the LQR cost function, which is the following:</p>
+          <div class="eq center"><span class="eq-num">J</span>\[ J = \int \left(x^{\mathsf{T}}Qx + u^{\mathsf{T}}Ru\right)dt \]</div>
+          <p>where the \(x^{\mathsf{T}}Qx\) is the state deviation and \(u^{\mathsf{T}}Ru\) is the control effort. Also, integration is used to sum up how bad the controller is over time. If the robot leans and moves for a long time, it will add up the badness from \(t=0\) to the infinite future.</p>
+
+          <h3><span class="h3-mark">2</span> What are Q and R?</h3>
+          <p>We chose the matrices \(Q\) and \(R\), which are the only factors within the LQR control system that we choose, and everything else is done automatically.</p>
+          <ul class="pp-bullets">
+            <li>For \(Q\), each diagonal entry \(q_{1},q_{2},q_{3},q_{4}\) is how much we care about each state being zero. For example, setting \(q_{3}\) as a large number means that you prioritise the tilt angle being zero and hate any tilt.</li>
+            <li>For \(R\), it is how much you care about saving control effort; the higher you set the value of \(R\), the more you are going easier on the robot&rsquo;s motors.</li>
+            <li>Overall, only the ratio matters, as it is the balance between \(Q\) and \(R\) and is what determines how the control system works. A large \((Q/R)\) ratio means the control system will be fast, aggressive and effortful; a small \((Q/R)\) ratio means it will be gentle and slow.</li>
+          </ul>
+
+          <h3><span class="h3-mark">3</span> The answer</h3>
+          <p>Now, by minimising \(J\), we use the following equation to find what the optimal value of \(K\) is:</p>
+          <div class="eq center"><span class="eq-num">K</span>\[ K = R^{-1}B^{\mathsf{T}}P \]</div>
+          <p>where the matrix \(P\) is the (symmetric, positive semi-definite) solution of the Continuous Algebraic Riccati Equation (CARE):</p>
+          <div class="eq center"><span class="eq-num">CARE</span>\[ A^{\mathsf{T}}P + PA - PBR^{-1}B^{\mathsf{T}}P + Q = 0 \]</div>
+          <p>where all of \(A,B,R,Q\) are known, and you use the equation to solve for \(P\). There is a long derivation for this formula, and also a way to solve for \(P\); however, in our case:</p>
+          <div class="codecard" data-reveal>
+            <div class="cc-head"><span class="cc-dot s"></span><span class="cc-dot"></span><span class="cc-dot"></span>&nbsp;&nbsp;solve_care.py</div>
+            <pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">from</span> scipy.linalg <span class="kw">import</span> solve_continuous_are
+
+P = <span class="fn">solve_continuous_are</span>(A, B, Q, R)</code></pre>
+          </div>
+        </section>
+
+        <!-- ====================================================
+             10 · HOW IT WORKS (WORKED EXAMPLE)
+             ==================================================== -->
+        <section class="psec" id="worked" data-reveal data-screen-label="11 Example">
+          <span class="psec-kicker">&sect;10 &middot; How it works</span>
+          <h2 class="psec-title"><span class="psec-num">10</span> How it works</h2>
+          <p>Overall, to show how it works, I will lay out the processes the robot goes through for the LQR system.</p>
+
+          <div class="steps">
+            <div class="step">
+              <h4>Choose the physical parameters</h4>
+              <p>The physical parameters are chosen, for example:</p>
+              <div class="ptable-wrap">
+                <table class="ptable">
+                  <thead><tr><th>Quantity</th><th>Symbol</th><th>Value</th></tr></thead>
+                  <tbody>
+                    <tr><td>Wheel &amp; base mass</td><td class="sym">\(M\)</td><td>\(0.5\ \text{kg}\)</td></tr>
+                    <tr><td>Body mass</td><td class="sym">\(m\)</td><td>\(0.5\ \text{kg}\)</td></tr>
+                    <tr><td>Height of body centre of mass above the axle</td><td class="sym">\(l\)</td><td>\(0.15\ \text{m}\)</td></tr>
+                    <tr><td>Body moment of inertia \(=\tfrac{1}{3}ml^{2}\)</td><td class="sym">\(I\)</td><td>\(0.00375\ \mathrm{kg\,m^2}\)</td></tr>
+                    <tr><td>Gravity</td><td class="sym">\(g\)</td><td>\(9.81\ \mathrm{m/s^2}\)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>And we also compute the value \(p\):</p>
+              <div class="eq center">\[ p = I(M+m) + Mml^{2} = 0.00375(1.0) + (0.5)(0.5)(0.15)^{2} = 0.009375 \]</div>
+            </div>
+
+            <div class="step">
+              <h4>Compute the A and B matrices</h4>
+              <p>Here we compute the A and B matrices:</p>
+              <div class="eq center">\[ \frac{m^{2}gl^{2}}{p}=5.886, \quad \frac{mgl(M+m)}{p}=78.48, \quad \frac{I+ml^{2}}{p}=1.6, \quad \frac{ml}{p}=8.0 \]</div>
+              <p>So with these calculations, the A and B matrix is:</p>
+              <div class="matrix-grid" data-reveal>
+                <div class="matrix-card"><span class="mc-tag">A</span>
+                  \[ A = \begin{bmatrix} 0 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 5.886 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \\ 0 &amp; 0 &amp; 78.48 &amp; 0 \end{bmatrix} \]
+                </div>
+                <div class="matrix-card"><span class="mc-tag">B</span>
+                  \[ B = \begin{bmatrix} 0 \\ 1.6 \\ 0 \\ 8.0 \end{bmatrix} \]
+                </div>
+              </div>
+            </div>
+
+            <div class="step">
+              <h4>Check if it is unstable and controllable</h4>
+              <p>In this step, we check if the robot is unstable and controllable, and to do this, we calculate the eigenvalues and use the controllability matrix. First, to check whether the robot is unstable, we compute the eigenvalues of \(A\) and ignore \(B\), since we are only looking at the robot&rsquo;s state with no input. In order to find the eigenvalues of \(A\), we do \(\det(A - \lambda I) = 0\), which returns \(\lambda\) as:</p>
+              <div class="eq center">\[ \lambda = 0, \quad +8.86, \quad -8.86 \]</div>
+              <p>The positive real part of the eigenvalue \(+8.86\) shows that the robot is naturally unstable. Then we use the controllability matrix \(\mathcal{C} = \begin{bmatrix} B &amp; AB &amp; A^{2}B &amp; A^{3}B \end{bmatrix}\) and compute its rank, which returns a rank of 4, showing that the robot is able to steer all 4 states, so an LQR solution is guaranteed to exist.</p>
+            </div>
+
+            <div class="step">
+              <h4>Choose Q and R</h4>
+              <p>Here we choose the values placed in the matrices \(Q\) and \(R\). For \(Q\), we care most about the tilt angle, as the robot falling is the main failure that we want to avoid, and we don&rsquo;t care as much about the position and the rates. For \(R\), we set it to reflect that we are willing to expend a normal amount of motor effort.</p>
+              <div class="matrix-grid" data-reveal>
+                <div class="matrix-card"><span class="mc-tag">Q</span>
+                  \[ Q = \begin{bmatrix} 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 10 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \end{bmatrix} \]
+                </div>
+                <div class="matrix-card"><span class="mc-tag">R</span>
+                  \[ R = 1 \]
+                </div>
+              </div>
+              <p>So, essentially, we are saying we care 10 times more about the tilt angle than about all the other variables in the state vector.</p>
+            </div>
+
+            <div class="step">
+              <h4>Compute the optimal K values</h4>
+              <p>Now compute the optimal \(K\) values. First, we use the Riccati solver to compute the matrix \(P\), and then \(K = R^{-1}B^{\mathsf{T}}P\) to return the \(K\) value, and in our case it will equal:</p>
+              <div class="eq center">\[ K = \begin{bmatrix} -1.00 &amp; -2.00 &amp; 24.60 &amp; 3.07 \end{bmatrix} \]</div>
+              <p>So, therefore, the motor command for each instant is:</p>
+              <div class="eq center">\[ u = -Kx = -\big(-1.00\,x - 2.00\,\dot{x} + 24.60\,\theta + 3.07\,\dot{\theta}\big) \]</div>
+              <p>And by looking at the values, we can see that \(k_{3}\) is by far the largest, as expected, indicating that a small deviation in the robot&rsquo;s tilt angle will produce the largest corrective force. \(k_{4}\) reacts to how quickly the robot is tipping, catching a fall early rather than waiting for the tilt angle to increase; without it, the robot would overshoot and oscillate. Finally, \(k_{1}\) and \(k_{2}\) are smaller and gently keep the robot from drifting away while it balances.</p>
+            </div>
+
+            <div class="step">
+              <h4>Check whether it is actually stable</h4>
+              <p>This is the final step, where we check whether the robot is actually stable by computing the eigenvalues of \(A - BK\), which return:</p>
+              <div class="eq center">\[ \lambda = -13.63, \quad -6.07, \quad -0.84 + 0.50\,i, \quad -0.84 - 0.50\,i \]</div>
+              <p>Since all the real parts of the eigenvalues are negative, the system is stable. This is because the real part of the eigenvalue represents the decay of the \(e^{\lambda t}\) term, and the imaginary part represents the oscillations. For example, looking at the eigenvalue \(-0.84 \pm 0.50\,i\): the real part is negative, so it will decay, but its magnitude is small, so it will decay slowly at around \(1/0.84 \approx 1.2\ \text{s}\); and the imaginary part means it oscillates at \(0.5\ \text{rad/s}\). Crucially, the decay time is much shorter than one oscillation period, so the motion dies away before the robot can complete one full swing, showing that it is well-damped: you will get roughly a single small overshoot which is then gone, rather than a sustained wobble.</p>
+              <p>Overall, putting the four eigenvalues together, the two fast eigenvalues \((-13.6\) and \(-6.1)\) snap the angle back quickly and handle most of the initial error, while the slow complex pair \((-0.84 \pm 0.50\,i)\) is what is left over and produces a gentle overshoot, followed by the slow final approach to rest.</p>
+            </div>
+          </div>
+
+          <figure class="figbox" data-reveal>
+            <div class="fig-head"><span>Fig.05 &middot; feedback drags the poles into the stable half-plane</span><span class="fig-id">s-PLANE</span></div>
+            <div class="fig-stage">
+              <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Complex plane showing the unstable open-loop pole at plus 8.86 in the right half-plane, and the four closed-loop eigenvalues at minus 13.63, minus 6.07, and minus 0.84 plus or minus 0.5 i, all in the stable left half-plane.">
+                <rect x="340" y="36" width="308" height="228" fill="var(--signal-soft)" />
+                <rect x="44" y="36" width="296" height="228" fill="color-mix(in oklab, var(--pp-good, #1f9d63) 9%, transparent)" />
+                <line class="d-stroke" x1="44" y1="150" x2="648" y2="150" stroke-width="1.6" />
+                <polygon class="d-fill-ink" points="648,150 638,145 638,155" />
+                <line class="d-stroke" x1="340" y1="272" x2="340" y2="32" stroke-width="1.6" />
+                <polygon class="d-fill-ink" points="340,32 335,42 345,42" />
+                <text class="d-label-sm" x="652" y="146">Re</text>
+                <text class="d-label-sm" x="348" y="40">Im</text>
+                <text class="d-label-sm d-label-good" x="150" y="56">STABLE &middot; Re &lt; 0</text>
+                <text class="d-label-sm d-label-accent" x="430" y="56">UNSTABLE &middot; Re &gt; 0</text>
+                <path class="d-dim" d="M462,126 C 404,96 300,96 250,124" fill="none" stroke-width="1.6" stroke-dasharray="5 5" />
+                <polygon class="d-fill-ink" points="250,124 261,121 256,132" opacity="0.7" />
+                <text class="d-label-sm" x="322" y="92">feedback &minus;BK</text>
+                <g class="pp-pulse">
+                  <line x1="467" y1="143" x2="479" y2="155" stroke="var(--pp-bad)" stroke-width="3" />
+                  <line x1="479" y1="143" x2="467" y2="155" stroke="var(--pp-bad)" stroke-width="3" />
+                </g>
+                <text class="d-label-sm d-label-accent" x="486" y="150">+8.86</text>
+                <text class="d-label-sm" x="486" y="164" style="fill:var(--ink-3);">open loop</text>
+                <circle class="pp-pole-pt d-fill-good" cx="136" cy="150" r="5.5" />
+                <text class="pp-pole-pt d-label-sm d-label-good" x="112" y="140">&minus;13.63</text>
+                <circle class="pp-pole-pt p2 d-fill-good" cx="249" cy="150" r="5.5" />
+                <text class="pp-pole-pt p2 d-label-sm d-label-good" x="226" y="140">&minus;6.07</text>
+                <circle class="pp-pole-pt p3 d-fill-good" cx="326" cy="138" r="5.5" />
+                <circle class="pp-pole-pt p4 d-fill-good" cx="326" cy="162" r="5.5" />
+                <text class="pp-pole-pt p4 d-label-sm d-label-good" x="298" y="192">&minus;0.84 &plusmn; 0.5i</text>
+              </svg>
+            </div>
+          </figure>
+          <p class="figcap"><b>Fig.05</b> &mdash; the lone unstable pole at \(+8.86\) is the problem; choosing \(K\) relocates the closed-loop eigenvalues to \(-13.63,\,-6.07,\,-0.84\pm0.50i\), all safely in the stable half-plane.</p>
+
+          <div class="keyresults" data-reveal>
+            <div class="kr"><div class="kr-k">Optimal gains</div><div class="kr-v">K</div><div class="kr-sub">[&minus;1, &minus;2, 24.6, 3.07]</div></div>
+            <div class="kr"><div class="kr-k">Dominant gain</div><div class="kr-v">24.6<span class="u"> k&#8323;</span></div><div class="kr-sub">tilt-angle term</div></div>
+            <div class="kr"><div class="kr-k">Closed-loop &lambda;</div><div class="kr-v">&minus;13.6<span class="u"> max</span></div><div class="kr-sub">all Re(&lambda;) &lt; 0</div></div>
+            <div class="kr"><div class="kr-k">Result</div><div class="kr-v" style="color:var(--pp-good);">Stable</div><div class="kr-sub">well-damped</div></div>
+          </div>
+        </section>
+
+        <!-- ====================================================
+             11 · PUTTING IT INTO A ROBOT
+             ==================================================== -->
+        <section class="psec" id="robot" data-reveal data-screen-label="12 Loop">
+          <span class="psec-kicker">&sect;11 &middot; From maths to motion</span>
+          <h2 class="psec-title"><span class="psec-num">11</span> Putting it into a robot</h2>
+          <p>While the maths will compute \(K\) for us, the robot still needs to measure its 4 states many times per second, compute \(u = -Kx\), and convert it into a motor command. A balancing robot runs the same short loop, typically <strong>100&ndash;500 times every second</strong>, forever:</p>
+          <div class="eq center">\[ \text{sense} \;\rightarrow\; \text{estimate the state } x \;\rightarrow\; \text{compute } u=-Kx \;\rightarrow\; \text{drive motors} \;\rightarrow\; \text{repeat} \]</div>
+
+          <figure class="figbox" data-reveal>
+            <div class="fig-head"><span>Fig.06 &middot; the real-time control loop</span><span class="fig-id">100&ndash;500 Hz</span></div>
+            <div class="fig-stage">
+              <svg viewBox="0 0 680 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A four-stage control loop running clockwise: sense, estimate the state with the Kalman filter, compute u equals minus K x, drive the motors via PWM, then repeat.">
+                <rect class="d-stroke d-fill-paper" x="56" y="36" width="180" height="62" rx="6" stroke-width="2" />
+                <text class="d-label d-label-accent" x="74" y="62">1 &middot; Sense</text>
+                <text class="d-label-sm" x="74" y="80">IMU + encoders</text>
+
+                <rect class="d-stroke d-fill-paper" x="444" y="36" width="184" height="62" rx="6" stroke-width="2" />
+                <text class="d-label d-label-accent" x="462" y="62">2 &middot; Estimate state</text>
+                <text class="d-label-sm" x="462" y="80">Kalman filter</text>
+
+                <rect class="d-stroke d-fill-paper" x="444" y="152" width="184" height="62" rx="6" stroke-width="2" />
+                <text class="d-label d-label-accent" x="462" y="178">3 &middot; Compute u</text>
+                <text class="d-label-sm" x="462" y="196">u = &minus;Kx</text>
+
+                <rect class="d-stroke d-fill-paper" x="56" y="152" width="180" height="62" rx="6" stroke-width="2" />
+                <text class="d-label d-label-accent" x="74" y="178">4 &middot; Drive motors</text>
+                <text class="d-label-sm" x="74" y="196">force &rarr; PWM</text>
+
+                <line class="d-stroke pp-flow" x1="236" y1="67" x2="444" y2="67" stroke-width="2" />
+                <polygon class="d-fill-ink" points="444,67 434,62 434,72" />
+                <line class="d-stroke pp-flow" x1="536" y1="98" x2="536" y2="152" stroke-width="2" />
+                <polygon class="d-fill-ink" points="536,152 531,142 541,142" />
+                <line class="d-stroke pp-flow" x1="444" y1="183" x2="236" y2="183" stroke-width="2" />
+                <polygon class="d-fill-ink" points="236,183 246,178 246,188" />
+                <line class="d-stroke pp-flow" x1="146" y1="152" x2="146" y2="98" stroke-width="2" />
+                <polygon class="d-fill-ink" points="146,98 141,108 151,108" />
+
+                <text class="d-label" x="300" y="118" style="fill:var(--ink);font-weight:600;">&#8635; loop</text>
+                <text class="d-label-sm d-label-accent" x="296" y="136">100&ndash;500&times; / sec</text>
+              </svg>
+            </div>
+          </figure>
+          <p class="figcap"><b>Fig.06</b> &mdash; and the \(u\) value is the force. Then we convert the force into PWM, allowing us to control the motors and stabilise it.</p>
+
+          <p>That tight loop is what turns a page of linear algebra into a robot that refuses to fall over &mdash; which is the project this paper was written alongside.</p>
+
+          <a class="crosslink" href="self-balancing-robot.html" data-reveal>
+            <span class="cl-icon" aria-hidden="true">
+              <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                <line x1="14" y1="48" x2="46" y2="48" stroke="currentColor" stroke-width="2" />
+                <circle cx="22" cy="44" r="5" fill="none" stroke="currentColor" stroke-width="2" />
+                <circle cx="38" cy="44" r="5" fill="none" stroke="currentColor" stroke-width="2" />
+                <rect x="22" y="20" width="16" height="22" rx="6" fill="none" stroke="currentColor" stroke-width="2" />
+                <line x1="30" y1="20" x2="30" y2="10" stroke="currentColor" stroke-width="2" />
+                <circle cx="30" cy="9" r="2.4" fill="currentColor" />
+              </svg>
+            </span>
+            <span class="cl-body">
+              <span class="cl-k">See it in hardware</span>
+              <span class="cl-t">Self-Balancing Desk Robot</span>
+            </span>
+            <span class="cl-status"><span class="cl-dot"></span>Coming soon</span>
+            <span class="cl-arrow">&rarr;</span>
+          </a>
+        </section>
+
+      </article>
+    </div>
+
+    <div class="next-proj">
+      <div class="next-side">
+        <span class="label">NEXT PROJECT</span>
+        <a class="next-link" href="self-balancing-robot.html">
+          Self-Balancing Desk Robot
+          <span class="arrow">&rarr;</span>
+        </a>
+      </div>
+      <a href="../index.html#work" class="mono" style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-3);">&larr; back to index</a>
+    </div>
+
+    <footer class="footer">
+      <div>&copy; <span data-year>2026</span> &middot; Giorgi Suramlishvili &middot; Bristol, UK</div>
+      <div>P-05 &middot; INVERTED-PENDULUM &middot; REV 1.0</div>
+    </footer>
+  </main>
+
+  <div class="hud" role="status" aria-label="System status">
+    <div class="cell"><span class="live"></span><span class="k">SYS</span><span class="v">ONLINE</span></div>
+    <div class="cell desktop-only"><span class="k">SECTION</span><span class="v" data-hud-section>&mdash;</span></div>
+    <div class="cell desktop-only"><span class="k">SCROLL</span><span class="v" data-hud-pct>000%</span></div>
+    <div class="right">
+      <div class="cell desktop-only"><span class="k">BUILD</span><span class="v">PORTFOLIO / 2026</span></div>
+      <div class="cell"><span class="k">LOCAL</span><span class="v" data-hud-time>&mdash;</span></div>
+    </div>
+  </div>
+
+  <aside class="tweaks">
+    <div class="tweaks-head">
+      <span>// TWEAKS</span>
+      <button data-tweak-close aria-label="Close">&times;</button>
+    </div>
+    <div class="tweaks-body">
+      <div class="tweak-group">
+        <span class="k">Theme</span>
+        <div class="seg" data-tweak-theme>
+          <button data-val="light" class="active">Light</button>
+          <button data-val="dark">Dark</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HELP OVERLAY -->
+  <div class="help-overlay" role="dialog" aria-hidden="true">
+    <div class="help-card">
+      <div class="help-head">
+        <span>// SHORTCUTS &middot; EASTER EGGS</span>
+        <button class="close" data-help-close aria-label="Close">&times;</button>
+      </div>
+      <div class="help-body">
+        <h3>Shortcuts &amp; easter eggs.</h3>
+        <p>A few hidden things scattered around the site &mdash; use these to find them.</p>
+        <div class="help-grid">
+          <div class="kv"><span class="k">Toggle theme</span><kbd>T</kbd></div>
+          <div class="kv"><span class="k">Toggle grid</span><kbd>G</kbd> <span style="font-size:10px;color:var(--ink-3);">(off by default)</span></div>
+          <div class="kv"><span class="k">Show this overlay</span><kbd>?</kbd></div>
+          <div class="kv"><span class="k">Close overlay</span><kbd>Esc</kbd></div>
+          <div class="kv"><span class="k">Blueprint mode</span><span><kbd>&uarr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&darr;</kbd><kbd>&larr;</kbd><kbd>&rarr;</kbd><kbd>&larr;</kbd><kbd>&rarr;</kbd><kbd>B</kbd><kbd>A</kbd></span></div>
+          <div class="kv"><span class="k">Robot says hi</span><span>type <kbd>robot</kbd></span></div>
+          <div class="kv"><span class="k">Matrix rain</span><span>type <kbd>matrix</kbd></span></div>
+          <div class="kv"><span class="k">A friendly hello</span><span>type <kbd>hello</kbd></span></div>
+          <div class="kv"><span class="k">Freeze coords</span><span>click X/Y readout</span></div>
+          <div class="kv"><span class="k">Spinning logo</span><span>click the orange dot</span></div>
+          <div class="kv selectability-row">
+            <span class="k">Enable text selection</span>
+            <label class="switch-toggle" aria-label="Toggle text selectability">
+              <input type="checkbox" id="textSelectToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="help-foot">// stay curious</div>
+    </div>
+  </div>
+
+  <script>const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{"theme":"light"}/*EDITMODE-END*/;</script>
+  <script src="../site.js?v=10"></script>
+
+  <!-- KaTeX -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+  <script>
+    function ppRenderMath() {
+      if (!window.renderMathInElement) return;
+      renderMathInElement(document.body, {
+        delimiters: [
+          { left: "$$", right: "$$", display: true },
+          { left: "\\[", right: "\\]", display: true },
+          { left: "\\(", right: "\\)", display: false }
+        ],
+        throwOnError: false,
+        strict: false
+      });
+    }
+    window.addEventListener("DOMContentLoaded", function () {
+      let tries = 0;
+      (function wait() {
+        if (window.renderMathInElement) { ppRenderMath(); }
+        else if (tries++ < 80) { setTimeout(wait, 50); }
+      })();
+
+      // mobile TOC toggle
+      var toc = document.getElementById("toc");
+      var tbtn = document.querySelector("[data-toc-toggle]");
+      if (tbtn && toc) {
+        tbtn.addEventListener("click", function () {
+          var open = toc.classList.toggle("open");
+          tbtn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+        toc.querySelectorAll(".toc-link").forEach(function (a) {
+          a.addEventListener("click", function () {
+            if (window.matchMedia("(max-width: 940px)").matches) {
+              toc.classList.remove("open");
+              tbtn.setAttribute("aria-expanded", "false");
+            }
+          });
+        });
+      }
+
+      // TOC scroll-spy
+      var links = Array.prototype.slice.call(document.querySelectorAll(".toc-link"));
+      var map = {};
+      links.forEach(function (l) {
+        var id = l.getAttribute("href").slice(1);
+        var sec = document.getElementById(id);
+        if (sec) map[id] = l;
+      });
+      var spy = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          links.forEach(function (l) { l.classList.remove("active"); });
+          var l = map[en.target.id];
+          if (l) l.classList.add("active");
+        });
+      }, { rootMargin: "-22% 0px -68% 0px", threshold: 0 });
+      Object.keys(map).forEach(function (id) { spy.observe(document.getElementById(id)); });
+
+      // reveal figures (fires draw-in animations)
+      var figs = Array.prototype.slice.call(document.querySelectorAll(".figbox"));
+      var figIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { en.target.classList.add("in"); figIo.unobserve(en.target); }
+        });
+      }, { threshold: 0.2 });
+      figs.forEach(function (f) { figIo.observe(f); });
+    });
+  </script>
+</body>
+</html>

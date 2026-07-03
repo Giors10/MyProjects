@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Page not found &mdash; Giorgi Suramlishvili." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://giorgi.uk/" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="theme-color" content="#f6f4ed" />
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem('gs-theme');
+        if (theme === 'dark' || theme === 'light') {
+          document.documentElement.setAttribute('data-theme', theme);
+          document.documentElement.style.colorScheme = theme;
+        }
+      } catch (_) {}
+    })();
+  </script>
+  <title>404 &middot; Page not found &middot; Giorgi Suramlishvili</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=10" />
+  <style>
+    .nf-wrap {
+      min-height: calc(100vh - var(--hud-h) - 80px);
+      display: grid;
+      place-items: center;
+      padding: 80px var(--gutter);
+      position: relative;
+    }
+    .nf-card {
+      max-width: 640px;
+      width: 100%;
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      background: var(--paper-2);
+      padding: 56px clamp(24px, 5vw, 64px);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    }
+    .nf-stripe {
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 6px;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        var(--signal) 0 12px,
+        transparent 12px 24px
+      );
+      background-size: 34px 100%;
+      opacity: 0.85;
+      animation: nfStripe 12s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes nfStripe { from { background-position: 0 0; } to { background-position: 340px 0; } }
+    .nf-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--signal);
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 500;
+    }
+    .nf-tag::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: var(--signal);
+    }
+    .nf-code {
+      font-family: var(--font-display);
+      font-size: clamp(72px, 16vw, 168px);
+      letter-spacing: -0.05em;
+      line-height: 0.9;
+      margin: 20px 0 8px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .nf-title {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3vw, 32px);
+      letter-spacing: -0.02em;
+      margin: 0 0 16px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .nf-lede {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--ink-2);
+      margin: 0 0 32px;
+      max-width: 52ch;
+    }
+    .nf-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 480px) {
+      .nf-card { padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body class="no-grid">
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-mark" href="index.html">
+        <span class="mark-dot"></span>
+        Giorgi&nbsp;Suramlishvili
+      </a>
+      <div class="nav-links">
+        <div class="nav-item has-dropdown">
+          <a href="index.html#work" aria-haspopup="true" aria-expanded="false">Work <span class="nav-caret" aria-hidden="true">&#9662;</span></a>
+          <div class="nav-dropdown" role="menu" aria-label="Projects">
+            <a href="projects/light-switch.html" role="menuitem">Smart Light Switch</a>
+            <a href="projects/blinds-control.html" role="menuitem">Smart Blinds Controller</a>
+            <a href="projects/zaylo-remote.html" role="menuitem">Zaylo Remote App</a>
+            <a href="projects/self-balancing-robot.html" role="menuitem">Self-Balancing Robot</a>
+          </div>
+        </div>
+        <a href="index.html#about">About</a>
+        <a href="index.html#track">Experience</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <span data-theme-label>DARK</span>
+      </button>
+      <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main class="nf-wrap">
+    <article class="nf-card">
+      <div class="nf-stripe" aria-hidden="true"></div>
+      <span class="nf-tag">SIGNAL LOST &middot; ROUTE NOT FOUND</span>
+      <div class="nf-code">404</div>
+      <h1 class="nf-title">This page doesn&rsquo;t exist (yet).</h1>
+      <p class="nf-lede">
+        The URL you followed doesn&rsquo;t match anything on this site. It might have been moved, renamed, or it&rsquo;s a project page still under construction. Head back to the index and have a look around.
+      </p>
+      <div class="nf-actions">
+        <a href="index.html" class="btn">
+          <span>Back to index</span>
+          <span class="arrow">&rarr;</span>
+        </a>
+        <a href="index.html#work" class="btn ghost">
+          <span>See the work</span>
+          <span class="arrow">&rarr;</span>
+        </a>
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer" style="max-width:1280px;margin:0 auto;padding:36px 40px 56px;">
+    <div>&copy; <span data-year>2026</span> &middot; Giorgi Suramlishvili &middot; Bristol, UK</div>
+    <div>404 &middot; route not found</div>
+  </footer>
+
+  <script>
+    // Minimal shared-shell behaviour without pulling the whole site bundle.
+    (function () {
+      var root = document.documentElement;
+      var colors = { light: '#f6f4ed', dark: '#0d0c0a' };
+      var label = document.querySelector('[data-theme-label]');
+      var btn = document.querySelector('.theme-toggle');
+      var meta = document.querySelector('meta[name="theme-color"]:not([media])');
+      var animT;
+      var themeValue = normalizeTheme(root.getAttribute('data-theme'));
+      var pendingTheme = themeValue;
+      var activeThemeTransition = null;
+      function normalizeTheme(theme) {
+        return theme === 'dark' ? 'dark' : 'light';
+      }
+      function readTheme() {
+        try { return localStorage.getItem('gs-theme'); } catch (_) { return null; }
+      }
+      function writeTheme(theme) {
+        var write = function () {
+          try { localStorage.setItem('gs-theme', theme); } catch (_) {}
+        };
+        if ('requestIdleCallback' in window) window.requestIdleCallback(write, { timeout: 700 });
+        else setTimeout(write, 0);
+      }
+      function syncTheme(theme) {
+        var isDark = theme === 'dark';
+        if (label) label.textContent = isDark ? 'LIGHT' : 'DARK';
+        if (btn) {
+          btn.setAttribute('aria-pressed', String(isDark));
+          btn.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        }
+        if (meta) meta.setAttribute('content', colors[theme]);
+      }
+      function commitTheme(theme, persist) {
+        themeValue = theme;
+        pendingTheme = theme;
+        root.setAttribute('data-theme', theme);
+        root.style.colorScheme = theme;
+        syncTheme(theme);
+        if (persist) writeTheme(theme);
+      }
+      function setTheme(theme, animate, persist) {
+        var next = normalizeTheme(theme);
+        var cur = pendingTheme;
+        if (persist === undefined) persist = true;
+        if (cur === next) {
+          if (normalizeTheme(root.getAttribute('data-theme')) !== next) commitTheme(next, persist);
+          else syncTheme(next);
+          return;
+        }
+        pendingTheme = next;
+        clearTimeout(animT);
+        root.classList.remove('theme-anim');
+        if (activeThemeTransition) {
+          commitTheme(next, persist);
+          return;
+        }
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (animate && !reduceMotion && typeof document.startViewTransition === 'function') {
+          root.classList.add('theme-switching');
+          try {
+            var transition = document.startViewTransition(function () { commitTheme(pendingTheme, persist); });
+            activeThemeTransition = transition;
+            transition.finished.finally(function () {
+              if (activeThemeTransition === transition) activeThemeTransition = null;
+              root.classList.remove('theme-switching');
+            });
+            return;
+          } catch (_) {
+            activeThemeTransition = null;
+            root.classList.remove('theme-switching');
+          }
+        }
+        if (animate && !reduceMotion) {
+          root.classList.add('theme-anim');
+          commitTheme(next, persist);
+          animT = setTimeout(function () { root.classList.remove('theme-anim'); }, 260);
+        } else {
+          root.classList.remove('theme-switching');
+          commitTheme(next, persist);
+        }
+      }
+      setTheme(readTheme() || root.getAttribute('data-theme') || 'light', false, false);
+      if (btn) btn.addEventListener('click', function () {
+        var cur = pendingTheme;
+        setTheme(cur === 'dark' ? 'light' : 'dark', true);
+      });
+      var y = document.querySelector('[data-year]');
+      if (y) y.textContent = new Date().getFullYear();
+      // Mobile slide-down menu with Work accordion
+      var nav = document.querySelector('.nav');
+      var toggle = document.querySelector('.nav-toggle');
+      if (nav && toggle) {
+        var workItem = nav.querySelector('.nav-item.has-dropdown');
+        var workLink = workItem && workItem.querySelector(':scope > a');
+        var closeMenu = function () {
+          nav.classList.remove('menu-open');
+          toggle.setAttribute('aria-expanded', 'false');
+          if (workItem) workItem.classList.remove('open');
+          if (workLink) workLink.setAttribute('aria-expanded', 'false');
+        };
+        toggle.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var open = nav.classList.toggle('menu-open');
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (!open && workItem) workItem.classList.remove('open');
+        });
+        if (workLink) {
+          workLink.addEventListener('click', function (e) {
+            if (!nav.classList.contains('menu-open')) return;
+            e.preventDefault();
+            e.stopPropagation();
+            var open = workItem.classList.toggle('open');
+            workLink.setAttribute('aria-expanded', open ? 'true' : 'false');
+          });
+        }
+        nav.querySelectorAll('.nav-dropdown a, .nav-links > a').forEach(function (a) { a.addEventListener('click', closeMenu); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+        document.addEventListener('click', function (e) { if (nav.classList.contains('menu-open') && !e.target.closest('.nav')) closeMenu(); });
+      }
+    })();
+  </script>
+</body>
+</html>

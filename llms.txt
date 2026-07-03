@@ -1,0 +1,81 @@
+# Giorgi Suramlishvili
+
+Personal engineering portfolio of Giorgi Suramlishvili, an A-Level student in Bristol, UK, specializing in robotics, embedded systems, PCB design, and home automation.
+
+- **Primary Domain**: https://giorgi.uk/
+- **Contact Email**: suramgiorgi10@gmail.com
+- **Primary Skills**: KiCad PCB design, Fusion 360 CAD, C++, Python, LQR Control, Kalman Filter, ESP32-C6 microcontrollers, 3D printing (FDM), Home Automation (MQTT, Web Bluetooth, Firebase).
+- **Academic Predicts**: predicted A* A* A* A predicted grades in A-Levels (Mathematics, Further Mathematics, Physics, Computer Science).
+
+---
+
+## Projects Index
+
+### 1. [Self-Balancing Desk Robot](https://giorgi.uk/projects/self-balancing-robot.html)
+- **Status**: In Progress (WIP / A-Level Computer Science Project)
+- **Timeline**: 2025 — Present
+- **Description**: A two-wheel inverted pendulum desk companion designed to stay upright using LQR control and a Kalman filter for sensor fusion.
+- **Hardware/MCU**: ESP32-C6 (or ESP32-S3), IMU, custom PCB, ultrasonic obstacle sensor, infrared cliff sensors, IR docking system for self-charging.
+- **Key Algorithms**: Linear Quadratic Regulator (LQR) control, Kalman sensor fusion, state-space modelling.
+- **Software Stack**: C++, Web Bluetooth, Firebase integration, offline voice command routing.
+
+### 2. [Zaylo Remote Companion App](https://giorgi.uk/projects/zaylo-remote.html)
+- **Status**: Shipped / Active
+- **Timeline**: 2025
+- **Description**: A custom-built multi-device companion application designed for smart home automation.
+- **Architecture**: Mobile-first Progressive Web App (PWA) with real-time MQTT state-syncing, secure Firebase authentication, and Firestore.
+- **Features**: Shared homes and family member invites, sunrise/sunset-triggered blind schedules, radar presence detection, and BLE credential provisioning for hardware rescue.
+
+### 3. [Smart Blinds Controller](https://giorgi.uk/projects/blinds-control.html)
+- **Status**: Finished / Deployed
+- **Timeline**: 2025
+- **Description**: A smart blind motorization mechanism powered by stepper motors pulling a physical cord loop.
+- **Hardware/MCU**: ESP32-C6 wireless control, custom KiCad PCB designed to minimize wiring, 3D-printed chassis.
+- **Control Interface**: Companion app automation & MQTT schedules.
+
+### 4. [Smart Light Switch Control Device](https://giorgi.uk/projects/light-switch.html)
+- **Status**: Finished / Deployed
+- **Timeline**: 2023
+- **Description**: Hardware attachment mounting over standard wall switches to actuate mechanical switch toggles using servo arms without altering primary high-voltage wiring.
+- **Hardware/MCU**: ESP32, horizontal servo motor, OLED status display, presence detector, capacitive touch panel.
+- **Integrations**: Web app controller, Google Home integration via MQTT.
+
+### 5. [Inverted Pendulum & PID Control — Research Paper](https://giorgi.uk/projects/inverted-pendulum.html)
+- **Status**: Complete (Physics research paper, 2026)
+- **Type**: Written research paper with KaTeX-typeset mathematics and animated SVG diagrams; the theoretical companion to the Self-Balancing Desk Robot.
+- **Description**: A first-principles derivation of PID and Linear Quadratic Regulator (LQR) control for a two-wheeled inverted-pendulum robot.
+- **Topics**: PID control (proportional/integral/derivative terms, integral windup with clamping anti-windup, high-frequency noise and Kalman filtering), state-space modelling, deriving the A and B matrices from Newton's laws and the small-angle approximation, eigenvalue stability, controllability, full-state feedback (u = -KX), the LQR cost function with Q and R weighting, and the Continuous Algebraic Riccati Equation (CARE).
+- **Worked Example**: Computes the A/B/Q/R matrices, optimal gains K = [-1.0, -2.0, 24.6, 3.07], and verifies closed-loop stability (eigenvalues -13.63, -6.07, -0.84 ± 0.50i).
+
+---
+
+## Education & Qualifications
+
+### Sixth Form, Bristol, UK (2024 — Present)
+- **A-Levels predicted grades**:
+  - Mathematics: **A***
+  - Computer Science: **A***
+  - Physics: **A***
+  - Further Mathematics: **A**
+- **GCSE Results** (Graduated 2024):
+  - **Grade 9** (Top): Mathematics, Physics, Computer Science, Chemistry
+  - **Grade 8**: Biology
+  - **Grade 7**: Geography
+  - **Grade 6**: English Language
+
+### Academic Enrichment Programs
+- **University of Cambridge HE+ Programme** (2025): Engineering focus, fluid dynamics workshops, and university lectures.
+- **University of Bristol Access to Bristol (Physics)** (2025): Specialised lectures in quantum mechanics, semiconductors, and particle physics.
+- **University of Bristol Particle Physics Masterclass** (2025): Explored Standard Model and analysed real CERN collision datasets.
+
+---
+
+## Work Experience & Placements
+
+### MBDA Systems (2025 · 1 Week)
+- **Role**: Engineering Work Placement
+- **Key Takeaways**: Analyzed missile electronics components, practiced aerospace-grade design documentation guidelines, pitched future defense systems to executives.
+
+### University of Bristol Mathematics Department (2023 · 1 Week)
+- **Role**: Research Work Placement
+- **Key Takeaways**: Developed mathematical scripts in Python, learned scientific formatting using LaTeX, and organized research directories.

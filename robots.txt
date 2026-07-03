@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://giorgi.uk/sitemap.xml
-
-# Personal portfolio of Giorgi Suramlishvili. Crawl freely.
-# AI Crawlers can find a high-density, text-only profile at: https://giorgi.uk/llms.txt
-

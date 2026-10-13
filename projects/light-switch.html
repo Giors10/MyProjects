@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart light switch · Giorgi Suramlishvili</title>
+  <meta name="description" content="A box that sits over a normal UK light switch and presses it with a servo. ESP32-C6, 24 GHz mmWave presence sensing, five modes, MQTT and Alexa / Google Home. Built by Giorgi Suramlishvili in Bristol." />
+  <meta name="author" content="Giorgi Suramlishvili" />
+  <meta name="keywords" content="Giorgi Suramlishvili, smart light switch, retrofit light switch, servo light switch, ESP32-C6, LD2410C, mmWave presence sensor, MQTT, SinricPro, home automation, Bristol" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="theme-color" content="#fbfbf8" />
+  <meta name="color-scheme" content="light dark" />
+  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <link rel="canonical" href="https://giorgi.uk/projects/light-switch.html" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+  <meta property="og:title" content="Smart light switch · Giorgi Suramlishvili" />
+  <meta property="og:description" content="A box that presses my bedroom light switch with a servo, so I never had to touch the mains wiring. Radar presence sensing, five modes and app control." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://giorgi.uk/projects/light-switch.html" />
+  <meta property="og:image" content="https://giorgi.uk/projects/light-switch-photo.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1343" />
+  <meta property="og:image:height" content="1511" />
+  <meta property="og:image:alt" content="The light switch controller fitted over a UK wall switch" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:site_name" content="Giorgi Suramlishvili" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Smart light switch · Giorgi Suramlishvili" />
+  <meta name="twitter:description" content="A box that presses my bedroom light switch with a servo. Radar presence sensing, five modes and app control." />
+  <meta name="twitter:image" content="https://giorgi.uk/projects/light-switch-photo.jpg" />
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://giorgi.uk/projects/light-switch.html#article",
+      "headline": "The light switch: a servo that presses a normal wall switch",
+      "description": "An over-the-switch controller with 24 GHz mmWave presence detection, touch pads, five modes, MQTT and Alexa / Google Home support, built by Giorgi Suramlishvili.",
+      "url": "https://giorgi.uk/projects/light-switch.html",
+      "image": "https://giorgi.uk/projects/light-switch-photo.jpg",
+      "dateCreated": "2022",
+      "datePublished": "2023",
+      "dateModified": "2026-10-12",
+      "inLanguage": "en-GB",
+      "author": { "@type": "Person", "@id": "https://giorgi.uk/#giorgi", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" },
+      "about": ["ESP32-C6", "mmWave radar", "MQTT", "Home automation", "Embedded firmware"],
+      "isPartOf": { "@type": "WebSite", "@id": "https://giorgi.uk/#website", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Giorgi Suramlishvili", "item": "https://giorgi.uk/" },
+        { "@type": "ListItem", "position": 2, "name": "Projects", "item": "https://giorgi.uk/#work" },
+        { "@type": "ListItem", "position": 3, "name": "Smart light switch", "item": "https://giorgi.uk/projects/light-switch.html" }
+      ]
+    }
+  ]
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="../site.css?v=8" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <nav class="nav" aria-label="Main">
+    <div class="wrap nav-inner">
+      <a class="brand" href="../index.html" aria-label="Giorgi Suramlishvili, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
+        <span>Giorgi Suramlishvili</span>
+      </a>
+      <div class="nav-links" id="primary-links">
+        <div class="nav-work">
+          <a href="../index.html#work" data-section="work">Projects</a>
+          <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="work-dropdown" id="work-dropdown">
+            <a href="light-switch.html" aria-current="page">Light switch <span>2022</span></a>
+            <a href="blinds-control.html">Blinds controller <span>2025</span></a>
+            <a href="zaylo-remote.html">Zaylo Remote <span>2025</span></a>
+            <a href="self-balancing-robot.html">Atlas, the balancing robot <span>2025</span></a>
+            <a href="inverted-pendulum.html">Pendulum control paper <span>2026</span></a>
+            <a class="all" href="../index.html#work">All projects</a>
+          </div>
+        </div>
+        <a href="../index.html#about" data-section="about">About</a>
+        <a href="../index.html#track" data-section="track">Experience</a>
+        <a href="../index.html#contact" data-section="contact">Contact</a>
+      </div>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.8a7.2 7.2 0 0 1 0 14.4z" fill="currentColor"/></svg></button>
+      <button class="nav-toggle" type="button" aria-controls="primary-links" aria-expanded="false" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../index.html#work">Projects</a><span aria-hidden="true">/</span><span aria-current="page">Light switch</span></nav>
+
+      <header class="p-head">
+        <div>
+          <p class="p-kicker">Built from 2022 to 2023, over three versions</p>
+          <h1 class="p-title">The light switch</h1>
+          <p class="p-standfirst">A box that sits over the light switch in my bedroom and presses it with a servo. The switch itself stays exactly as it was, so I never had to go near the mains wiring.</p>
+          <dl class="p-facts">
+            <div><dt>Built</dt><dd>2022&ndash;23, three versions</dd></div>
+            <div><dt>Microcontroller</dt><dd>ESP32-C6</dd></div>
+            <div><dt>Presence sensing</dt><dd>24 GHz mmWave radar</dd></div>
+            <div><dt>Power</dt><dd>USB-C</dd></div>
+          </dl>
+        </div>
+        <figure class="p-figure">
+          <div class="frame callouts white">
+            <img src="light-switch-photo.jpg" width="1343" height="1511" alt="The light switch controller fitted over a white UK wall switch, with the servo arm resting on the rocker" fetchpriority="high" decoding="async" />
+            <svg class="marks" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M17 19 Q28 19 37 25"/><circle cx="37.6" cy="25.6" r=".7"/>
+              <path d="M78 13 Q66 20 58 37"/><circle cx="57.6" cy="38" r=".7"/>
+              <path d="M13 60 Q16 66 21 68"/><circle cx="21.6" cy="68.4" r=".7"/>
+              <path d="M60 90 Q48 92 41 86"/><circle cx="40.4" cy="85.5" r=".7"/>
+            </svg>
+            <p class="callout-label" style="left:2%;top:11%">OLED screen<span>time, weather, mode</span></p>
+            <p class="callout-label" style="left:72%;top:3%">SG90 servo<span>presses the rocker</span></p>
+            <p class="callout-label" style="left:1%;top:50%">Radar<span>LD2410C, 24 GHz</span></p>
+            <p class="callout-label" style="left:61%;top:87%">USB-C power</p>
+          </div>
+          <figcaption>Version 3, the finished build, on my bedroom wall.</figcaption>
+        </figure>
+      </header>
+
+      <div class="p-layout">
+        <aside class="toc" aria-label="On this page">
+          <details open>
+            <summary>On this page</summary>
+            <p class="toc-title">On this page</p>
+            <ol>
+              <li><a href="#section-1">Why it presses the switch</a></li>
+              <li><a href="#section-2">How the parts connect</a></li>
+              <li><a href="#section-3">The five modes</a></li>
+              <li><a href="#section-4">Detecting presence</a></li>
+              <li><a href="#section-5">Pins and connections</a></li>
+              <li><a href="#section-6">Sleep tracking</a></li>
+              <li><a href="#section-7">Talking to the blinds and the app</a></li>
+              <li><a href="#section-8">When something goes wrong</a></li>
+              <li><a href="#section-9">If I come back to it</a></li>
+            </ol>
+          </details>
+        </aside>
+
+        <div class="p-main">
+          <section class="p-sec" id="section-1">
+            <h2>Why it presses the switch</h2>
+            <p class="intro">The usual way to make a light smart is to replace the switch, which means working on the mains wiring. I didn't want to do that in my room, so the controller sits over the existing rocker and a small servo presses it for me. Take the box off and the switch works exactly like it did before.</p>
+            <p>It runs off USB-C. Inside there's an ESP32-C6, a radar module for presence, two touch pads, a small OLED screen and the servo. It talks to the <a href="blinds-control.html">blinds controller</a> and the <a href="zaylo-remote.html">Zaylo Remote</a> app over MQTT, and to Alexa and Google Home through SinricPro.</p>
+            <div class="side-by-side">
+              <figure>
+                <div class="frame"><img src="light-switch-design.png" width="1744" height="1260" alt="A simple plan drawing of the controller: display, RTC, a button, the ESP32, the servo next to the switch and a motion sensor underneath" loading="lazy" decoding="async" /></div>
+                <figcaption><b>2022.</b> The first plan I drew.</figcaption>
+              </figure>
+              <figure>
+                <div class="frame"><img src="light-switch-photo.jpg" width="1343" height="1511" alt="Version 3 of the controller on the wall, with the servo arm resting on the rocker" loading="lazy" decoding="async" /></div>
+                <figcaption><b>2023.</b> Version 3, the finished one.</figcaption>
+              </figure>
+            </div>
+            <p>Most of that plan survived. The RTC didn't, because the switch gets the time over Wi-Fi instead. The single button turned into two touch pads, and the motion sensor turned into a radar so it can tell when someone is sitting still.</p>
+          </section>
+
+          <section class="p-sec" id="section-2">
+            <h2>How the parts connect</h2>
+            <p>The radar and the touch pads are the inputs. The ESP32-C6 decides what the light should be doing, then moves the servo and updates the screen. Everything that needs the network goes over Wi-Fi.</p>
+            <figure class="diagram dots">
+              <svg class="connection-svg" viewBox="0 0 1000 540" role="img" aria-labelledby="connections-title connections-desc">
+                <title id="connections-title">How the parts connect</title>
+                <desc id="connections-desc">The radar and two touch pads feed the ESP32-C6. It drives the servo and the display, and connects to three services over Wi-Fi.</desc>
+                <defs>
+                  <marker id="connection-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="marker-fill" d="M0 0 L10 5 L0 10 Z"/></marker>
+                </defs>
+                <path class="diagram-line" d="M270 98 H334 V193 H390" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line" d="M270 208 H390" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line" d="M270 318 H350 V243 H390" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line" d="M630 205 H704 V131 H750" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line" d="M630 240 H704 V291 H750" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line wireless" d="M500 262 V390" marker-start="url(#connection-arrow)"/>
+                <text x="516" y="358" class="diagram-label">Wi-Fi</text>
+                <path class="diagram-line wireless" d="M500 390 H145 V432" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line wireless" d="M500 390 V432" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line wireless" d="M500 390 H855 V432" marker-end="url(#connection-arrow)"/>
+                <g class="diagram-node"><rect x="25" y="432" width="240" height="72" rx="8"/><text x="43" y="461" class="diagram-title">MQTT broker</text><text x="43" y="484" class="diagram-sub">Mosquitto, on the home network</text></g>
+                <g class="diagram-node"><rect x="380" y="432" width="240" height="72" rx="8"/><text x="398" y="461" class="diagram-title">SinricPro</text><text x="398" y="484" class="diagram-sub">Alexa and Google Home</text></g>
+                <g class="diagram-node"><rect x="735" y="432" width="240" height="72" rx="8"/><text x="753" y="461" class="diagram-title">OpenWeatherMap</text><text x="753" y="484" class="diagram-sub">Sunrise, sunset, weather</text></g>
+                <g class="diagram-node"><rect x="25" y="50" width="245" height="92" rx="8"/><text x="43" y="79" class="diagram-title">LD2410C radar</text><text x="43" y="102" class="diagram-pin">UART · GPIO 0 / 20</text><text x="43" y="122" class="diagram-pin">presence · GPIO 14</text></g>
+                <g class="diagram-node"><rect x="25" y="172" width="245" height="72" rx="8"/><text x="43" y="201" class="diagram-title">Action touch pad</text><text x="43" y="224" class="diagram-pin">TTP223 · GPIO 3</text></g>
+                <g class="diagram-node"><rect x="25" y="282" width="245" height="72" rx="8"/><text x="43" y="311" class="diagram-title">Menu touch pad</text><text x="43" y="334" class="diagram-pin">TTP223 · GPIO 1</text></g>
+                <g class="diagram-node diagram-core"><rect x="390" y="170" width="240" height="92" rx="8"/><text x="408" y="199" class="diagram-title">ESP32-C6</text><text x="408" y="222" class="diagram-sub">reads the inputs</text><text x="408" y="242" class="diagram-sub">decides on the light</text></g>
+                <g class="diagram-node"><rect x="750" y="90" width="225" height="92" rx="8"/><text x="768" y="119" class="diagram-title">SG90 servo</text><text x="768" y="142" class="diagram-pin">PWM · GPIO 2</text><text x="768" y="162" class="diagram-sub">presses the switch</text></g>
+                <g class="diagram-node"><rect x="750" y="250" width="225" height="92" rx="8"/><text x="768" y="279" class="diagram-title">OLED display</text><text x="768" y="302" class="diagram-pin">I²C · GPIO 21 / 22</text><text x="768" y="322" class="diagram-sub">status and menus</text></g>
+              </svg>
+              <ol class="connection-list">
+                <li><strong>Radar</strong><span class="to" aria-label="to">&rarr;</span><strong>ESP32-C6</strong><p>Readings over UART on GPIO 0 / 20, and a presence signal on GPIO 14.</p></li>
+                <li><strong>Touch pads</strong><span class="to" aria-label="to">&rarr;</span><strong>ESP32-C6</strong><p>Action on GPIO 3, menu on GPIO 1.</p></li>
+                <li><strong>ESP32-C6</strong><span class="to" aria-label="to">&rarr;</span><strong>Servo</strong><p>A PWM signal on GPIO 2 sets the arm position.</p></li>
+                <li><strong>ESP32-C6</strong><span class="to" aria-label="to">&rarr;</span><strong>OLED</strong><p>I²C on GPIO 21 / 22.</p></li>
+                <li><strong>ESP32-C6</strong><span class="to" aria-label="to">&rarr;</span><strong>Network</strong><p>Wi-Fi to the MQTT broker, SinricPro and OpenWeatherMap.</p></li>
+              </ol>
+              <figcaption>Solid lines are wires and dashed lines are network links. Power isn't drawn. The full pin list is further down.</figcaption>
+            </figure>
+          </section>
+
+          <section class="p-sec" id="section-3">
+            <h2>The five modes</h2>
+            <p>Most of the time it's in Auto. The other four are for when I want to override it, or when the time of day matters more than whether someone is in the room.</p>
+            <div class="modes">
+              <details class="mode-item" open><summary><span class="mode-number">01</span><strong>Auto</strong><span>The room decides</span></summary><div class="mode-body"><p>The normal mode. The radar decides whether the room is occupied, and the light follows that.</p><ol class="mode-route" aria-label="Auto mode"><li>Someone comes in</li><li>Auto</li><li>Light follows the room</li></ol></div></details>
+              <details class="mode-item"><summary><span class="mode-number">02</span><strong>Manual</strong><span>I decide</span></summary><div class="mode-body"><p>A tap on the touch pad or a command from the app overrides the radar. After a timeout it goes back to Auto on its own.</p><ol class="mode-route" aria-label="Manual mode"><li>Tap or app command</li><li>Manual</li><li>Temporary override</li></ol></div></details>
+              <details class="mode-item"><summary><span class="mode-number">03</span><strong>Alarm</strong><span>Light on at a set time</span></summary><div class="mode-body"><p>Turns the light on for a scheduled wake-up. Tapping the pad cancels it and drops into Manual.</p><ol class="mode-route" aria-label="Alarm mode"><li>Alarm time</li><li>Alarm</li><li>Light on</li></ol></div></details>
+              <details class="mode-item"><summary><span class="mode-number">04</span><strong>Bedtime</strong><span>Stays off while I fall asleep</span></summary><div class="mode-body"><p>Stops the radar switching the light on when I move around in bed. Holding the touch pad turns it on or off.</p><ol class="mode-route" aria-label="Bedtime mode"><li>Hold the pad</li><li>Bedtime</li><li>Radar ignored</li></ol></div></details>
+              <details class="mode-item"><summary><span class="mode-number">05</span><strong>Locked</strong><span>Keeps what it's doing</span></summary><div class="mode-body"><p>Nothing changes the light until it's unlocked. A double tap locks and unlocks it.</p><ol class="mode-route" aria-label="Locked mode"><li>Double tap</li><li>Locked</li><li>Light stays as it is</li></ol></div></details>
+            </div>
+            <div class="notes">
+              <div><h3>Daylight is separate</h3><p>Between sunrise and sunset the radar doesn't turn the light on. That's a setting on top of the modes, not a sixth mode.</p></div>
+              <div><h3>Safe mode isn't a normal mode</h3><p>It only happens after repeated crashes. There's more on it in <a href="#section-8">when something goes wrong</a>.</p></div>
+            </div>
+          </section>
+
+          <section class="p-sec" id="section-4">
+            <h2>Detecting presence</h2>
+            <p>I used radar because an ordinary motion sensor stops seeing you once you sit still, which is exactly when I want the light to stay on. The LD2410C reports movement in nine distance gates, and the firmware filters those readings before it decides whether anyone is in the room.</p>
+            <div class="notes">
+              <div><h3>Two filters</h3><p>A fast one reacts to big movements and a slow one follows small changes. Together they turn the light on as I walk in without turning it off when I sit down.</p></div>
+              <div><h3>Different on and off thresholds</h3><p>Turning the light on needs a stronger signal than keeping it on, so it doesn't flicker on and off when a reading sits right on the edge.</p></div>
+              <div><h3>Learning the room</h3><p>At start-up, and again whenever the room is empty, it measures the background readings so it has something to compare against.</p></div>
+              <div><h3>Ignoring its own servo</h3><p>Detection pauses while the servo moves and for a moment afterwards. Otherwise it would see itself pressing the switch and think someone was there.</p></div>
+            </div>
+          </section>
+
+          <section class="p-sec" id="section-5">
+            <h2>Pins and connections</h2>
+            <p>These are the connections in my build. If you reuse them, check them against the pin definitions in the firmware for your board first.</p>
+            <table class="data">
+              <thead><tr><th scope="col">Part</th><th scope="col">Model</th><th scope="col">Pin</th><th scope="col">Signal</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Servo</th><td>SG90</td><td class="pin">GPIO 2</td><td>PWM</td><td>Presses the switch</td></tr>
+                <tr><th scope="row">Presence out</th><td>LD2410C</td><td class="pin">GPIO 14</td><td>Digital in</td><td>Hardware presence signal</td></tr>
+                <tr><th scope="row">Radar RX</th><td>LD2410C</td><td class="pin">GPIO 20</td><td>UART, 256k</td><td>Readings and settings</td></tr>
+                <tr><th scope="row">Radar TX</th><td>LD2410C</td><td class="pin">GPIO 0</td><td>UART, 256k</td><td>Readings and settings</td></tr>
+                <tr><th scope="row">Action pad</th><td>TTP223</td><td class="pin">GPIO 3</td><td>Digital in</td><td>Tap to toggle</td></tr>
+                <tr><th scope="row">Menu pad</th><td>TTP223</td><td class="pin">GPIO 1</td><td>Digital in</td><td>Menu and calibration</td></tr>
+                <tr><th scope="row">Display SDA</th><td>SSD1306 128&times;64</td><td class="pin">GPIO 21</td><td>I²C, 400k</td><td>Data</td></tr>
+                <tr><th scope="row">Display SCL</th><td>SSD1306 128&times;64</td><td class="pin">GPIO 22</td><td>I²C, 400k</td><td>Clock</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="p-sec" id="section-6">
+            <h2>Sleep tracking</h2>
+            <p>This started as a programming experiment. The switch already records when I go to bed and when I get up, so I wrote a score from those events. It all runs on the switch. It can only estimate habits from the times it records, so it doesn't measure sleep in any medical sense.</p>
+            <div class="weights">
+              <div><b>40%</b><strong>Duration</strong><p>How long I slept compared with the target I set.</p></div>
+              <div><b>35%</b><strong>Consistency</strong><p>How much my bedtime moves around. The aim is under 15 minutes.</p></div>
+              <div><b>15%</b><strong>Timing</strong><p>How close bedtime was to the time I picked.</p></div>
+              <div><b>10%</b><strong>Cycles</strong><p>Whether I woke near the end of a 90-minute cycle.</p></div>
+            </div>
+            <p>The interesting part is the averaging. You can't just average clock times, because 23:30 and 00:30 average to midday. So each bedtime becomes an angle on a circle and the firmware averages those instead.</p>
+            <div class="formulas">
+              <div class="formula">
+                <h3>Average bedtime</h3>
+                <p>Each time is an angle &theta; round a 24-hour circle. Averaging the sines and cosines gives the right answer either side of midnight.</p>
+                <math display="block"><mover><mi>&theta;</mi><mo>&#xAF;</mo></mover><mo>=</mo><mi>atan2</mi><mo>(</mo><mrow><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>&sum;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>sin</mi><msub><mi>&theta;</mi><mi>i</mi></msub><mo>,</mo><mspace width="0.4em"/><mfrac><mn>1</mn><mi>N</mi></mfrac><munderover><mo>&sum;</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mi>cos</mi><msub><mi>&theta;</mi><mi>i</mi></msub></mrow><mo>)</mo></math>
+              </div>
+              <div class="formula">
+                <h3>Duration score</h3>
+                <p>Full marks at the target length, falling off smoothly either side. The 1.2 sets how quickly it drops.</p>
+                <math display="block"><msub><mi>S</mi><mi>dur</mi></msub><mo>=</mo><mn>100</mn><mo>&middot;</mo><msup><mi>e</mi><mrow><mo>&minus;</mo><mfrac displaystyle="true"><msup><mrow><mo>(</mo><mi>actual</mi><mo>&minus;</mo><mi>target</mi><mo>)</mo></mrow><mn>2</mn></msup><mrow><mn>2</mn><mo>&middot;</mo><msup><mn>1.2</mn><mn>2</mn></msup></mrow></mfrac></mrow></msup></math>
+              </div>
+            </div>
+            <p>On top of the score it keeps a running total of sleep I've missed over the last seven days, warns me when my weekend bedtime drifts more than an hour from weekdays, sorts the pattern into Regular, Night Owl, Early Bird or Irregular, and suggests a bedtime from my wake-up time and target length.</p>
+          </section>
+
+          <section class="p-sec" id="section-7">
+            <h2>Talking to the blinds and the app</h2>
+            <p>Wi-Fi is the main connection, but the switch doesn't need it to work. The radar, touch pads and modes all run on the device, so if the network goes down it carries on as a normal presence-controlled light.</p>
+            <div class="notes">
+              <div><h3>The app</h3><p><a href="zaylo-remote.html">Zaylo Remote</a> is where I change modes, set schedules, look at the sleep scores and tune the radar. Local control goes over the home network.</p></div>
+              <div><h3>Bluetooth setup</h3><p>The Wi-Fi details go in over Bluetooth the first time. If it loses Wi-Fi later, Bluetooth recovery turns on so I can fix it without taking it off the wall.</p></div>
+              <div><h3>MQTT</h3><p>It publishes the light state, motion levels, sleep scores and temperature to a broker on my home network, and listens for commands.</p></div>
+              <div><h3>Alexa, Google Home and weather</h3><p>Voice commands come in through SinricPro. Sunrise, sunset and temperature come from OpenWeatherMap. Both need an internet connection.</p></div>
+            </div>
+            <h3>Closing the blinds when the room is empty</h3>
+            <p>Because the switch already knows whether the room is occupied, it shares that over MQTT. The <a href="blinds-control.html">blinds controller</a> listens for it and closes the blind once the room has been empty for a set time. It only works while both devices can reach the broker.</p>
+            <h3>Wi-Fi 6 power saving</h3>
+            <p>The ESP32-C6 supports Target Wake Time, which lets it agree wake-up windows with the router and sleep the radio in between. It's a toggle in the app. I haven't measured how much it actually saves yet, and it depends a lot on the router.</p>
+          </section>
+
+          <section class="p-sec" id="section-8">
+            <h2>When something goes wrong</h2>
+            <p>The switch is on my wall all the time, so it has to recover from power cuts and bad updates without me opening it up.</p>
+            <ul class="numbers">
+              <li><span class="n">15<small>s</small></span><div><h3>Start-up delay</h3><p>The servo stays off for the first 15 seconds after power-on, so the supply can settle before the motor starts drawing current.</p></div></li>
+              <li><span class="n">2</span><div><h3>Copies of the settings</h3><p>Settings are saved in two slots, each with a checksum. If the power cuts out halfway through a save, it loads the other copy on the next start.</p></div></li>
+              <li><span class="n">3</span><div><h3>Crashes before safe mode</h3><p>After three unexpected restarts in a row it stops the motor, Wi-Fi and radar and shows a warning. It tries to start normally again after 10 minutes.</p></div></li>
+              <li><span class="n">OTA</span><div><h3>Updates that roll back</h3><p>A new firmware update only becomes permanent once the switch has started up and connected properly. If it crashes, it rolls back to the last version that worked.</p></div></li>
+            </ul>
+          </section>
+
+          <section class="p-sec" id="section-9">
+            <h2>If I come back to it</h2>
+            <p>The switch is finished, but if I go back to it, the first thing I'd add is a link to <a href="self-balancing-robot.html">Atlas</a>, my balancing robot, over MQTT. Getting Atlas to balance properly comes first.</p>
+            <p>For now, the easiest way to see what the switch can do is the app demo. It has pretend versions of the switch and the blinds you can play with.</p>
+            <a class="arrow-link" href="zaylo-remote.html">Try the Zaylo Remote demo <span class="arr" aria-hidden="true">&rarr;</span></a>
+          </section>
+
+          <div class="next-up">
+            <div>
+              <p class="label">Next project</p>
+              <a class="next" href="blinds-control.html">The blinds controller <span class="arr" aria-hidden="true">&rarr;</span></a>
+            </div>
+            <a class="arrow-link" href="../index.html#work">All projects</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p>Bristol, UK</p>
+      <p><a href="#main-content">Back to the top</a></p>
+    </div>
+  </footer>
+
+  <script src="../site.js?v=7"></script>
+</body>
+</html>

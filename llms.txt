@@ -1,0 +1,56 @@
+# Giorgi Suramlishvili
+
+Personal project site of Giorgi Suramlishvili, a sixth-form (A-Level) student in Bristol, UK. He designs and builds his own devices: hardware, firmware, 3D-printed enclosures, PCBs and the app that controls them.
+
+- Site: https://giorgi.uk/
+- Email: suramgiorgi10@gmail.com
+- GitHub: https://github.com/giors1000
+- Based in: Bristol, UK (born in Tbilisi, Georgia). Speaks English and Georgian.
+- Tools: Fusion 360, KiCad, C++ on ESP32 (ESP32-C6, ESP32-S3), Python, MATLAB, 3D printing, MQTT, Firebase, Web Bluetooth.
+- A-Levels: Maths, Further Maths, Physics, Computer Science.
+- Last updated: October 2026.
+
+## Projects
+
+### 1. Smart light switch (2022 to 2023, finished after three versions)
+https://giorgi.uk/projects/light-switch.html
+A box that sits over a normal UK wall switch and presses it with an SG90 servo, so the mains wiring is never touched. ESP32-C6, LD2410C 24 GHz mmWave radar for presence (it notices people sitting still), two TTP223 touch pads, an SSD1306 OLED, five modes (Auto, Manual, Alarm, Bedtime, Locked), local sleep-habit scoring using a circular mean of bedtimes, MQTT, Bluetooth setup and recovery, Alexa and Google Home through SinricPro, OpenWeatherMap, dual-slot settings storage, safe mode and update rollback. Started when he was 13.
+
+### 2. Blinds controller (2025, version 1)
+https://giorgi.uk/projects/blinds-control.html
+A stepper motor that pulls the bead chain of an existing roller blind. ESP32-C6, TMC2209 driver (StealthChop2, 20 kHz timer interrupt for steps), custom KiCad PCB, 3D-printed case, one TTP223 touch pad with a gesture state machine, five on-device automations (morning wake-up, close at sunset, night lock, close when the room is empty using the light switch's occupancy over MQTT, heat protection). Firmware, Gerber files and the STL are downloadable from the page.
+
+### 3. Zaylo Remote (2025 to 2026)
+https://giorgi.uk/projects/zaylo-remote.html
+An installable web app (PWA) that controls the light switch and blinds. Live device state over MQTT WebSockets, Firebase sign-in and shared homes with invites, a Web Bluetooth setup and rescue flow for devices that lose Wi-Fi, a diagnostics screen, and a demo mode with simulated devices that runs on the page.
+
+### 4. Atlas, a self-balancing desk robot (2025 onwards, in progress)
+https://giorgi.uk/projects/self-balancing-robot.html
+His A-Level Computer Science project. A two-wheeled robot on an ESP32-S3 that balances using an LQR (linear quadratic regulator) controller. It started as a PID design; it now uses LQR, with the robot modelled in state-space form from Newton's laws, Q and R chosen with Bryson's rule, and the gain vector K solved in MATLAB. Parts: MPU-6050 IMU, wheel encoders, DRV8833 motor driver, VL53L0X distance sensor, TCRT5000 edge sensor, GC9A01 round display, MAX98357A amplifier. The balance loop runs as its own FreeRTOS task. It is also designed to be a revision timer.
+
+### 5. Controlling an inverted pendulum (2026, paper)
+https://giorgi.uk/projects/inverted-pendulum.html
+A 16-page paper covering PID control (including integral windup, clamping and noise), then a derivation of LQR for a two-wheeled robot: the state vector, deriving the A and B matrices with the small-angle approximation, eigenvalues and stability, full-state feedback u = -Kx, controllability, why pole placement falls short, the cost function with Q and R, and the continuous algebraic Riccati equation. The worked example gives K = [-1.0, -2.0, 24.6, 3.07] with closed-loop eigenvalues -13.63, -6.07 and -0.84 +/- 0.50i.
+
+## Experience
+
+### Rolls-Royce, Bristol (5 to 9 October 2026)
+Work experience week covering engineering, project management, advanced manufacturing and aviation safety. Visited the CTF where composite fan blades for UltraFan are made, attended a seminar on aviation safety investigations, worked in a team of five on a project presented to Rolls-Royce engineers, heard from chartered engineer Alexia Williams MBE and current degree apprentices, and finished at Aerospace Bristol (piston engines through to the Olympus 593 and an Adour Mk102).
+
+### MBDA, Filton (2025, one week)
+Engineering work experience. Saw how mechanical, electrical and software teams work together and the documentation behind design decisions, and presented a future missile concept to senior staff.
+
+### University of Bristol, maths department (2023, one week)
+Worked with Python and LaTeX on a research-style document covering maths beyond the school syllabus.
+
+### Programmes and masterclasses (2025)
+- Access to Bristol, Physics: sessions on quantum mechanics, renewable energy, semiconductors and particle physics.
+- Cambridge HE+: residential visit with an engineering talk on fluid dynamics.
+- Particle Physics Masterclass, Bristol: analysed real CERN collision data.
+
+## School
+- A-Levels (predicted): Maths A*, Further Maths A*, Physics A*, Computer Science A*.
+- GCSEs: grade 9 in Maths, Physics, Computer Science and Chemistry; 8 in Biology; 7 in Geography; 6 in English Language.
+
+## Outside of projects
+Plays water polo four times a week and tennis once a week. Wants to study electrical engineering, and is considering degree apprenticeships as well as university.

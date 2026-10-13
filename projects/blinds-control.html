@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart blinds controller · Giorgi Suramlishvili</title>
+  <meta name="description" content="A stepper motor that pulls the bead chain of an existing roller blind. ESP32-C6, TMC2209, a custom KiCad PCB, five automations, MQTT and Alexa / Google Home. Built by Giorgi Suramlishvili in Bristol, with the firmware, Gerbers and STL to download." />
+  <meta name="author" content="Giorgi Suramlishvili" />
+  <meta name="keywords" content="Giorgi Suramlishvili, smart blinds controller, roller blind motor, bead chain motor, stepper motor, TMC2209, ESP32-C6, KiCad PCB, MQTT, home automation, Bristol" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="theme-color" content="#fbfbf8" />
+  <meta name="color-scheme" content="light dark" />
+  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <link rel="canonical" href="https://giorgi.uk/projects/blinds-control.html" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+  <meta property="og:title" content="Smart blinds controller · Giorgi Suramlishvili" />
+  <meta property="og:description" content="A stepper motor that pulls the chain of my existing roller blind, on a PCB I designed. Schedules, MQTT and voice control." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://giorgi.uk/projects/blinds-control.html" />
+  <meta property="og:image" content="https://giorgi.uk/projects/blinds-photo.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="724" />
+  <meta property="og:image:height" content="1100" />
+  <meta property="og:image:alt" content="The blinds controller fitted next to a roller blind, with the bead chain running round the motor" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:site_name" content="Giorgi Suramlishvili" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Smart blinds controller · Giorgi Suramlishvili" />
+  <meta name="twitter:description" content="A stepper motor that pulls the chain of my existing roller blind, on a PCB I designed." />
+  <meta name="twitter:image" content="https://giorgi.uk/projects/blinds-photo.jpg" />
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://giorgi.uk/projects/blinds-control.html#article",
+      "headline": "The blinds controller: a stepper motor for an existing roller blind",
+      "description": "A stepper-driven controller for a roller blind's bead chain, with a custom PCB, five on-device automations, MQTT and Alexa / Google Home support, built by Giorgi Suramlishvili.",
+      "url": "https://giorgi.uk/projects/blinds-control.html",
+      "image": "https://giorgi.uk/projects/blinds-photo.jpg",
+      "dateCreated": "2025-01-01",
+      "datePublished": "2025-01-01",
+      "dateModified": "2026-10-12",
+      "inLanguage": "en-GB",
+      "author": { "@type": "Person", "@id": "https://giorgi.uk/#giorgi", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" },
+      "about": ["Stepper motor", "TMC2209", "ESP32-C6", "PCB design", "KiCad", "MQTT", "Home automation"],
+      "isPartOf": { "@type": "WebSite", "@id": "https://giorgi.uk/#website", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Giorgi Suramlishvili", "item": "https://giorgi.uk/" },
+        { "@type": "ListItem", "position": 2, "name": "Projects", "item": "https://giorgi.uk/#work" },
+        { "@type": "ListItem", "position": 3, "name": "Blinds controller", "item": "https://giorgi.uk/projects/blinds-control.html" }
+      ]
+    }
+  ]
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="../site.css?v=8" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <nav class="nav" aria-label="Main">
+    <div class="wrap nav-inner">
+      <a class="brand" href="../index.html" aria-label="Giorgi Suramlishvili, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
+        <span>Giorgi Suramlishvili</span>
+      </a>
+      <div class="nav-links" id="primary-links">
+        <div class="nav-work">
+          <a href="../index.html#work" data-section="work">Projects</a>
+          <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="work-dropdown" id="work-dropdown">
+            <a href="light-switch.html">Light switch <span>2022</span></a>
+            <a href="blinds-control.html" aria-current="page">Blinds controller <span>2025</span></a>
+            <a href="zaylo-remote.html">Zaylo Remote <span>2025</span></a>
+            <a href="self-balancing-robot.html">Atlas, the balancing robot <span>2025</span></a>
+            <a href="inverted-pendulum.html">Pendulum control paper <span>2026</span></a>
+            <a class="all" href="../index.html#work">All projects</a>
+          </div>
+        </div>
+        <a href="../index.html#about" data-section="about">About</a>
+        <a href="../index.html#track" data-section="track">Experience</a>
+        <a href="../index.html#contact" data-section="contact">Contact</a>
+      </div>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.8a7.2 7.2 0 0 1 0 14.4z" fill="currentColor"/></svg></button>
+      <button class="nav-toggle" type="button" aria-controls="primary-links" aria-expanded="false" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../index.html#work">Projects</a><span aria-hidden="true">/</span><span aria-current="page">Blinds controller</span></nav>
+
+      <header class="p-head">
+        <div>
+          <p class="p-kicker">Built in 2025</p>
+          <h1 class="p-title">The blinds controller</h1>
+          <p class="p-standfirst">A stepper motor that hooks onto the bead chain of my roller blind and pulls it up and down. The blind and the wall are exactly as they were. I designed the PCB, the printed case and the firmware.</p>
+          <dl class="p-facts">
+            <div><dt>Version</dt><dd>1</dd></div>
+            <div><dt>Microcontroller</dt><dd>ESP32-C6</dd></div>
+            <div><dt>Motor driver</dt><dd>TMC2209</dd></div>
+            <div><dt>Downloads</dt><dd><a href="#section-10">Firmware, Gerbers, STL</a></dd></div>
+          </dl>
+        </div>
+        <figure class="p-figure">
+          <div class="frame tall"><img src="blinds-photo.jpg" width="724" height="1100" alt="The white printed case fitted beside a green roller blind, with the bead chain running round a wheel on the motor" fetchpriority="high" decoding="async" /></div>
+          <figcaption>Fitted next to my blind. The round pad on the front is the touch control.</figcaption>
+        </figure>
+      </header>
+
+      <div class="p-layout">
+        <aside class="toc" aria-label="On this page">
+          <details open>
+            <summary>On this page</summary>
+            <p class="toc-title">On this page</p>
+            <ol>
+              <li><a href="#section-1">Using the chain that was already there</a></li>
+              <li><a href="#section-2">How the parts connect</a></li>
+              <li><a href="#section-3">Driving the stepper motor</a></li>
+              <li><a href="#section-4">Reading the touch pad</a></li>
+              <li><a href="#section-5">Schedules and automations</a></li>
+              <li><a href="#section-6">Pins and power</a></li>
+              <li><a href="#section-7">The network, and saving power</a></li>
+              <li><a href="#section-8">Protecting the settings</a></li>
+              <li><a href="#section-9">Full spec</a></li>
+              <li><a href="#section-10">Download the files</a></li>
+              <li><a href="#section-11">What I'd change next</a></li>
+            </ol>
+          </details>
+        </aside>
+
+        <div class="p-main">
+          <section class="p-sec" id="section-1">
+            <h2>Using the chain that was already there</h2>
+            <p class="intro">The blind already had a chain that worked fine, so I didn't want to replace it. Instead the controller grips that chain: a wheel on the motor pulls the beads round, and the case screws to the wall beside the window.</p>
+            <p>I can move it from the <a href="zaylo-remote.html">app</a>, by voice, or with the touch pad on the front. The ESP32-C6 handles the motor, the touch input and the schedules itself. The app goes through MQTT, voice goes through SinricPro, and the weather-based rules need fresh data from the internet. The settings are saved on the device.</p>
+            <figure class="fig sketch">
+              <div class="frame"><img src="blinds-design.jpg" width="1473" height="1726" alt="Hand-drawn sketch of the case on dotted paper: 46 by 50 by 72 millimetres, wall mount holes, a slotted motor mount and the TTP223 touch pad on the front" loading="lazy" decoding="async" /></div>
+              <figcaption>My sketch of the case: about 46 &times; 50 &times; 72 mm, with wall mounts, a slotted motor mount so the motor can move up and down a little, and the TTP223 touch pad on the front.</figcaption>
+            </figure>
+          </section>
+
+          <section class="p-sec" id="section-2">
+            <h2>How the parts connect</h2>
+            <p>The touch pad goes into the ESP32-C6. The ESP32 tells the motor driver when to step and which way to turn, and the driver powers the motor coils. Wi-Fi connects it to the app and the other services.</p>
+            <figure class="diagram dots">
+              <svg class="connection-svg" viewBox="0 0 1000 540" role="img" aria-labelledby="connections-title connections-desc">
+                <title id="connections-title">How the parts connect</title>
+                <desc id="connections-desc">The touch pad feeds the ESP32-C6. It sends step, direction and enable signals to the TMC2209, which drives the stepper motor. Wi-Fi connects it to three services.</desc>
+                <defs>
+                  <marker id="connection-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="marker-fill" d="M0 0 L10 5 L0 10 Z"/></marker>
+                </defs>
+                <path class="diagram-line" d="M265 213 H390" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line" d="M630 208 H704 V116 H750" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line" d="M862 162 V256" marker-end="url(#connection-arrow)"/>
+                <text x="877" y="216" class="diagram-label">motor coils</text>
+                <path class="diagram-line wireless" d="M500 262 V390" marker-start="url(#connection-arrow)"/>
+                <text x="516" y="358" class="diagram-label">Wi-Fi</text>
+                <path class="diagram-line wireless" d="M500 390 H145 V432" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line wireless" d="M500 390 V432" marker-end="url(#connection-arrow)"/>
+                <path class="diagram-line wireless" d="M500 390 H855 V432" marker-end="url(#connection-arrow)"/>
+                <g class="diagram-node"><rect x="25" y="432" width="240" height="72" rx="8"/><text x="43" y="461" class="diagram-title">MQTT broker</text><text x="43" y="484" class="diagram-sub">Mosquitto, on the home network</text></g>
+                <g class="diagram-node"><rect x="380" y="432" width="240" height="72" rx="8"/><text x="398" y="461" class="diagram-title">SinricPro</text><text x="398" y="484" class="diagram-sub">Alexa and Google Home</text></g>
+                <g class="diagram-node"><rect x="735" y="432" width="240" height="72" rx="8"/><text x="753" y="461" class="diagram-title">OpenWeatherMap</text><text x="753" y="484" class="diagram-sub">Sunrise, sunset, weather</text></g>
+                <g class="diagram-node"><rect x="25" y="177" width="240" height="72" rx="8"/><text x="43" y="206" class="diagram-title">Touch pad</text><text x="43" y="229" class="diagram-pin">TTP223 · GPIO 21</text></g>
+                <g class="diagram-node diagram-core"><rect x="390" y="170" width="240" height="92" rx="8"/><text x="408" y="199" class="diagram-title">ESP32-C6</text><text x="408" y="222" class="diagram-sub">reads the touch pad</text><text x="408" y="242" class="diagram-sub">sends the motor steps</text></g>
+                <g class="diagram-node"><rect x="750" y="70" width="225" height="92" rx="8"/><text x="768" y="99" class="diagram-title">TMC2209 driver</text><text x="768" y="122" class="diagram-pin">STEP 4 · DIR 5 · EN 2</text><text x="768" y="142" class="diagram-sub">signals from the ESP32</text></g>
+                <g class="diagram-node"><rect x="750" y="256" width="225" height="72" rx="8"/><text x="768" y="285" class="diagram-title">Stepper motor</text><text x="768" y="308" class="diagram-sub">turns the chain wheel</text></g>
+              </svg>
+              <ol class="connection-list">
+                <li><strong>Touch pad</strong><span class="to" aria-label="to">&rarr;</span><strong>ESP32-C6</strong><p>The touch signal comes in on GPIO 21.</p></li>
+                <li><strong>ESP32-C6</strong><span class="to" aria-label="to">&rarr;</span><strong>TMC2209</strong><p>Step on GPIO 4, direction on GPIO 5, enable on GPIO 2.</p></li>
+                <li><strong>TMC2209</strong><span class="to" aria-label="to">&rarr;</span><strong>Motor</strong><p>The driver powers the coils and the motor turns the chain.</p></li>
+                <li><strong>ESP32-C6</strong><span class="to" aria-label="to">&rarr;</span><strong>Network</strong><p>Wi-Fi to the MQTT broker, SinricPro and OpenWeatherMap.</p></li>
+              </ol>
+              <figcaption>Solid lines are wires and dashed lines are network links. Power isn't drawn, but it's in the tables further down.</figcaption>
+            </figure>
+          </section>
+
+          <section class="p-sec" id="section-3">
+            <h2>Driving the stepper motor</h2>
+            <p>Every step pulse from the ESP32-C6 turns the motor a tiny amount through the TMC2209 driver. I chose the TMC2209 because it's quiet. With StealthChop2 and microstepping it's much less noisy than a basic driver, which matters for something that moves in a bedroom first thing in the morning.</p>
+            <div class="notes three">
+              <div><h3>Timing on its own</h3><p>The steps come from a 20&nbsp;kHz hardware timer interrupt, separate from the Wi-Fi code, so a busy network doesn't make the motor stutter.</p></div>
+              <div><h3>Speeding up gently</h3><p>Normal moves ramp the speed up at the start and down at the end, so the chain doesn't jerk.</p></div>
+              <div><h3>Knowing where it is</h3><p>There's no encoder. It counts steps from the calibrated top and bottom, so a missed step would make the position it reports slightly off.</p></div>
+            </div>
+          </section>
+
+          <section class="p-sec" id="section-4">
+            <h2>Reading the touch pad</h2>
+            <p>One pad does everything on the device itself. What a press does depends on how long you hold it and whether the blind is already moving.</p>
+            <div class="gestures">
+              <article><span class="gesture-time">Single tap</span><h3>Open, close or stop</h3><p>When it's stopped, a tap opens the blind if it's under 50% open and closes it if it's 50% or more. While it's moving, a tap slows it down to a stop.</p></article>
+              <article><span class="gesture-time">Second tap within 400 ms</span><h3>Go the other way</h3><p>While it's moving, a double tap stops the current move and starts one in the opposite direction. When it's stopped, it acts like a single tap.</p></article>
+              <article><span class="gesture-time">Hold 1.5 s while moving</span><h3>Stop straight away</h3><p>Stops the motor without the slow-down and ignores the pad until you let go. Keeping your finger on it won't go on to reset the Wi-Fi.</p></article>
+              <article><span class="gesture-time">Hold 10 s while stopped</span><h3>Set up Wi-Fi again</h3><p>Clears the saved Wi-Fi details and restarts setup. The travel calibration is kept. Let go once it restarts.</p></article>
+            </div>
+            <p>Moves only work once the travel limits are calibrated. A press has to stay stable for 50&nbsp;ms before the firmware believes it, which filters out short electrical glitches.</p>
+            <figure class="diagram dots">
+              <svg class="connection-svg" viewBox="0 0 1000 520" role="img" aria-labelledby="touch-title touch-desc">
+                <title id="touch-title">Touch pad states</title>
+                <desc id="touch-desc">Idle goes to Pressed on a touch. Releasing opens a 400 millisecond window for a second tap. Holding while the blind moves stops the motor and waits for release. A second press goes back to Idle on release or after five seconds.</desc>
+                <defs>
+                  <marker id="touch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="marker-fill" d="M0 0 L10 5 L0 10 Z"/></marker>
+                </defs>
+                <path class="diagram-line" d="M230 140 H370" marker-end="url(#touch-arrow)"/>
+                <path class="diagram-line" d="M580 140 H760" marker-end="url(#touch-arrow)"/>
+                <path class="diagram-line" d="M475 200 V325" marker-end="url(#touch-arrow)"/>
+                <path class="diagram-line" d="M580 375 H760" marker-end="url(#touch-arrow)"/>
+                <path class="diagram-line wireless" d="M370 375 H130 V200" marker-end="url(#touch-arrow)"/>
+                <path class="diagram-line" d="M870 100 V28 H130 V100" marker-end="url(#touch-arrow)"/>
+                <path class="diagram-line wireless" d="M870 425 V494 H100 V200" marker-end="url(#touch-arrow)"/>
+                <g class="diagram-node diagram-core"><rect x="25" y="100" width="205" height="100" rx="8"/><text class="diagram-sub" x="41" y="124">S0</text><text class="diagram-title" x="41" y="149">Idle</text><text class="diagram-sub" x="41" y="176">waiting for a touch</text></g>
+                <g class="diagram-node"><rect x="370" y="100" width="210" height="100" rx="8"/><text class="diagram-pin" x="386" y="124">S1</text><text class="diagram-title" x="386" y="149">Pressed</text><text class="diagram-sub" x="386" y="176">timing the hold</text></g>
+                <g class="diagram-node"><rect x="760" y="100" width="215" height="100" rx="8"/><text class="diagram-pin" x="776" y="124">S4</text><text class="diagram-title" x="776" y="149">Hold handled</text><text class="diagram-sub" x="776" y="176">waiting for release</text></g>
+                <g class="diagram-node"><rect x="370" y="325" width="210" height="100" rx="8"/><text class="diagram-pin" x="386" y="349">S2</text><text class="diagram-title" x="386" y="374">Released</text><text class="diagram-sub" x="386" y="401">waiting for a 2nd tap</text></g>
+                <g class="diagram-node"><rect x="760" y="325" width="215" height="100" rx="8"/><text class="diagram-pin" x="776" y="349">S3</text><text class="diagram-title" x="776" y="374">Second press</text><text class="diagram-sub" x="776" y="401">double-tap action</text></g>
+                <text class="diagram-label" x="300" y="125" text-anchor="middle">touch</text>
+                <text class="diagram-label" x="670" y="113" text-anchor="middle">1.5 s hold</text>
+                <text class="diagram-label" x="670" y="133" text-anchor="middle">while moving</text>
+                <text class="diagram-label" x="549" y="270" text-anchor="middle">release</text>
+                <text class="diagram-label" x="670" y="351" text-anchor="middle">touch within</text>
+                <text class="diagram-label" x="670" y="371" text-anchor="middle">400 ms</text>
+                <text class="diagram-label" x="252" y="356" text-anchor="middle">400 ms: single tap</text>
+                <text class="diagram-label" x="510" y="19" text-anchor="middle">release after the hold</text>
+                <text class="diagram-label" x="485" y="484" text-anchor="middle">release the second press, or 5 s timeout</text>
+              </svg>
+              <ol class="connection-list">
+                <li><strong>Idle</strong><span class="to" aria-label="to">&rarr;</span><strong>Pressed</strong><p>A confirmed touch starts the hold timer.</p></li>
+                <li><strong>Pressed</strong><span class="to" aria-label="to">&rarr;</span><strong>Released</strong><p>Letting go starts the 400 ms double-tap window.</p></li>
+                <li><strong>Released</strong><span class="to" aria-label="to">&rarr;</span><strong>Idle</strong><p>If the 400 ms runs out, it's a single tap.</p></li>
+                <li><strong>Released</strong><span class="to" aria-label="to">&rarr;</span><strong>Second press</strong><p>Another touch inside the window is a double tap.</p></li>
+                <li><strong>Second press</strong><span class="to" aria-label="to">&rarr;</span><strong>Idle</strong><p>On release, or after a 5 s timeout.</p></li>
+                <li><strong>Pressed</strong><span class="to" aria-label="to">&rarr;</span><strong>Hold handled</strong><p>Holding for 1.5 s during a move stops the motor.</p></li>
+                <li><strong>Hold handled</strong><span class="to" aria-label="to">&rarr;</span><strong>Idle</strong><p>Let go before the next command.</p></li>
+              </ol>
+              <figcaption>Solid lines are touch and hold events, dashed lines include a timeout. The timings come from the <code>TouchManager</code> code in the firmware download.</figcaption>
+            </figure>
+            <p>The Wi-Fi reset is a separate path. When the motor is stopped, staying in Pressed for 10 seconds clears the Wi-Fi settings and restarts the controller. If a hold has already stopped the motor, it stays in Hold handled until you let go, so the same press can't do both.</p>
+          </section>
+
+          <section class="p-sec" id="section-5">
+            <h2>Schedules and automations</h2>
+            <p>All five rules run on the controller, but they don't all get their information from it. The fixed schedules use its clock, the sunset and heat rules need weather data, and the empty-room rule depends on the <a href="light-switch.html">light switch</a>.</p>
+            <ol class="rules">
+              <li>
+                <div><h3>Morning wake-up</h3><p>Opens the blind in small steps over a period I choose, up to two hours, so the room gets lighter gradually instead of all at once.</p></div>
+                <dl><dt>Trigger</dt><dd>A start time for each day of the week</dd><dt>Safety</dt><dd>Only ever moves towards open, and a tap cancels it</dd></dl>
+              </li>
+              <li>
+                <div><h3>Close at sunset</h3><p>Gets the sunset time from OpenWeatherMap and closes the blind then, so the schedule follows the seasons without me touching it.</p></div>
+                <dl><dt>Source</dt><dd>OpenWeatherMap, refreshed daily</dd><dt>Offset</dt><dd>A few minutes before or after sunset, if I want</dd></dl>
+              </li>
+              <li>
+                <div><h3>Night lock</h3><p>Closes the blind at night and stops the other rules moving it until the morning routine.</p></div>
+                <dl><dt>Schedule</dt><dd>Per day, with weekdays and weekends</dd><dt>Note</dt><dd>It's a software lock, not a physical one</dd></dl>
+              </li>
+              <li>
+                <div><h3>Close when the room is empty</h3><p>The light switch publishes whether the room is occupied over MQTT. If it stays empty for the delay I've set, the blind closes.</p></div>
+                <dl><dt>Needs</dt><dd>The light switch and the broker to be online</dd><dt>Delay</dt><dd>Stops it closing every time I leave for a minute</dd></dl>
+              </li>
+              <li>
+                <div><h3>Heat protection</h3><p>Closes the blind when the outside temperature from OpenWeatherMap goes above a threshold.</p></div>
+                <dl><dt>Source</dt><dd>Outside temperature, not a sensor in the room</dd><dt>Cooldown</dt><dd>15 minutes, so it doesn't keep flipping near the threshold</dd></dl>
+              </li>
+            </ol>
+          </section>
+
+          <section class="p-sec" id="section-6">
+            <h2>Pins and power</h2>
+            <p>The ESP32-C6 only needs four pins for this. The rest of the board is power.</p>
+            <table class="data">
+              <thead><tr><th scope="col">Part</th><th scope="col">Model</th><th scope="col">Pin</th><th scope="col">Signal</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Motor enable</th><td>TMC2209</td><td class="pin">GPIO 2</td><td>Digital out</td><td>Enables the driver (active low)</td></tr>
+                <tr><th scope="row">Step</th><td>TMC2209</td><td class="pin">GPIO 4</td><td>Timer interrupt</td><td>20 kHz step pulses</td></tr>
+                <tr><th scope="row">Direction</th><td>TMC2209</td><td class="pin">GPIO 5</td><td>Digital out</td><td>Which way the motor turns</td></tr>
+                <tr><th scope="row">Touch pad</th><td>TTP223</td><td class="pin">GPIO 21</td><td>Digital in</td><td>Capacitive touch (active high)</td></tr>
+              </tbody>
+            </table>
+            <table class="data">
+              <thead><tr><th scope="col">Power part</th><th scope="col">Model</th><th scope="col">Rating</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">Input</th><td>USB-C connector</td><td>5 V, 2 A</td><td>Power from a USB supply</td></tr>
+                <tr><th scope="row">Protection</th><td>TVS diode and fuse</td><td>5.6 V clamp, 2 A</td><td>Over-voltage and over-current protection</td></tr>
+                <tr><th scope="row">Regulator</th><td>AMS1117-3.3</td><td>5 V to 3.3 V</td><td>Logic rail for the ESP32-C6 and touch pad</td></tr>
+              </tbody>
+            </table>
+            <p>All the grounds (USB-C, regulator, ESP32 and the rest) join one continuous ground plane on the PCB to keep the noise down.</p>
+          </section>
+
+          <section class="p-sec" id="section-7">
+            <h2>The network, and saving power</h2>
+            <p>Wi-Fi carries the app commands and the weather and time updates, and Bluetooth is for setup and recovery. The touch pad always works, but anything that needs the network waits until it's back.</p>
+            <div class="notes">
+              <div><h3>Setup and recovery</h3><p>The Wi-Fi details go in over Bluetooth during setup. Holding the pad for 10 seconds with the motor stopped clears them and restarts setup, without losing the calibration.</p></div>
+              <div><h3>Alexa and Google Home</h3><p>Voice commands go through SinricPro, and the controller reports its estimated position back. This part needs the internet.</p></div>
+              <div><h3>MQTT</h3><p>It publishes its position, motor data and diagnostics to my broker, and subscribes to the light switch so the empty-room rule works.</p></div>
+              <div><h3>Weather and time</h3><p>Sunset and temperature come from OpenWeatherMap once a day. Time comes from NTP, and if a network blocks NTP it reads the time from an HTTP response header instead.</p></div>
+            </div>
+            <h3>Target Wake Time</h3>
+            <p>Wi-Fi 6 lets the controller and a compatible router agree on wake-up windows, so the radio can sleep in between. The drawing below shows the idea. It isn't a current measurement, and I haven't measured the saving on this build yet.</p>
+            <figure class="diagram">
+              <svg viewBox="0 0 820 200" role="img" aria-label="Radio power against time: short wake windows for MQTT messages, separated by longer sleep periods">
+                <line class="d-faint" x1="48" y1="130" x2="790" y2="130" stroke-width="1" stroke-dasharray="4 3"/>
+                <text class="d-label-sm" x="38" y="62" text-anchor="end">on</text>
+                <text class="d-label-sm" x="38" y="134" text-anchor="end">off</text>
+                <polyline class="d-accent" points="48,130 168,130 168,58 218,58 218,130 388,130 388,58 438,58 438,130 608,130 608,58 658,58 658,130 790,130" fill="none" stroke-width="2.2"/>
+                <rect class="d-band" x="168" y="58" width="50" height="72"/>
+                <rect class="d-band" x="388" y="58" width="50" height="72"/>
+                <rect class="d-band" x="608" y="58" width="50" height="72"/>
+                <text class="d-label-sm d-label-accent" x="193" y="88" text-anchor="middle">wake</text>
+                <text class="d-label-sm d-label-accent" x="413" y="88" text-anchor="middle">wake</text>
+                <text class="d-label-sm d-label-accent" x="633" y="88" text-anchor="middle">wake</text>
+                <text class="d-label-sm" x="108" y="118" text-anchor="middle">sleep</text>
+                <text class="d-label-sm" x="303" y="118" text-anchor="middle">sleep</text>
+                <text class="d-label-sm" x="523" y="118" text-anchor="middle">sleep</text>
+                <text class="d-label-sm" x="724" y="118" text-anchor="middle">sleep</text>
+                <path class="d-dim" d="M168 148V158M388 148V158M608 148V158M168 153H388M388 153H608" fill="none" stroke-width="1"/>
+                <text class="d-label-sm" x="278" y="174" text-anchor="middle">TWT interval</text>
+                <text class="d-label-sm" x="498" y="174" text-anchor="middle">TWT interval</text>
+                <text class="d-label-sm" x="790" y="194" text-anchor="end">time &rarr;</text>
+              </svg>
+              <figcaption>The radio wakes briefly to send and receive MQTT messages, then sleeps. The touch pad still works while the radio is asleep.</figcaption>
+            </figure>
+          </section>
+
+          <section class="p-sec" id="section-8">
+            <h2>Protecting the settings</h2>
+            <p>The calibration and schedules live in flash, and a power cut in the middle of a save shouldn't lose them.</p>
+            <ul class="numbers">
+              <li><span class="n">2<small>s</small></span><div><h3>Between saves</h3><p>Settings save when they change, but never more than once every two seconds, to save wear on the flash.</p></div></li>
+              <li><span class="n">2</span><div><h3>Copies, each with a CRC32</h3><p>There are two settings slots. At start-up the firmware checks the checksum and loads the other copy if the main one is broken.</p></div></li>
+              <li><span class="n">3</span><div><h3>Restarts before recovery mode</h3><p>Repeated unexpected restarts put it into recovery mode, which stops normal motor moves so I can work out what's wrong before it tries again.</p></div></li>
+            </ul>
+            <p>If I change the format of the saved settings in a firmware update, it checks the version that's stored and moves the compatible values across.</p>
+          </section>
+
+          <section class="p-sec" id="section-9">
+            <h2>Full spec</h2>
+            <table class="data">
+              <tbody>
+                <tr><th scope="row">Processor</th><td>ESP32-C6, 32-bit RISC-V, 160 MHz</td></tr>
+                <tr><th scope="row">Radio</th><td>2.4 GHz Wi-Fi 6 and Bluetooth LE 5, with Target Wake Time</td></tr>
+                <tr><th scope="row">Power</th><td>USB-C, 5 V 2 A, with a TVS diode and fuse</td></tr>
+                <tr><th scope="row">Rails</th><td>5 V for the motor, 3.3 V logic from an AMS1117</td></tr>
+                <tr><th scope="row">Memory</th><td>4 MB flash and 512 KB SRAM, with the settings in two CRC32-checked slots</td></tr>
+                <tr><th scope="row">Motor</th><td>Stepper on a TMC2209 with StealthChop2, AccelStepper, 20 kHz timer</td></tr>
+                <tr><th scope="row">Position</th><td>64-bit step counter (<code>int64_t</code>), no encoder</td></tr>
+                <tr><th scope="row">Touch</th><td>TTP223 capacitive pad, five-state debounced state machine</td></tr>
+                <tr><th scope="row">Voice</th><td>SinricPro over a WebSocket, for Alexa and Google Home</td></tr>
+                <tr><th scope="row">Diagnostics</th><td>Six ring buffers covering Wi-Fi, MQTT and the motor</td></tr>
+                <tr><th scope="row">Recovery</th><td>Safe mode, and booting from the backup settings slot</td></tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="p-sec" id="section-10">
+            <h2>Download the files</h2>
+            <p>These are the actual files from my build. They're not a tested kit, so check the revision and the measurements against your own blind before you print or order anything.</p>
+            <ul class="files">
+              <li><a href="../code/StepperMote.zip" download><div><strong>Firmware source</strong><span class="desc">The full firmware project, zipped</span></div><span class="size">23.2 MB</span><span class="dl" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg></span></a></li>
+              <li><a href="../code/BlindsGerber.zip" download><div><strong>PCB Gerbers</strong><span class="desc">Ready to upload to a PCB manufacturer</span></div><span class="size">17 KB</span><span class="dl" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg></span></a></li>
+              <li><a href="../code/Body1.stl" download><div><strong>Case STL</strong><span class="desc">The printed body of the controller</span></div><span class="size">363 KB</span><span class="dl" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg></span></a></li>
+            </ul>
+          </section>
+
+          <section class="p-sec" id="section-11">
+            <h2>What I'd change next</h2>
+            <p>The first thing I want to try is setting up the TMC2209 over UART instead of relying only on its hardware pins. That would let the firmware change the driver settings and read its diagnostics, which should make setup and fault-finding easier.</p>
+            <p>I'm also thinking about separate up and down buttons and a clearer status light. Those are ideas for the next build, not things the current one does.</p>
+            <p>In the meantime you can try the blinds controls in the <a href="zaylo-remote.html">Zaylo Remote demo</a>, which has pretend blinds you can move around.</p>
+          </section>
+
+          <div class="next-up">
+            <div>
+              <p class="label">Next project</p>
+              <a class="next" href="zaylo-remote.html">Zaylo Remote <span class="arr" aria-hidden="true">&rarr;</span></a>
+            </div>
+            <a class="arrow-link" href="../index.html#work">All projects</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p>Bristol, UK</p>
+      <p><a href="#main-content">Back to the top</a></p>
+    </div>
+  </footer>
+
+  <script src="../site.js?v=7"></script>
+</body>
+</html>

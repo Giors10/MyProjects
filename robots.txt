@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://giorgi.uk/sitemap.xml
+
+# Personal portfolio of Giorgi Suramlishvili. Crawl freely.
+# A plain-text summary of the site is at https://giorgi.uk/llms.txt
+

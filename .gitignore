@@ -1,0 +1,11 @@
+# Local tooling / editor config (NOT part of the website)
+.claude/
+NewApp/
+
+# Windows / OneDrive system files
+desktop.ini
+Thumbs.db
+ehthumbs.db
+
+# macOS
+.DS_Store

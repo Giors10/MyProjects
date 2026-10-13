@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en-GB" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zaylo Remote app · Giorgi Suramlishvili</title>
+  <meta name="description" content="Zaylo Remote is the web app that controls my light switch and blinds: live MQTT updates, shared homes on Firebase and Bluetooth rescue for devices that lose Wi-Fi. Try the demo with pretend devices. By Giorgi Suramlishvili." />
+  <meta name="author" content="Giorgi Suramlishvili" />
+  <meta name="keywords" content="Giorgi Suramlishvili, Zaylo Remote, progressive web app, PWA, smart home app, MQTT over WebSockets, Firebase, Web Bluetooth, ESP32, home automation, Bristol" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="theme-color" content="#fbfbf8" />
+  <meta name="color-scheme" content="light dark" />
+  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <link rel="canonical" href="https://giorgi.uk/projects/zaylo-remote.html" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16.png" />
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+  <meta property="og:title" content="Zaylo Remote app · Giorgi Suramlishvili" />
+  <meta property="og:description" content="The web app that runs my light switch and blinds, with live MQTT updates, shared homes and Bluetooth rescue. There's a demo with pretend devices." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://giorgi.uk/projects/zaylo-remote.html" />
+  <meta property="og:image" content="https://giorgi.uk/projects/zaylo-app.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="780" />
+  <meta property="og:image:height" content="1664" />
+  <meta property="og:image:alt" content="The Zaylo Remote dashboard showing blinds and light switches" />
+  <meta property="og:locale" content="en_GB" />
+  <meta property="og:site_name" content="Giorgi Suramlishvili" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Zaylo Remote app · Giorgi Suramlishvili" />
+  <meta name="twitter:description" content="The web app that runs my light switch and blinds. There's a demo with pretend devices." />
+  <meta name="twitter:image" content="https://giorgi.uk/projects/zaylo-app.jpg" />
+  <script type="application/ld+json">
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "@id": "https://giorgi.uk/projects/zaylo-remote.html#article",
+      "headline": "Zaylo Remote: the app for my light switch and blinds",
+      "description": "An installable web app for the light switch and blinds controller, with live MQTT updates, Firebase accounts and shared homes, and a Web Bluetooth rescue mode, built by Giorgi Suramlishvili.",
+      "url": "https://giorgi.uk/projects/zaylo-remote.html",
+      "image": "https://giorgi.uk/projects/zaylo-app.jpg",
+      "dateCreated": "2025-01-01",
+      "datePublished": "2025-01-01",
+      "dateModified": "2026-10-12",
+      "inLanguage": "en-GB",
+      "author": { "@type": "Person", "@id": "https://giorgi.uk/#giorgi", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" },
+      "about": ["Progressive Web Apps", "MQTT", "Firebase", "Web Bluetooth", "Home automation", "JavaScript"],
+      "isPartOf": { "@type": "WebSite", "@id": "https://giorgi.uk/#website", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Giorgi Suramlishvili", "item": "https://giorgi.uk/" },
+        { "@type": "ListItem", "position": 2, "name": "Projects", "item": "https://giorgi.uk/#work" },
+        { "@type": "ListItem", "position": 3, "name": "Zaylo Remote", "item": "https://giorgi.uk/projects/zaylo-remote.html" }
+      ]
+    }
+  ]
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="../site.css?v=8" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <nav class="nav" aria-label="Main">
+    <div class="wrap nav-inner">
+      <a class="brand" href="../index.html" aria-label="Giorgi Suramlishvili, home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
+        <span>Giorgi Suramlishvili</span>
+      </a>
+      <div class="nav-links" id="primary-links">
+        <div class="nav-work">
+          <a href="../index.html#work" data-section="work">Projects</a>
+          <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="work-dropdown" id="work-dropdown">
+            <a href="light-switch.html">Light switch <span>2022</span></a>
+            <a href="blinds-control.html">Blinds controller <span>2025</span></a>
+            <a href="zaylo-remote.html" aria-current="page">Zaylo Remote <span>2025</span></a>
+            <a href="self-balancing-robot.html">Atlas, the balancing robot <span>2025</span></a>
+            <a href="inverted-pendulum.html">Pendulum control paper <span>2026</span></a>
+            <a class="all" href="../index.html#work">All projects</a>
+          </div>
+        </div>
+        <a href="../index.html#about" data-section="about">About</a>
+        <a href="../index.html#track" data-section="track">Experience</a>
+        <a href="../index.html#contact" data-section="contact">Contact</a>
+      </div>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.8a7.2 7.2 0 0 1 0 14.4z" fill="currentColor"/></svg></button>
+      <button class="nav-toggle" type="button" aria-controls="primary-links" aria-expanded="false" aria-label="Open menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="../index.html">Home</a><span aria-hidden="true">/</span><a href="../index.html#work">Projects</a><span aria-hidden="true">/</span><span aria-current="page">Zaylo Remote</span></nav>
+
+      <header class="p-head">
+        <div>
+          <p class="p-kicker">2025 to now, still updating it</p>
+          <h1 class="p-title">Zaylo Remote</h1>
+          <p class="p-standfirst">The app that runs my light switch and blinds. It's a web app you can install on a phone, with live updates over MQTT, shared homes on Firebase, and a Bluetooth rescue screen for when a device loses its Wi-Fi.</p>
+          <dl class="p-facts">
+            <div><dt>Type</dt><dd>Installable web app (PWA)</dd></div>
+            <div><dt>Live updates</dt><dd>MQTT over WebSockets</dd></div>
+            <div><dt>Accounts</dt><dd>Firebase</dd></div>
+            <div><dt>Rescue</dt><dd>Web Bluetooth</dd></div>
+          </dl>
+        </div>
+        <figure class="demo">
+          <div class="device-frame">
+            <div class="device-screen">
+              <iframe src="../zaylo-remote/index.html?demo=true" width="390" height="844" title="Zaylo Remote running in demo mode" loading="lazy"></iframe>
+            </div>
+          </div>
+          <figcaption>This is the real app in demo mode, so tap around. The devices are pretend ones and nothing here talks to my hardware.</figcaption>
+        </figure>
+      </header>
+
+      <div class="p-layout">
+        <aside class="toc" aria-label="On this page">
+          <details open>
+            <summary>On this page</summary>
+            <p class="toc-title">On this page</p>
+            <ol>
+              <li><a href="#section-1">One place for everything</a></li>
+              <li><a href="#section-2">How the app connects</a></li>
+              <li><a href="#section-3">What's going on inside</a></li>
+              <li><a href="#section-4">The screens</a></li>
+              <li><a href="#section-5">The hardware on the other end</a></li>
+            </ol>
+          </details>
+        </aside>
+
+        <div class="p-main">
+          <section class="p-sec" id="section-1">
+            <h2>One place for everything</h2>
+            <p class="intro">Once I had a light switch and a blinds controller, I wanted one place to control both. The dashboard opens straight away with the last state it saw, then updates as MQTT messages arrive from the devices.</p>
+            <p>Firebase handles sign-in and shared homes, so everyone in the house can use the same devices from their own phone and see the same state.</p>
+            <p>The other problem it solves is Wi-Fi. A new router or a changed password can leave a device offline, and without the app the only fix would be opening the case. Instead the setup screen connects to the device over Bluetooth, sends it the new details and shows its diagnostics.</p>
+          </section>
+
+          <section class="p-sec" id="section-2">
+            <h2>How the app connects</h2>
+            <p>There are three separate routes: Firebase for accounts and shared homes, MQTT for controlling the devices live, and Web Bluetooth for setting them up or rescuing them.</p>
+            <figure class="diagram dots">
+              <svg class="connection-svg" viewBox="0 0 1000 470" role="img" aria-labelledby="arch-title arch-desc">
+                <title id="arch-title">How Zaylo Remote connects</title>
+                <desc id="arch-desc">The app talks to Firebase over HTTPS for accounts, to a Mosquitto broker over MQTT WebSockets, which relays messages to the ESP32-C6 devices. For setup and rescue the app connects to a device directly over Bluetooth.</desc>
+                <defs>
+                  <marker id="arch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="marker-fill" d="M0 0 L10 5 L0 10 Z"/></marker>
+                </defs>
+                <path class="diagram-line" d="M500 168 V112" marker-end="url(#arch-arrow)" marker-start="url(#arch-arrow)"/>
+                <path class="diagram-line" d="M380 214 H270" marker-end="url(#arch-arrow)" marker-start="url(#arch-arrow)"/>
+                <path class="diagram-line" d="M155 260 V330 H845 V260" marker-end="url(#arch-arrow)" marker-start="url(#arch-arrow)"/>
+                <path class="diagram-line wireless" d="M620 236 H700 V400 H760" marker-end="url(#arch-arrow)"/>
+                <rect class="diagram-label-bg" x="456" y="126" width="88" height="24" rx="4"/>
+                <text class="diagram-label" x="500" y="143" text-anchor="middle">HTTPS</text>
+                <rect class="diagram-label-bg" x="278" y="186" width="94" height="24" rx="4"/>
+                <text class="diagram-label" x="325" y="203" text-anchor="middle">WebSockets</text>
+                <rect class="diagram-label-bg" x="452" y="318" width="96" height="24" rx="4"/>
+                <text class="diagram-label" x="500" y="335" text-anchor="middle">MQTT</text>
+                <rect class="diagram-label-bg" x="650" y="362" width="100" height="24" rx="4"/>
+                <text class="diagram-label" x="700" y="379" text-anchor="middle">Bluetooth</text>
+                <g class="diagram-node"><rect x="380" y="30" width="240" height="82" rx="8"/><text class="diagram-title" x="398" y="62">Firebase</text><text class="diagram-sub" x="398" y="86">sign-in and shared homes</text></g>
+                <g class="diagram-node diagram-core"><rect x="380" y="168" width="240" height="92" rx="8"/><text class="diagram-title" x="398" y="200">Zaylo Remote</text><text class="diagram-sub" x="398" y="224">web app on the phone</text><text class="diagram-sub" x="398" y="244">one shared state store</text></g>
+                <g class="diagram-node"><rect x="40" y="168" width="230" height="92" rx="8"/><text class="diagram-title" x="58" y="200">Mosquitto broker</text><text class="diagram-sub" x="58" y="224">MQTT over WebSockets</text><text class="diagram-sub" x="58" y="244">relays device state</text></g>
+                <g class="diagram-node"><rect x="730" y="168" width="230" height="92" rx="8"/><text class="diagram-title" x="748" y="200">ESP32-C6 devices</text><text class="diagram-sub" x="748" y="224">light switch</text><text class="diagram-sub" x="748" y="244">blinds controller</text></g>
+                <g class="diagram-node"><rect x="760" y="360" width="200" height="80" rx="8"/><text class="diagram-title" x="778" y="392">Setup and rescue</text><text class="diagram-sub" x="778" y="416">straight to one device</text></g>
+                <path class="diagram-line wireless" d="M860 360 V262" marker-end="url(#arch-arrow)"/>
+              </svg>
+              <ol class="connection-list">
+                <li><strong>App</strong><span class="to" aria-label="to">&harr;</span><strong>Firebase</strong><p>HTTPS, for sign-in and shared homes.</p></li>
+                <li><strong>App</strong><span class="to" aria-label="to">&harr;</span><strong>MQTT broker</strong><p>WebSockets, for live commands and state.</p></li>
+                <li><strong>Broker</strong><span class="to" aria-label="to">&harr;</span><strong>Devices</strong><p>MQTT, relaying the messages both ways.</p></li>
+                <li><strong>App</strong><span class="to" aria-label="to">&rarr;</span><strong>One device</strong><p>Bluetooth, for setup and rescue when Wi-Fi isn't working.</p></li>
+              </ol>
+              <figcaption>Solid lines carry everyday traffic. The dashed Bluetooth link is only used for setup and rescue.</figcaption>
+            </figure>
+          </section>
+
+          <section class="p-sec" id="section-3">
+            <h2>What's going on inside</h2>
+            <div class="notes">
+              <div><h3>One state store</h3><p>A single store holds the devices, the home and the user. When a device changes, or someone else's phone sends a command, every screen updates from it. <code>sessionStorage</code> carries the state between pages.</p></div>
+              <div><h3>Accounts and shared homes</h3><p>A home groups the devices that belong together, and invites let other people in the house join with their own account. Firestore rules only let members of a home see its devices.</p></div>
+              <div><h3>Live updates over MQTT</h3><p>Commands go out through the broker and the app listens for state coming back, so the controls stay in step with the hardware. How fast that feels depends on the connection.</p></div>
+              <div><h3>Bluetooth rescue</h3><p>In a browser with Web Bluetooth, I can connect straight to a nearby device, read its logs and give it new Wi-Fi details. It's my way back in when it can't reach the router.</p></div>
+              <div><h3>Demo mode</h3><p>The demo uses pretend switches and blinds, so anyone can try the controls without touching my hardware. The blind positions move, but they aren't coming from a real motor.</p></div>
+              <div><h3>Installable</h3><p>A service worker caches the app's files and it can be added to the home screen. Live updates still need the network, and the browser has to keep the page running.</p></div>
+            </div>
+          </section>
+
+          <section class="p-sec" id="section-4">
+            <h2>The screens</h2>
+            <p>Most of these are in the demo at the top of the page.</p>
+            <ol class="screens">
+              <li><h3>Home</h3><p>Every device with its live status, a switch between shared homes, and the invite flow for adding the rest of the household.</p></li>
+              <li><h3>Light switch</h3><p>On and off, the five modes, the alarm, the radar settings and schedules for the presence automations.</p></li>
+              <li><h3>Blinds</h3><p>A slider for any position from closed to open, saved favourite positions, sunrise and sunset schedules, single-step nudges, and recalibrating the limits if the chain changes.</p></li>
+              <li><h3>Spaces</h3><p>Scenes, groups and automations that control several blinds at once.</p></li>
+              <li><h3>Setup and rescue</h3><p>A step-by-step pairing flow over Bluetooth: pick a network, enter the broker details and check the device answers. Nothing to install.</p></li>
+              <li><h3>Diagnostics</h3><p>Live MQTT traffic, round-trip times, the service worker's state and the Firestore sync log. It's the screen I open when something looks wrong.</p></li>
+            </ol>
+          </section>
+
+          <section class="p-sec" id="section-5">
+            <h2>The hardware on the other end</h2>
+            <p>I wrote the app for these two. Their pages go into the hardware and firmware properly.</p>
+            <div class="link-cards">
+              <a href="light-switch.html"><strong>The light switch &rarr;</strong><span>A servo presses my bedroom light switch, with radar presence sensing, touch pads and five modes.</span></a>
+              <a href="blinds-control.html"><strong>The blinds controller &rarr;</strong><span>A stepper motor pulls the bead chain of my roller blind, on a PCB I designed.</span></a>
+            </div>
+          </section>
+
+          <div class="next-up">
+            <div>
+              <p class="label">Next project</p>
+              <a class="next" href="self-balancing-robot.html">Atlas, the balancing robot <span class="arr" aria-hidden="true">&rarr;</span></a>
+            </div>
+            <a class="arrow-link" href="../index.html#work">All projects</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p>Bristol, UK</p>
+      <p><a href="#main-content">Back to the top</a></p>
+    </div>
+  </footer>
+
+  <script src="../site.js?v=7"></script>
+</body>
+</html>

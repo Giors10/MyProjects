@@ -8,7 +8,17 @@
   <meta name="robots" content="noindex, follow" />
   <meta name="theme-color" content="#fbfbf8" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <script>
+    // set the theme before anything is drawn so dark mode doesn't flash white
+    (function () {
+      var r = document.documentElement, t;
+      r.className += ' js';
+      try { t = localStorage.getItem('gs-theme'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      r.setAttribute('data-theme', t);
+      r.style.colorScheme = t;
+    })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
@@ -16,7 +26,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="/site.css?v=8" />
+  <link rel="stylesheet" href="/site.css?v=15" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -24,12 +34,12 @@
   <nav class="nav" aria-label="Main">
     <div class="wrap nav-inner">
       <a class="brand" href="/" aria-label="Giorgi Suramlishvili, home">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
-        <span>Giorgi Suramlishvili</span>
+        <span class="cube-scene" aria-hidden="true"><span class="cube"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span>
+        <span class="brand-name">Giorgi Suramlishvili</span>
       </a>
       <div class="nav-links" id="primary-links">
-        <a href="/#work">Projects</a>
         <a href="/#about">About</a>
+        <a href="/#work">Projects</a>
         <a href="/#track">Experience</a>
         <a href="/#contact">Contact</a>
       </div>
@@ -40,16 +50,11 @@
 
   <main id="main-content" tabindex="-1">
     <div class="wrap nf">
-      <svg class="nf-fallen" viewBox="0 0 160 70" aria-hidden="true">
-        <path d="M6 62H154" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path d="M44 46 118 55" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-        <circle cx="126" cy="54" r="8" fill="var(--hl)" stroke="currentColor" stroke-width="2"/>
-        <circle cx="40" cy="46" r="15" fill="var(--paper)" stroke="currentColor" stroke-width="2.4"/>
-        <circle cx="40" cy="46" r="4" fill="currentColor"/>
-      </svg>
+      <button class="cube-toy" type="button" aria-label="Spin the big cube"><span class="cube-scene" aria-hidden="true"><span class="cube"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span></button>
       <p class="nf-code">404</p>
-      <h1>This page fell over</h1>
-      <p>There's nothing at this address. It might have moved when I rebuilt the site, or the link might just be wrong.</p>
+      <h1>Nothing here</h1>
+      <p>There&rsquo;s no page at this address. It might have moved when I rebuilt the site, or the link might just be wrong.</p>
+      <p class="nf-hint">You can spin the cube while you&rsquo;re here, though.</p>
       <div class="nf-links">
         <a class="button" href="/">Go to the home page</a>
         <a class="button ghost" href="/#work">See the projects</a>
@@ -65,6 +70,6 @@
     </div>
   </footer>
 
-  <script src="/site.js?v=7"></script>
+  <script src="/site.js?v=15"></script>
 </body>
 </html>

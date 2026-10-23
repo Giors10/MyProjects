@@ -6,11 +6,20 @@
   <title>Smart light switch · Giorgi Suramlishvili</title>
   <meta name="description" content="A box that sits over a normal UK light switch and presses it with a servo. ESP32-C6, 24 GHz mmWave presence sensing, five modes, MQTT and Alexa / Google Home. Built by Giorgi Suramlishvili in Bristol." />
   <meta name="author" content="Giorgi Suramlishvili" />
-  <meta name="keywords" content="Giorgi Suramlishvili, smart light switch, retrofit light switch, servo light switch, ESP32-C6, LD2410C, mmWave presence sensor, MQTT, SinricPro, home automation, Bristol" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="robots" content="max-image-preview:large" />
   <meta name="theme-color" content="#fbfbf8" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <script>
+    // set the theme before anything is drawn so dark mode doesn't flash white
+    (function () {
+      var r = document.documentElement, t;
+      r.className += ' js';
+      try { t = localStorage.getItem('gs-theme'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      r.setAttribute('data-theme', t);
+      r.style.colorScheme = t;
+    })();
+  </script>
   <link rel="canonical" href="https://giorgi.uk/projects/light-switch.html" />
   <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
@@ -44,7 +53,7 @@
       "image": "https://giorgi.uk/projects/light-switch-photo.jpg",
       "dateCreated": "2022",
       "datePublished": "2023",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-21",
       "inLanguage": "en-GB",
       "author": { "@type": "Person", "@id": "https://giorgi.uk/#giorgi", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" },
       "about": ["ESP32-C6", "mmWave radar", "MQTT", "Home automation", "Embedded firmware"],
@@ -64,7 +73,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="../site.css?v=8" />
+  <link rel="stylesheet" href="../site.css?v=15" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -72,10 +81,11 @@
   <nav class="nav" aria-label="Main">
     <div class="wrap nav-inner">
       <a class="brand" href="../index.html" aria-label="Giorgi Suramlishvili, home">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
-        <span>Giorgi Suramlishvili</span>
+        <span class="cube-scene" aria-hidden="true"><span class="cube"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span>
+        <span class="brand-name">Giorgi Suramlishvili</span>
       </a>
       <div class="nav-links" id="primary-links">
+        <a href="../index.html#about" data-section="about">About</a>
         <div class="nav-work">
           <a href="../index.html#work" data-section="work">Projects</a>
           <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -88,7 +98,6 @@
             <a class="all" href="../index.html#work">All projects</a>
           </div>
         </div>
-        <a href="../index.html#about" data-section="about">About</a>
         <a href="../index.html#track" data-section="track">Experience</a>
         <a href="../index.html#contact" data-section="contact">Contact</a>
       </div>
@@ -105,7 +114,7 @@
         <div>
           <p class="p-kicker">Built from 2022 to 2023, over three versions</p>
           <h1 class="p-title">The light switch</h1>
-          <p class="p-standfirst">A box that sits over the light switch in my bedroom and presses it with a servo. The switch itself stays exactly as it was, so I never had to go near the mains wiring.</p>
+          <p class="p-standfirst">A box that sits over the light switch in my bedroom and presses it with a servo. The switch underneath is untouched, so I never had to go near the mains wiring.</p>
           <dl class="p-facts">
             <div><dt>Built</dt><dd>2022&ndash;23, three versions</dd></div>
             <div><dt>Microcontroller</dt><dd>ESP32-C6</dd></div>
@@ -121,11 +130,13 @@
               <path d="M78 13 Q66 20 58 37"/><circle cx="57.6" cy="38" r=".7"/>
               <path d="M13 60 Q16 66 21 68"/><circle cx="21.6" cy="68.4" r=".7"/>
               <path d="M60 90 Q48 92 41 86"/><circle cx="40.4" cy="85.5" r=".7"/>
+              <path d="M61 61.5 Q51 61 43.2 48.4"/><circle cx="42.7" cy="47.6" r=".7"/>
             </svg>
             <p class="callout-label" style="left:2%;top:11%">OLED screen<span>time, weather, mode</span></p>
             <p class="callout-label" style="left:72%;top:3%">SG90 servo<span>presses the rocker</span></p>
             <p class="callout-label" style="left:1%;top:50%">Radar<span>LD2410C, 24 GHz</span></p>
             <p class="callout-label" style="left:61%;top:87%">USB-C power</p>
+            <p class="callout-label" style="left:62%;top:57%">Touch pad<span>TTP223, behind the front wall</span></p>
           </div>
           <figcaption>Version 3, the finished build, on my bedroom wall.</figcaption>
         </figure>
@@ -153,7 +164,7 @@
         <div class="p-main">
           <section class="p-sec" id="section-1">
             <h2>Why it presses the switch</h2>
-            <p class="intro">The usual way to make a light smart is to replace the switch, which means working on the mains wiring. I didn't want to do that in my room, so the controller sits over the existing rocker and a small servo presses it for me. Take the box off and the switch works exactly like it did before.</p>
+            <p class="intro">Normally you'd make a light smart by swapping the switch, which means working on mains wiring. I wasn't going to do that in my bedroom at 13, so the controller sits over the rocker and a little servo presses it instead. Take the box off and it's just a normal switch again.</p>
             <p>It runs off USB-C. Inside there's an ESP32-C6, a radar module for presence, two touch pads, a small OLED screen and the servo. It talks to the <a href="blinds-control.html">blinds controller</a> and the <a href="zaylo-remote.html">Zaylo Remote</a> app over MQTT, and to Alexa and Google Home through SinricPro.</p>
             <div class="side-by-side">
               <figure>
@@ -211,34 +222,65 @@
 
           <section class="p-sec" id="section-3">
             <h2>The five modes</h2>
-            <p>Most of the time it's in Auto. The other four are for when I want to override it, or when the time of day matters more than whether someone is in the room.</p>
+            <p>The switch is always in one of five modes, and each one decides what's allowed to change the light. Auto is the normal one. The other four are different ways of taking over from the radar.</p>
+            <p>You get between them with the action pad. A tap switches the light, a double tap locks or unlocks it, and holding it for about a second starts or ends Bedtime. The app can jump straight to any mode. (Holding the pad for 15 seconds is a factory reset, so that one's hard to do by accident.)</p>
+            <figure class="diagram dots">
+              <svg class="connection-svg" viewBox="0 0 1000 520" role="img" aria-labelledby="modes-title modes-desc">
+                <title id="modes-title">How the modes connect</title>
+                <desc id="modes-desc">Auto is in the middle. A tap goes to Manual, and Manual goes back to Auto when its timer runs out. A double tap goes to Locked and another double tap comes back. Holding the pad goes to Bedtime and holding it again comes back. Alarm is picked from the app, and a tap in Alarm turns the light off and goes to Manual.</desc>
+                <defs>
+                  <marker id="mode-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="marker-fill" d="M0 0 L10 5 L0 10 Z"/></marker>
+                </defs>
+                <path class="diagram-line" d="M390 240H252" marker-end="url(#mode-arrow)"/>
+                <path class="diagram-line" d="M250 276H388" marker-end="url(#mode-arrow)"/>
+                <path class="diagram-line" d="M610 240H748" marker-end="url(#mode-arrow)"/>
+                <path class="diagram-line" d="M750 276H612" marker-end="url(#mode-arrow)"/>
+                <path class="diagram-line" d="M480 308V410" marker-end="url(#mode-arrow)"/>
+                <path class="diagram-line" d="M520 412V310" marker-end="url(#mode-arrow)"/>
+                <path class="diagram-line wireless" d="M480 208V110" marker-end="url(#mode-arrow)"/>
+                <path class="diagram-line" d="M390 66H140V214" marker-end="url(#mode-arrow)"/>
+                <text class="diagram-label" x="321" y="230" text-anchor="middle">tap</text>
+                <text class="diagram-label" x="319" y="298" text-anchor="middle">timer runs out</text>
+                <text class="diagram-label" x="680" y="230" text-anchor="middle">double tap</text>
+                <text class="diagram-label" x="681" y="298" text-anchor="middle">double tap again</text>
+                <text class="diagram-label" x="470" y="365" text-anchor="end">hold</text>
+                <text class="diagram-label" x="530" y="365">hold again</text>
+                <text class="diagram-label" x="470" y="164" text-anchor="end">from the app</text>
+                <text class="diagram-label" x="264" y="56" text-anchor="middle">tap: light off</text>
+                <g class="diagram-node"><rect x="390" y="24" width="220" height="84" rx="8"/><text x="408" y="56" class="diagram-title">Alarm</text><text x="408" y="80" class="diagram-sub">servo nudges the switch</text></g>
+                <g class="diagram-node"><rect x="30" y="216" width="220" height="84" rx="8"/><text x="48" y="248" class="diagram-title">Manual</text><text x="48" y="272" class="diagram-sub">until the timer runs out</text></g>
+                <g class="diagram-node diagram-core"><rect x="390" y="208" width="220" height="100" rx="8"/><text x="408" y="242" class="diagram-title">Auto</text><text x="408" y="266" class="diagram-sub">the radar decides</text><text x="408" y="286" class="diagram-sub">where it starts up</text></g>
+                <g class="diagram-node"><rect x="750" y="216" width="220" height="84" rx="8"/><text x="768" y="248" class="diagram-title">Locked</text><text x="768" y="272" class="diagram-sub">radar can't switch it</text></g>
+                <g class="diagram-node"><rect x="390" y="412" width="220" height="84" rx="8"/><text x="408" y="444" class="diagram-title">Bedtime</text><text x="408" y="468" class="diagram-sub">nothing automatic</text></g>
+              </svg>
+              <ol class="connection-list">
+                <li><strong>Auto</strong><span class="to" aria-label="to">&rarr;</span><strong>Manual</strong><p>A tap. It goes back to Auto when the timer runs out.</p></li>
+                <li><strong>Auto</strong><span class="to" aria-label="and back to">&harr;</span><strong>Locked</strong><p>A double tap each way.</p></li>
+                <li><strong>Auto</strong><span class="to" aria-label="and back to">&harr;</span><strong>Bedtime</strong><p>Hold the pad for about a second each way.</p></li>
+                <li><strong>App</strong><span class="to" aria-label="to">&rarr;</span><strong>Alarm</strong><p>Picked from the app. A tap turns the light off and goes to Manual.</p></li>
+              </ol>
+              <figcaption>Solid lines are touch pad gestures and the Manual timer. The dashed one is a command from the app, which can also pick any of the other modes directly.</figcaption>
+            </figure>
             <div class="modes">
-              <details class="mode-item" open><summary><span class="mode-number">01</span><strong>Auto</strong><span>The room decides</span></summary><div class="mode-body"><p>The normal mode. The radar decides whether the room is occupied, and the light follows that.</p><ol class="mode-route" aria-label="Auto mode"><li>Someone comes in</li><li>Auto</li><li>Light follows the room</li></ol></div></details>
-              <details class="mode-item"><summary><span class="mode-number">02</span><strong>Manual</strong><span>I decide</span></summary><div class="mode-body"><p>A tap on the touch pad or a command from the app overrides the radar. After a timeout it goes back to Auto on its own.</p><ol class="mode-route" aria-label="Manual mode"><li>Tap or app command</li><li>Manual</li><li>Temporary override</li></ol></div></details>
-              <details class="mode-item"><summary><span class="mode-number">03</span><strong>Alarm</strong><span>Light on at a set time</span></summary><div class="mode-body"><p>Turns the light on for a scheduled wake-up. Tapping the pad cancels it and drops into Manual.</p><ol class="mode-route" aria-label="Alarm mode"><li>Alarm time</li><li>Alarm</li><li>Light on</li></ol></div></details>
-              <details class="mode-item"><summary><span class="mode-number">04</span><strong>Bedtime</strong><span>Stays off while I fall asleep</span></summary><div class="mode-body"><p>Stops the radar switching the light on when I move around in bed. Holding the touch pad turns it on or off.</p><ol class="mode-route" aria-label="Bedtime mode"><li>Hold the pad</li><li>Bedtime</li><li>Radar ignored</li></ol></div></details>
-              <details class="mode-item"><summary><span class="mode-number">05</span><strong>Locked</strong><span>Keeps what it's doing</span></summary><div class="mode-body"><p>Nothing changes the light until it's unlocked. A double tap locks and unlocks it.</p><ol class="mode-route" aria-label="Locked mode"><li>Double tap</li><li>Locked</li><li>Light stays as it is</li></ol></div></details>
+              <details class="mode-item" open><summary><span class="mode-number">01</span><strong>Auto</strong><span>The radar decides</span></summary><div class="mode-body"><p>This is where it spends most of its time, and where the other modes come back to. When the radar sees someone it turns the light on. Once it hasn't seen anyone for the motion timeout, it turns it off again. The timeout can be 30 seconds, or 1, 5 or 10 minutes, picked from the menu on the screen.</p><p>Between sunrise and sunset it won't turn the light on by itself, but it'll still turn it off when I leave.</p><ol class="mode-route" aria-label="Auto mode"><li>Where it starts up</li><li>Auto</li><li>Tap, double tap or hold</li></ol></div></details>
+              <details class="mode-item"><summary><span class="mode-number">02</span><strong>Manual</strong><span>I decide, for a while</span></summary><div class="mode-body"><p>A tap on the pad, or a command from the app, switches the light and puts it into Manual, so the radar stops overruling me. Every tap after that restarts the timer, and when the timer runs out it goes back to Auto by itself.</p><p>The timer can be anything from 10 seconds to 8 hours. It's saved, so a power cut halfway through doesn't cancel it.</p><ol class="mode-route" aria-label="Manual mode"><li>Tap the pad</li><li>Manual</li><li>Timer runs out: back to Auto</li></ol></div></details>
+              <details class="mode-item"><summary><span class="mode-number">03</span><strong>Alarm</strong><span>Wake-up light</span></summary><div class="mode-body"><p>At the alarm time I set in the app, the light comes on to wake me up, whatever mode it's in. If it was in Bedtime, that ends Bedtime, and with it the night's sleep recording. If it was Locked, it switches to Manual so the light is allowed on.</p><p>Alarm mode itself is the more insistent version, picked from the app. The servo gives the rocker a tiny nudge every two seconds until I tap the pad, which turns the light off and drops it into Manual. A command from the app or a voice command stops it too.</p><ol class="mode-route" aria-label="Alarm mode"><li>Picked in the app</li><li>Alarm</li><li>Tap: light off, into Manual</li></ol></div></details>
+              <details class="mode-item"><summary><span class="mode-number">04</span><strong>Bedtime</strong><span>Nothing automatic while I sleep</span></summary><div class="mode-body"><p>Holding the pad for about a second starts Bedtime, and holding it again ends it. It's also what the sleep tracking runs on: the night is recorded from when Bedtime starts to when it ends.</p><p>It leaves the light exactly as it was. The radar can't switch it when I move around in bed, single and double taps are ignored, and if the light was on, nothing turns it off until Bedtime ends. If it was off, the app can still turn it on without ending the night's recording.</p><ol class="mode-route" aria-label="Bedtime mode"><li>Hold the pad</li><li>Bedtime</li><li>Hold again, or the alarm</li></ol></div></details>
+              <details class="mode-item"><summary><span class="mode-number">05</span><strong>Locked</strong><span>The radar's switched off</span></summary><div class="mode-body"><p>Locked stops the radar switching the light at all, but leaves everything else working. A tap still turns the light on or off without leaving Locked, and so do the app and voice commands. It's for when I want the light to stay how I've set it, however much I move around.</p><p>A double tap locks it, and another double tap unlocks it back to Auto. Holding the pad still starts Bedtime, the same as from any other mode.</p><ol class="mode-route" aria-label="Locked mode"><li>Double tap</li><li>Locked</li><li>Double tap again: back to Auto</li></ol></div></details>
             </div>
-            <div class="notes">
-              <div><h3>Daylight is separate</h3><p>Between sunrise and sunset the radar doesn't turn the light on. That's a setting on top of the modes, not a sixth mode.</p></div>
-              <div><h3>Safe mode isn't a normal mode</h3><p>It only happens after repeated crashes. There's more on it in <a href="#section-8">when something goes wrong</a>.</p></div>
-            </div>
+            <p>Safe mode isn't one of the five. It only kicks in after repeated crashes (more on that in <a href="#section-8">when something goes wrong</a>).</p>
           </section>
 
           <section class="p-sec" id="section-4">
             <h2>Detecting presence</h2>
             <p>I used radar because an ordinary motion sensor stops seeing you once you sit still, which is exactly when I want the light to stay on. The LD2410C reports movement in nine distance gates, and the firmware filters those readings before it decides whether anyone is in the room.</p>
-            <div class="notes">
-              <div><h3>Two filters</h3><p>A fast one reacts to big movements and a slow one follows small changes. Together they turn the light on as I walk in without turning it off when I sit down.</p></div>
-              <div><h3>Different on and off thresholds</h3><p>Turning the light on needs a stronger signal than keeping it on, so it doesn't flicker on and off when a reading sits right on the edge.</p></div>
-              <div><h3>Learning the room</h3><p>At start-up, and again whenever the room is empty, it measures the background readings so it has something to compare against.</p></div>
-              <div><h3>Ignoring its own servo</h3><p>Detection pauses while the servo moves and for a moment afterwards. Otherwise it would see itself pressing the switch and think someone was there.</p></div>
-            </div>
+            <p>There are two filters on the readings. A fast one reacts to big movements, so the light comes on as soon as I walk in. A slow one picks up the small movements you still make when you're sitting still, so the light stays on while I'm working at my desk. Turning the light on also needs a stronger signal than keeping it on. Without that gap it would flicker whenever a reading sat right on the edge.</p>
+            <p>At start-up, and again whenever the room is empty, it measures the background so it has something to compare against. Detection also pauses while the servo moves and for a moment after, because otherwise it would see its own arm pressing the switch and decide someone had walked in.</p>
           </section>
 
           <section class="p-sec" id="section-5">
             <h2>Pins and connections</h2>
-            <p>These are the connections in my build. If you reuse them, check them against the pin definitions in the firmware for your board first.</p>
+            <p>These are the connections in my build. If you're copying them, check them against the firmware for your board first.</p>
             <table class="data">
               <thead><tr><th scope="col">Part</th><th scope="col">Model</th><th scope="col">Pin</th><th scope="col">Signal</th><th scope="col">What it does</th></tr></thead>
               <tbody>
@@ -256,7 +298,9 @@
 
           <section class="p-sec" id="section-6">
             <h2>Sleep tracking</h2>
-            <p>This started as a programming experiment. The switch already records when I go to bed and when I get up, so I wrote a score from those events. It all runs on the switch. It can only estimate habits from the times it records, so it doesn't measure sleep in any medical sense.</p>
+            <p>This started as a programming experiment. The switch already knows roughly when I go to bed and when I get up, so I wrote a score based on those times. It all runs on the switch itself. All it knows is when the light went off and when it came back on, so it isn't measuring sleep in any medical sense.</p>
+            <p>This is how the score is weighted:</p>
+            <div class="weight-bar" aria-hidden="true"><span>40%</span><span>35%</span><span>15%</span><span>10%</span></div>
             <div class="weights">
               <div><b>40%</b><strong>Duration</strong><p>How long I slept compared with the target I set.</p></div>
               <div><b>35%</b><strong>Consistency</strong><p>How much my bedtime moves around. The aim is under 15 minutes.</p></div>
@@ -289,9 +333,9 @@
               <div><h3>Alexa, Google Home and weather</h3><p>Voice commands come in through SinricPro. Sunrise, sunset and temperature come from OpenWeatherMap. Both need an internet connection.</p></div>
             </div>
             <h3>Closing the blinds when the room is empty</h3>
-            <p>Because the switch already knows whether the room is occupied, it shares that over MQTT. The <a href="blinds-control.html">blinds controller</a> listens for it and closes the blind once the room has been empty for a set time. It only works while both devices can reach the broker.</p>
+            <p>Because the switch already knows whether the room is occupied, it shares that over MQTT. The <a href="blinds-control.html">blinds controller</a> listens for it and closes the blind once the room has been empty for a set time, as long as both of them can reach the broker.</p>
             <h3>Wi-Fi 6 power saving</h3>
-            <p>The ESP32-C6 supports Target Wake Time, which lets it agree wake-up windows with the router and sleep the radio in between. It's a toggle in the app. I haven't measured how much it actually saves yet, and it depends a lot on the router.</p>
+            <p>The ESP32-C6 supports Target Wake Time, which lets it agree wake-up windows with the router and sleep the radio in between. It's a toggle in the app. I haven't measured how much it saves yet, and it depends a lot on the router anyway.</p>
           </section>
 
           <section class="p-sec" id="section-8">
@@ -307,8 +351,8 @@
 
           <section class="p-sec" id="section-9">
             <h2>If I come back to it</h2>
-            <p>The switch is finished, but if I go back to it, the first thing I'd add is a link to <a href="self-balancing-robot.html">Atlas</a>, my balancing robot, over MQTT. Getting Atlas to balance properly comes first.</p>
-            <p>For now, the easiest way to see what the switch can do is the app demo. It has pretend versions of the switch and the blinds you can play with.</p>
+            <p>The switch is finished, but if I do go back to it, the first thing I'd add is a link to <a href="self-balancing-robot.html">Atlas</a>, my balancing robot, over MQTT. Atlas has to balance properly first, though.</p>
+            <p>Until then, the easiest way to see what the switch does is the app demo, which has pretend versions of the switch and the blinds to play with.</p>
             <a class="arrow-link" href="zaylo-remote.html">Try the Zaylo Remote demo <span class="arr" aria-hidden="true">&rarr;</span></a>
           </section>
 
@@ -331,6 +375,6 @@
     </div>
   </footer>
 
-  <script src="../site.js?v=7"></script>
+  <script src="../site.js?v=15"></script>
 </body>
 </html>

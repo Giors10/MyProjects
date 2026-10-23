@@ -4,13 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Smart blinds controller · Giorgi Suramlishvili</title>
-  <meta name="description" content="A stepper motor that pulls the bead chain of an existing roller blind. ESP32-C6, TMC2209, a custom KiCad PCB, five automations, MQTT and Alexa / Google Home. Built by Giorgi Suramlishvili in Bristol, with the firmware, Gerbers and STL to download." />
+  <meta name="description" content="A stepper motor that pulls the bead chain of an existing roller blind. ESP32-C6, TMC2209, a custom KiCad PCB, five automations, MQTT and Alexa / Google Home. Built by Giorgi Suramlishvili in Bristol." />
   <meta name="author" content="Giorgi Suramlishvili" />
-  <meta name="keywords" content="Giorgi Suramlishvili, smart blinds controller, roller blind motor, bead chain motor, stepper motor, TMC2209, ESP32-C6, KiCad PCB, MQTT, home automation, Bristol" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="robots" content="max-image-preview:large" />
   <meta name="theme-color" content="#fbfbf8" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <script>
+    // set the theme before anything is drawn so dark mode doesn't flash white
+    (function () {
+      var r = document.documentElement, t;
+      r.className += ' js';
+      try { t = localStorage.getItem('gs-theme'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      r.setAttribute('data-theme', t);
+      r.style.colorScheme = t;
+    })();
+  </script>
   <link rel="canonical" href="https://giorgi.uk/projects/blinds-control.html" />
   <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
@@ -44,7 +53,7 @@
       "image": "https://giorgi.uk/projects/blinds-photo.jpg",
       "dateCreated": "2025-01-01",
       "datePublished": "2025-01-01",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-21",
       "inLanguage": "en-GB",
       "author": { "@type": "Person", "@id": "https://giorgi.uk/#giorgi", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" },
       "about": ["Stepper motor", "TMC2209", "ESP32-C6", "PCB design", "KiCad", "MQTT", "Home automation"],
@@ -64,7 +73,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="../site.css?v=8" />
+  <link rel="stylesheet" href="../site.css?v=15" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -72,10 +81,11 @@
   <nav class="nav" aria-label="Main">
     <div class="wrap nav-inner">
       <a class="brand" href="../index.html" aria-label="Giorgi Suramlishvili, home">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
-        <span>Giorgi Suramlishvili</span>
+        <span class="cube-scene" aria-hidden="true"><span class="cube"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span>
+        <span class="brand-name">Giorgi Suramlishvili</span>
       </a>
       <div class="nav-links" id="primary-links">
+        <a href="../index.html#about" data-section="about">About</a>
         <div class="nav-work">
           <a href="../index.html#work" data-section="work">Projects</a>
           <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -88,7 +98,6 @@
             <a class="all" href="../index.html#work">All projects</a>
           </div>
         </div>
-        <a href="../index.html#about" data-section="about">About</a>
         <a href="../index.html#track" data-section="track">Experience</a>
         <a href="../index.html#contact" data-section="contact">Contact</a>
       </div>
@@ -105,12 +114,12 @@
         <div>
           <p class="p-kicker">Built in 2025</p>
           <h1 class="p-title">The blinds controller</h1>
-          <p class="p-standfirst">A stepper motor that hooks onto the bead chain of my roller blind and pulls it up and down. The blind and the wall are exactly as they were. I designed the PCB, the printed case and the firmware.</p>
+          <p class="p-standfirst">A stepper motor that grips the bead chain on my roller blind and pulls it up and down, so the blind itself didn't have to change. I designed the PCB, the printed case and the firmware.</p>
           <dl class="p-facts">
             <div><dt>Version</dt><dd>1</dd></div>
             <div><dt>Microcontroller</dt><dd>ESP32-C6</dd></div>
             <div><dt>Motor driver</dt><dd>TMC2209</dd></div>
-            <div><dt>Downloads</dt><dd><a href="#section-10">Firmware, Gerbers, STL</a></dd></div>
+            <div><dt>PCB</dt><dd>My own, made in KiCad</dd></div>
           </dl>
         </div>
         <figure class="p-figure">
@@ -134,7 +143,6 @@
               <li><a href="#section-7">The network, and saving power</a></li>
               <li><a href="#section-8">Protecting the settings</a></li>
               <li><a href="#section-9">Full spec</a></li>
-              <li><a href="#section-10">Download the files</a></li>
               <li><a href="#section-11">What I'd change next</a></li>
             </ol>
           </details>
@@ -143,8 +151,8 @@
         <div class="p-main">
           <section class="p-sec" id="section-1">
             <h2>Using the chain that was already there</h2>
-            <p class="intro">The blind already had a chain that worked fine, so I didn't want to replace it. Instead the controller grips that chain: a wheel on the motor pulls the beads round, and the case screws to the wall beside the window.</p>
-            <p>I can move it from the <a href="zaylo-remote.html">app</a>, by voice, or with the touch pad on the front. The ESP32-C6 handles the motor, the touch input and the schedules itself. The app goes through MQTT, voice goes through SinricPro, and the weather-based rules need fresh data from the internet. The settings are saved on the device.</p>
+            <p class="intro">The blind already had a chain that worked fine, so there was no point replacing it. The controller just grabs that chain instead. A wheel on the motor pulls the beads round, and the case screws to the wall next to the window.</p>
+            <p>I can move it from the <a href="zaylo-remote.html">app</a>, by voice, or with the touch pad on the front. The ESP32-C6 runs the motor, the touch pad and the schedules on its own, and keeps its settings in flash. The app talks to it over MQTT and voice goes through SinricPro.</p>
             <figure class="fig sketch">
               <div class="frame"><img src="blinds-design.jpg" width="1473" height="1726" alt="Hand-drawn sketch of the case on dotted paper: 46 by 50 by 72 millimetres, wall mount holes, a slotted motor mount and the TTP223 touch pad on the front" loading="lazy" decoding="async" /></div>
               <figcaption>My sketch of the case: about 46 &times; 50 &times; 72 mm, with wall mounts, a slotted motor mount so the motor can move up and down a little, and the TTP223 touch pad on the front.</figcaption>
@@ -246,7 +254,7 @@
                 <li><strong>Pressed</strong><span class="to" aria-label="to">&rarr;</span><strong>Hold handled</strong><p>Holding for 1.5 s during a move stops the motor.</p></li>
                 <li><strong>Hold handled</strong><span class="to" aria-label="to">&rarr;</span><strong>Idle</strong><p>Let go before the next command.</p></li>
               </ol>
-              <figcaption>Solid lines are touch and hold events, dashed lines include a timeout. The timings come from the <code>TouchManager</code> code in the firmware download.</figcaption>
+              <figcaption>Solid lines are touch and hold events, dashed lines include a timeout. The timings come from the <code>TouchManager</code> code in the firmware.</figcaption>
             </figure>
             <p>The Wi-Fi reset is a separate path. When the motor is stopped, staying in Pressed for 10 seconds clears the Wi-Fi settings and restarts the controller. If a hold has already stopped the motor, it stays in Hold handled until you let go, so the same press can't do both.</p>
           </section>
@@ -265,7 +273,7 @@
               </li>
               <li>
                 <div><h3>Night lock</h3><p>Closes the blind at night and stops the other rules moving it until the morning routine.</p></div>
-                <dl><dt>Schedule</dt><dd>Per day, with weekdays and weekends</dd><dt>Note</dt><dd>It's a software lock, not a physical one</dd></dl>
+                <dl><dt>Schedule</dt><dd>Per day, with weekdays and weekends</dd><dt>Note</dt><dd>Only a lock in the software</dd></dl>
               </li>
               <li>
                 <div><h3>Close when the room is empty</h3><p>The light switch publishes whether the room is occupied over MQTT. If it stays empty for the delay I've set, the blind closes.</p></div>
@@ -311,7 +319,7 @@
               <div><h3>Weather and time</h3><p>Sunset and temperature come from OpenWeatherMap once a day. Time comes from NTP, and if a network blocks NTP it reads the time from an HTTP response header instead.</p></div>
             </div>
             <h3>Target Wake Time</h3>
-            <p>Wi-Fi 6 lets the controller and a compatible router agree on wake-up windows, so the radio can sleep in between. The drawing below shows the idea. It isn't a current measurement, and I haven't measured the saving on this build yet.</p>
+            <p>Wi-Fi 6 lets the controller and a compatible router agree on wake-up windows, so the radio can sleep in between. The drawing is just the idea, not a measurement. I haven't measured the saving on this one yet.</p>
             <figure class="diagram">
               <svg viewBox="0 0 820 200" role="img" aria-label="Radio power against time: short wake windows for MQTT messages, separated by longer sleep periods">
                 <line class="d-faint" x1="48" y1="130" x2="790" y2="130" stroke-width="1" stroke-dasharray="4 3"/>
@@ -367,21 +375,11 @@
             </table>
           </section>
 
-          <section class="p-sec" id="section-10">
-            <h2>Download the files</h2>
-            <p>These are the actual files from my build. They're not a tested kit, so check the revision and the measurements against your own blind before you print or order anything.</p>
-            <ul class="files">
-              <li><a href="../code/StepperMote.zip" download><div><strong>Firmware source</strong><span class="desc">The full firmware project, zipped</span></div><span class="size">23.2 MB</span><span class="dl" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg></span></a></li>
-              <li><a href="../code/BlindsGerber.zip" download><div><strong>PCB Gerbers</strong><span class="desc">Ready to upload to a PCB manufacturer</span></div><span class="size">17 KB</span><span class="dl" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg></span></a></li>
-              <li><a href="../code/Body1.stl" download><div><strong>Case STL</strong><span class="desc">The printed body of the controller</span></div><span class="size">363 KB</span><span class="dl" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg></span></a></li>
-            </ul>
-          </section>
-
           <section class="p-sec" id="section-11">
             <h2>What I'd change next</h2>
             <p>The first thing I want to try is setting up the TMC2209 over UART instead of relying only on its hardware pins. That would let the firmware change the driver settings and read its diagnostics, which should make setup and fault-finding easier.</p>
-            <p>I'm also thinking about separate up and down buttons and a clearer status light. Those are ideas for the next build, not things the current one does.</p>
-            <p>In the meantime you can try the blinds controls in the <a href="zaylo-remote.html">Zaylo Remote demo</a>, which has pretend blinds you can move around.</p>
+            <p>For the next one I'd also like separate up and down buttons and a clearer status light.</p>
+            <p>In the meantime you can try the blinds controls in the <a href="zaylo-remote.html">Zaylo Remote demo</a>, which has pretend blinds to move around.</p>
           </section>
 
           <div class="next-up">
@@ -403,6 +401,6 @@
     </div>
   </footer>
 
-  <script src="../site.js?v=7"></script>
+  <script src="../site.js?v=15"></script>
 </body>
 </html>

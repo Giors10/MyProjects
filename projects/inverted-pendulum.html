@@ -6,11 +6,20 @@
   <title>Inverted pendulum control: PID and LQR · Giorgi Suramlishvili</title>
   <meta name="description" content="A paper by Giorgi Suramlishvili on controlling an inverted pendulum: PID, then LQR for a two-wheeled balancing robot, with the state-space model, the A and B matrices, controllability, the Riccati equation and a worked example." />
   <meta name="author" content="Giorgi Suramlishvili" />
-  <meta name="keywords" content="Giorgi Suramlishvili, inverted pendulum, PID control, LQR, linear quadratic regulator, state-space model, A and B matrices, Riccati equation, eigenvalues, controllability, self-balancing robot, control theory" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="robots" content="max-image-preview:large" />
   <meta name="theme-color" content="#fbfbf8" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <script>
+    // set the theme before anything is drawn so dark mode doesn't flash white
+    (function () {
+      var r = document.documentElement, t;
+      r.className += ' js';
+      try { t = localStorage.getItem('gs-theme'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      r.setAttribute('data-theme', t);
+      r.style.colorScheme = t;
+    })();
+  </script>
   <link rel="canonical" href="https://giorgi.uk/projects/inverted-pendulum.html" />
   <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
@@ -45,7 +54,7 @@
       "image": "https://giorgi.uk/projects/inverted-pendulum-sketch.png",
       "dateCreated": "2026-05-01",
       "datePublished": "2026-05-01",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-21",
       "inLanguage": "en-GB",
       "author": { "@type": "Person", "@id": "https://giorgi.uk/#giorgi", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" },
       "about": ["Inverted Pendulum", "PID Control", "LQR Control", "Control Theory", "State-Space Model", "Riccati Equation", "Eigenvalues", "Robotics"],
@@ -68,7 +77,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous" />
-  <link rel="stylesheet" href="../site.css?v=8" />
+  <link rel="stylesheet" href="../site.css?v=15" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -76,10 +85,11 @@
   <nav class="nav" aria-label="Main">
     <div class="wrap nav-inner">
       <a class="brand" href="../index.html" aria-label="Giorgi Suramlishvili, home">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
-        <span>Giorgi Suramlishvili</span>
+        <span class="cube-scene" aria-hidden="true"><span class="cube"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span>
+        <span class="brand-name">Giorgi Suramlishvili</span>
       </a>
       <div class="nav-links" id="primary-links">
+        <a href="../index.html#about" data-section="about">About</a>
         <div class="nav-work">
           <a href="../index.html#work" data-section="work">Projects</a>
           <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -92,7 +102,6 @@
             <a class="all" href="../index.html#work">All projects</a>
           </div>
         </div>
-        <a href="../index.html#about" data-section="about">About</a>
         <a href="../index.html#track" data-section="track">Experience</a>
         <a href="../index.html#contact" data-section="contact">Contact</a>
       </div>
@@ -154,26 +163,26 @@
         <section class="p-sec" id="intro">
           <h2><span class="num">01</span>What is an inverted pendulum?</h2>
 
-          <p class="lead">An inverted pendulum is a pendulum in which its centre of mass is above the pivot point, making it unstable and prone to toppling without active control systems.</p>
+          <p class="lead">An inverted pendulum is a pendulum with its centre of mass above the pivot. That makes it unstable: left alone, it falls over.</p>
 
-          <p>It can be controlled by moving the base. A basic example of this is balancing a ruler or a pencil on the tip of your finger by moving your finger so that the pencil&rsquo;s centre of mass stays above the pivot. The schematic at the top of the page (<strong>Figure&nbsp;1</strong>) displays the forces acting on the pendulum: gravity \(mg\) pulling the mass down, an external <strong>disturbance</strong>, ground <strong>friction</strong>, and the <strong>control force</strong> \(F\) applied through the base.</p>
+          <p>It can be controlled by moving the base. A simple example is balancing a ruler or a pencil on the tip of your finger, where you keep moving your finger so the pencil&rsquo;s centre of mass stays above it. The drawing at the top of the page (<strong>Figure&nbsp;1</strong>) shows the forces acting on the pendulum: gravity \(mg\) pulling the mass down, an outside <strong>disturbance</strong>, <strong>friction</strong> with the ground, and the <strong>control force</strong> \(F\) applied through the base.</p>
 
           <h3>Measurements</h3>
-          <p>The diagram shown above (Figure&nbsp;1) displays the forces acting on the pendulum. To control the pendulum, we need a way to calculate the force and acceleration required to move the base, given the angle, angular velocity, and mass, to ensure that the centre of mass is always above the base. To get these measurements, a robot uses an <strong>IMU</strong> (an accelerometer and a gyroscope) and a filter to combine their readings:</p>
+          <p>To control the pendulum, we need to work out the force needed to move the base, given the angle, the angular velocity and the mass, so that the centre of mass always stays above the base. To get these measurements, a robot uses an <strong>IMU</strong> (an accelerometer and a gyroscope) and a filter to combine their readings:</p>
 
           <div class="defs">
             <div class="defs-title">What the robot uses</div>
             <div class="def-row">
               <div class="sym">Accel.</div>
-              <div class="def">An <b>accelerometer</b>, measures linear acceleration and gravity; it is used to determine the static tilt angle relative to the ground.</div>
+              <div class="def">An <b>accelerometer</b>, which measures linear acceleration and gravity. It&rsquo;s used to find the tilt angle relative to the ground when the robot is still.</div>
             </div>
             <div class="def-row">
               <div class="sym">Gyro.</div>
-              <div class="def">A <b>gyroscope</b>, measures the rate of rotation (angular velocity) around the axes, telling the controller how fast the pendulum is falling.</div>
+              <div class="def">A <b>gyroscope</b>, which measures the rate of rotation (angular velocity) around each axis, telling the controller how fast the pendulum is falling.</div>
             </div>
             <div class="def-row">
               <div class="sym">EKF</div>
-              <div class="def">An <b>Extended Kalman Filter</b>, to estimate the tilt angle, providing a highly accurate, real-time estimation of the pendulum&rsquo;s tilt angle, velocity, and position by fusing noisy sensor data.</div>
+              <div class="def">An <b>Extended Kalman Filter</b>, which combines the noisy readings from both sensors into one good estimate of the tilt angle (and, with more sensors, the velocity and position too).</div>
             </div>
           </div>
         </section>
@@ -181,7 +190,7 @@
         <section class="p-sec" id="pid">
           <h2><span class="num">02</span>PID control</h2>
 
-          <p>The error term is the difference between the pendulum being perfectly upright when it is directly above the pivot point \(0\)&nbsp;rads and the pendulum&rsquo;s actual angle at that moment.</p>
+          <p>The error is the difference between where we want the pendulum to be (perfectly upright, directly above the pivot, at \(0\)&nbsp;rad) and the angle it&rsquo;s actually at.</p>
 
           <h3>Proportional</h3>
           <div class="eq">\[ K_{p}\, e(t) \]</div>
@@ -249,14 +258,14 @@
           <p>Another huge issue is <strong>noise</strong>, which can be caused by motor vibration, sensor inaccuracies, external factors, etc. One of the biggest issues is high-frequency noise, as even when the amplitude is low, it can create a very high derivative value in the PID control, causing inaccuracies. This can be fixed through a filter.</p>
           <div class="note tip">
             <span class="note-label">Fix &middot; the extended Kalman filter</span>
-            <p>One of the best filters you can use is the extended Kalman filter. A Kalman filter removes noise by continuously comparing a mathematical prediction of a system&rsquo;s state, such as the precise tilt angle, against the actual, jittery sensor measurements it receives. It mathematically blends these two values using a dynamic weight called the <strong>Kalman gain</strong>, trusting whichever source currently has less uncertainty to calculate a smooth, accurate estimate of the true state.</p>
+            <p>A good fix is the extended Kalman filter. It keeps predicting what the state should be (the tilt angle, say) and compares that with the jittery sensor readings. Then it blends the two using a weight called the <strong>Kalman gain</strong>, leaning towards whichever one it currently trusts more, which gives a much smoother estimate.</p>
           </div>
         </section>
 
         <section class="p-sec" id="lqr">
           <h2><span class="num">04</span>LQR</h2>
 
-          <p>An LQR system, compared to a PID control system, is a lot more complex. Developed 38&nbsp;years after PID, in the 1960s, an LQR system model offers much better performance in terms of stability and control. However, it requires more computation and, in robots, unlike PID, requires encoders on the motors.</p>
+          <p>LQR is a lot more complicated than PID. It came along in the 1960s, about 38&nbsp;years after PID, and it usually gives much better stability and control. The cost is more computation and, on a robot, encoders on the motors, which PID on the angle alone doesn&rsquo;t need.</p>
           <div class="note">
             <span class="note-label">What follows</span>
             <p>The rest of this paper is the <em>maths behind LQR</em>: the state vector, the equation \(\dot{X} = AX + Bu\), deriving the A and B matrices, full-state feedback, why a naive approach falls short, the Riccati equation, and finally a fully worked example with real numbers.</p>
@@ -269,7 +278,7 @@
           <p>To begin with, you have a state vector \(X\), and for a self-balancing robot it would be represented with 4 variables, a \(4\times1\) vector:</p>
           <div class="eq">\[ X = \begin{bmatrix} x \\[2pt] \dot{x} \\[2pt] \theta \\[2pt] \dot{\theta} \end{bmatrix} \]</div>
 
-          <p>The state vector is useful because it encapsulates the system&rsquo;s exact physical state, allowing the Linear Quadratic Regulator (LQR) to compute the single, mathematically optimal motor torque required to keep the robot upright. These are the definitions for the terms shown:</p>
+          <p>The state vector is useful because it describes everything about how the robot is moving at that instant, which is what LQR needs to work out the best motor torque to keep it upright. This is what each term means:</p>
 
           <div class="defs">
             <div class="defs-title">The four states</div>
@@ -296,7 +305,7 @@
           <div class="eq">\[ \dot{x} = \lambda x \]</div>
           <p>This is important because the rate of change of \(x\) with respect to time equals \(\lambda x\), which says that the rate at which \(x\) changes is proportional to \(x\). This is an exponential function and can be represented as:</p>
           <div class="eq">\[ x(t) = x(0)\,e^{\lambda t} \]</div>
-          <p>This shows that if \(\lambda &gt; 0\) the robot will be unstable, as \(e^{\lambda t}\) will increase exponentially as time passes. If \(\lambda = 0\) or \(\lambda &lt; 0\), it will be stable or stabilising respectively, as it would be decreasing to 0. The matrix \(A\) will have 4 distinct eigenvectors \((v_1,v_2,v_3,v_4)\) and also 4 distinct eigenvalues \((\lambda_1,\lambda_2,\lambda_3,\lambda_4)\). And to show the robot&rsquo;s stability, we can sum each mode:</p>
+          <p>So if \(\lambda &gt; 0\) the robot is unstable, because \(e^{\lambda t}\) grows exponentially as time passes. If \(\lambda &lt; 0\) it dies away to zero, so the robot settles, and if \(\lambda = 0\) it just stays where it is. A \(4\times4\) matrix \(A\) has four eigenvalues \((\lambda_1,\lambda_2,\lambda_3,\lambda_4)\), and when they&rsquo;re all different it also has four eigenvectors \((v_1,v_2,v_3,v_4)\). The robot&rsquo;s motion is then a sum of four of these modes:</p>
           <div class="eq">\[ x(t) = C_{1}e^{\lambda_{1}t}v_{1} + C_{2}e^{\lambda_{2}t}v_{2} + C_{3}e^{\lambda_{3}t}v_{3} + C_{4}e^{\lambda_{4}t}v_{4} \]</div>
           <p>where \(C\) is the coefficient of the term when \(t = 0\).</p>
 
@@ -351,16 +360,16 @@
             <div class="def-row"><div class="sym">\(m\)</div><div class="def">The body mass.</div></div>
             <div class="def-row"><div class="sym">\(l\)</div><div class="def">The distance from the wheel axle up to the body&rsquo;s centre of mass.</div></div>
             <div class="def-row"><div class="sym">\(I\)</div><div class="def">The moment of inertia of the body about its own centre of mass.</div></div>
-            <div class="def-row"><div class="sym">\(g\)</div><div class="def">The acceleration due to gravity (equal to 9.81).</div></div>
+            <div class="def-row"><div class="sym">\(g\)</div><div class="def">The acceleration due to gravity (9.81&nbsp;m/s&sup2;).</div></div>
             <div class="def-row"><div class="sym">\(F\)</div><div class="def">The horizontal drive force generated at the ground by the wheel motors (interchangeable with the control input \(u\)).</div></div>
           </div>
 
           <div class="eq"><span class="eq-num">(1)</span>\[ (M+m)\,\ddot{x} - m\,l\,\ddot{\theta}\cos\theta + m\,l\,\dot{\theta}^{2}\sin\theta = F \]</div>
           <div class="eq"><span class="eq-num">(2)</span>\[ (I+m\,l^{2})\,\ddot{\theta} - m\,l\,\ddot{x}\cos\theta - m\,g\,l\sin\theta = 0 \]</div>
-          <p>Equation (1) is total horizontal force = mass &times; acceleration for the system. Equation (2) is the rotational law for the body. The crucial term is \(-m\,g\,l\sin\theta\), which is gravity and is what topples the robot.</p>
+          <p>Equation (1) is total horizontal force = mass &times; acceleration for the system. Equation (2) is the rotational law for the body. The important term is \(-m\,g\,l\sin\theta\), which is gravity and is what topples the robot.</p>
 
           <p>However, the problem with these equations is that they are not linear due to the \(\sin\theta\), \(\cos\theta\) and \(\dot{\theta}^{2}\) terms, and eigenvalues and \(AX + Bu\) are built for a linear system. To make the equations linear, we can use the <strong>small-angle approximation</strong>, since a balancing robot only needs to deal with small values of \(\theta\), and a good control system will keep \(\theta\) within a few degrees:</p>
-          <div class="eq">\[ \sin\theta \approx \theta, \qquad \cos\theta = 1, \qquad \dot{\theta}^{2} \approx 0 \]</div>
+          <div class="eq">\[ \sin\theta \approx \theta, \qquad \cos\theta \approx 1, \qquad \dot{\theta}^{2} \approx 0 \]</div>
 
           <figure class="diagram">
             <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The line y equals theta and the curve y equals sine theta lie on top of each other for small angles near the origin, and diverge as theta grows.">
@@ -385,10 +394,10 @@
           <div class="eq">\[ (I+m\,l^{2})\,\ddot{\theta} - m\,l\,\ddot{x} = m\,g\,l\,\theta \]</div>
 
           <p>Now we need to remove the two unknowns with one equation, that is, \(\ddot{x} = \,\ldots\) without having another \(\ddot{x}\) or \(\ddot{\theta}\) inside the equation. To do this, we solve it simultaneously and get a common denominator \(p\), and get the following equations:</p>
-          <div class="eq"><span class="eq-num">(4)</span>\[ p \equiv I(M+m) + M\,m\,l^{2} \]</div>
+          <div class="eq"><span class="eq-num">(3)</span>\[ p \equiv I(M+m) + M\,m\,l^{2} \]</div>
           <p>And the results are:</p>
-          <div class="eq"><span class="eq-num">(5)</span>\[ \ddot{x} = \frac{m^{2}g\,l^{2}}{p}\,\theta + \frac{I+m\,l^{2}}{p}\,F \]</div>
-          <div class="eq"><span class="eq-num">(6)</span>\[ \ddot{\theta} = \frac{m\,g\,l(M+m)}{p}\,\theta + \frac{m\,l}{p}\,F \]</div>
+          <div class="eq"><span class="eq-num">(4)</span>\[ \ddot{x} = \frac{m^{2}g\,l^{2}}{p}\,\theta + \frac{I+m\,l^{2}}{p}\,F \]</div>
+          <div class="eq"><span class="eq-num">(5)</span>\[ \ddot{\theta} = \frac{m\,g\,l(M+m)}{p}\,\theta + \frac{m\,l}{p}\,F \]</div>
 
           <p>Therefore, for row 2 it will be \(\begin{bmatrix} 0 &amp; 0 &amp; \frac{m^{2}gl^{2}}{p} &amp; 0 \end{bmatrix}\), and for row 4 it will be \(\begin{bmatrix} 0 &amp; 0 &amp; \frac{mgl(M+m)}{p} &amp; 0 \end{bmatrix}\), giving the final matrix:</p>
 
@@ -400,7 +409,7 @@
               \[ B = \begin{bmatrix} 0 \\[4pt] \dfrac{I+ml^{2}}{p} \\[6pt] 0 \\[4pt] \dfrac{ml}{p} \end{bmatrix} \]
             </div>
           </div>
-          <p>For vector \(B\), the first row is 0, as we already get the \(\dot{x}\) value from the \(AX\) part of the equation. Row 3 is also 0, as once again we get \(\dot{\theta}\) from the \(AX\) part in \(\dot{X} = AX + Bu\). And for rows 2 and 4, we can use the values on the right-hand side of equations (5) and (6) (\(F\) can be interchanged with \(u\)).</p>
+          <p>For vector \(B\), the first row is 0, as we already get the \(\dot{x}\) value from the \(AX\) part of the equation. Row 3 is also 0, as once again we get \(\dot{\theta}\) from the \(AX\) part in \(\dot{X} = AX + Bu\). And for rows 2 and 4, we can use the values on the right-hand side of equations (4) and (5) (\(F\) can be interchanged with \(u\)).</p>
 
           <h3>Showing that the system with matrix A will be unstable</h3>
           <p>By looking at just the angle and switching the motor off, so therefore \(F = 0\), we get the equation:</p>
@@ -414,9 +423,9 @@
           <p>We know that the control system is naturally unstable, and we now need to make it stable through <strong>feedback</strong>, where it measures the state and feeds back to determine the control input.</p>
 
           <h3>Full-state feedback: \(u = -KX\)</h3>
-          <p>One of the best ways to create a simple, powerful feedback rule is to make the control flow through a weighted combination of all the values in the state vector, and is shown as:</p>
+          <p>The simplest feedback rule that uses everything we know is to make the control input a weighted sum of all four states:</p>
           <div class="eq">\[ u = -KX, \qquad K = \begin{bmatrix} k_{1} &amp; k_{2} &amp; k_{3} &amp; k_{4} \end{bmatrix} \]</div>
-          <p>In addition, we use a negative \(K\) to counter the robot&rsquo;s movement by pushing it in the opposite direction. The \(k\) values inside the \(K\) vector are referred to as <strong>gains</strong>. Now, by substituting \(u = -KX\) into the original equation, we get:</p>
+          <p>The minus sign is there so the push always goes against the way the robot is moving. The \(k\) values inside the \(K\) vector are referred to as <strong>gains</strong>. Now, by substituting \(u = -KX\) into the original equation, we get:</p>
           <div class="eq">\[ \dot{X} = (A - BK)\,X \]</div>
           <p>So, in order for the robot to be stable, the eigenvalues of \((A - BK)\) need to be negative, using the same logic shown in the \(\dot{X} = AX + Bu\) section, so the control system needs to use the \(BK\) value to steer the eigenvalues to be negative.</p>
 
@@ -457,14 +466,14 @@
             <li>The state being away from zero, as we want \(\theta\) and \(x\) to be as close to zero as possible, we want it to be upright, still, and in place.</li>
             <li>Using a lot of control effort, because large motor forces drain the robot&rsquo;s battery, can cause overheating, and the motors sometimes hit their physical limit, leading to harsh movements.</li>
           </ul>
-          <p>In order to create this scoring system, we need to be able to turn a vector into a single number value, and to do this we use the <strong>quadratic form</strong>. Given a vector \(X\) and a square matrix \(Q\), by calculating \(Qx\) and then \(x^{\mathsf{T}}(Qx)\) we get the following, which gives us a single value:</p>
+          <p>To build this score we need to turn a vector into a single number, and for that we use the <strong>quadratic form</strong>. With a vector \(X\) and a diagonal matrix \(Q\), working out \(QX\) and then \(X^{\mathsf{T}}(QX)\) gives one number:</p>
           <div class="eq">\[ X^{\mathsf{T}}QX = q_{1}x_{1}^{2} + q_{2}x_{2}^{2} + \cdots + q_{n}x_{n}^{2} \]</div>
           <p>as a \(1 \times n\) row times an \(n \times n\) matrix times an \(n \times 1\) column gives a \(1 \times 1\) result. Now we can look at the LQR cost function, which is the following:</p>
           <div class="eq"><span class="eq-num">(J)</span>\[ J = \int \left(x^{\mathsf{T}}Qx + u^{\mathsf{T}}Ru\right)dt \]</div>
           <p>where the \(x^{\mathsf{T}}Qx\) is the state deviation and \(u^{\mathsf{T}}Ru\) is the control effort. Also, integration is used to sum up how bad the controller is over time. If the robot leans and moves for a long time, it will add up the badness from \(t=0\) to the infinite future.</p>
 
           <h3>What are Q and R?</h3>
-          <p>We chose the matrices \(Q\) and \(R\), which are the only factors within the LQR control system that we choose, and everything else is done automatically.</p>
+          <p>\(Q\) and \(R\) are the only things we choose. Everything else follows from the maths.</p>
           <ul>
             <li>For \(Q\), each diagonal entry \(q_{1},q_{2},q_{3},q_{4}\) is how much we care about each state being zero. For example, setting \(q_{3}\) as a large number means that you prioritise the tilt angle being zero and hate any tilt.</li>
             <li>For \(R\), it is how much you care about saving control effort; the higher you set the value of \(R\), the more you are going easier on the robot&rsquo;s motors.</li>
@@ -476,7 +485,7 @@
           <div class="eq"><span class="eq-num">(K)</span>\[ K = R^{-1}B^{\mathsf{T}}P \]</div>
           <p>where the matrix \(P\) is the (symmetric, positive semi-definite) solution of the Continuous Algebraic Riccati Equation (CARE):</p>
           <div class="eq"><span class="eq-num">(CARE)</span>\[ A^{\mathsf{T}}P + PA - PBR^{-1}B^{\mathsf{T}}P + Q = 0 \]</div>
-          <p>where all of \(A,B,R,Q\) are known, and you use the equation to solve for \(P\). There is a long derivation for this formula, and also a way to solve for \(P\); however, in our case:</p>
+          <p>where \(A\), \(B\), \(Q\) and \(R\) are all known, and you solve it for \(P\). The derivation is long, so in practice you let a solver do it. In Python that&rsquo;s:</p>
           <pre class="code"><span class="file">solve_care.py</span><code><span class="kw">import</span> numpy <span class="kw">as</span> np
 <span class="kw">from</span> scipy.linalg <span class="kw">import</span> solve_continuous_are
 
@@ -485,7 +494,7 @@ P = <span class="fn">solve_continuous_are</span>(A, B, Q, R)</code></pre>
 
         <section class="p-sec" id="worked">
           <h2><span class="num">10</span>A worked example</h2>
-          <p>Overall, to show how it works, I will lay out the processes the robot goes through for the LQR system.</p>
+          <p>Here&rsquo;s the whole process from start to finish, with real numbers.</p>
 
           <ol class="worked">
             <li>
@@ -522,7 +531,7 @@ P = <span class="fn">solve_continuous_are</span>(A, B, Q, R)</code></pre>
             <li>
               <h3>Check if it is unstable and controllable</h3>
               <p>In this step, we check if the robot is unstable and controllable, and to do this, we calculate the eigenvalues and use the controllability matrix. First, to check whether the robot is unstable, we compute the eigenvalues of \(A\) and ignore \(B\), since we are only looking at the robot&rsquo;s state with no input. In order to find the eigenvalues of \(A\), we do \(\det(A - \lambda I) = 0\), which returns \(\lambda\) as:</p>
-              <div class="eq">\[ \lambda = 0, \quad +8.86, \quad -8.86 \]</div>
+              <div class="eq">\[ \lambda = 0 \text{ (twice)}, \quad +8.86, \quad -8.86 \]</div>
               <p>The positive real part of the eigenvalue \(+8.86\) shows that the robot is naturally unstable. Then we use the controllability matrix \(\mathcal{C} = \begin{bmatrix} B &amp; AB &amp; A^{2}B &amp; A^{3}B \end{bmatrix}\) and compute its rank, which returns a rank of 4, showing that the robot is able to steer all 4 states, so an LQR solution is guaranteed to exist.</p>
             </li>
             <li>
@@ -550,7 +559,7 @@ P = <span class="fn">solve_continuous_are</span>(A, B, Q, R)</code></pre>
               <h3>Check whether it is actually stable</h3>
               <p>This is the final step, where we check whether the robot is actually stable by computing the eigenvalues of \(A - BK\), which return:</p>
               <div class="eq">\[ \lambda = -13.63, \quad -6.07, \quad -0.84 + 0.50\,i, \quad -0.84 - 0.50\,i \]</div>
-              <p>Since all the real parts of the eigenvalues are negative, the system is stable. This is because the real part of the eigenvalue represents the decay of the \(e^{\lambda t}\) term, and the imaginary part represents the oscillations. For example, looking at the eigenvalue \(-0.84 \pm 0.50\,i\): the real part is negative, so it will decay, but its magnitude is small, so it will decay slowly at around \(1/0.84 \approx 1.2\ \text{s}\); and the imaginary part means it oscillates at \(0.5\ \text{rad/s}\). Crucially, the decay time is much shorter than one oscillation period, so the motion dies away before the robot can complete one full swing, showing that it is well-damped: you will get roughly a single small overshoot which is then gone, rather than a sustained wobble.</p>
+              <p>Since all the real parts of the eigenvalues are negative, the system is stable. This is because the real part of the eigenvalue represents the decay of the \(e^{\lambda t}\) term, and the imaginary part represents the oscillations. For example, looking at the eigenvalue \(-0.84 \pm 0.50\,i\): the real part is negative, so it will decay, but its magnitude is small, so it will decay slowly at around \(1/0.84 \approx 1.2\ \text{s}\); and the imaginary part means it oscillates at \(0.5\ \text{rad/s}\). The key thing is that the decay time is much shorter than one oscillation period, so the motion dies away before the robot can complete one full swing, showing that it is well-damped: you will get roughly a single small overshoot which is then gone, rather than a sustained wobble.</p>
               <p>Overall, putting the four eigenvalues together, the two fast eigenvalues \((-13.6\) and \(-6.1)\) snap the angle back quickly and handle most of the initial error, while the slow complex pair \((-0.84 \pm 0.50\,i)\) is what is left over and produces a gentle overshoot, followed by the slow final approach to rest.</p>
             </li>
           </ol>
@@ -656,7 +665,7 @@ P = <span class="fn">solve_continuous_are</span>(A, B, Q, R)</code></pre>
     </div>
   </footer>
 
-  <script src="../site.js?v=7"></script>
+  <script src="../site.js?v=15"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
   <script>

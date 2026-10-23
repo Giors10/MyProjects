@@ -6,11 +6,20 @@
   <title>Atlas, a self-balancing desk robot · Giorgi Suramlishvili</title>
   <meta name="description" content="Atlas is Giorgi Suramlishvili's A-Level Computer Science project: a two-wheeled self-balancing desk robot on an ESP32-S3, controlled with LQR, with the gains designed in MATLAB. It doubles as a revision timer." />
   <meta name="author" content="Giorgi Suramlishvili" />
-  <meta name="keywords" content="Giorgi Suramlishvili, Atlas robot, self-balancing robot, LQR control, linear quadratic regulator, inverted pendulum robot, MATLAB LQR, Bryson's rule, ESP32-S3, MPU-6050, FreeRTOS, A-Level Computer Science project, Bristol" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="robots" content="max-image-preview:large" />
   <meta name="theme-color" content="#fbfbf8" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <script>
+    // set the theme before anything is drawn so dark mode doesn't flash white
+    (function () {
+      var r = document.documentElement, t;
+      r.className += ' js';
+      try { t = localStorage.getItem('gs-theme'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      r.setAttribute('data-theme', t);
+      r.style.colorScheme = t;
+    })();
+  </script>
   <link rel="canonical" href="https://giorgi.uk/projects/self-balancing-robot.html" />
   <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
@@ -21,17 +30,17 @@
   <meta property="og:description" content="My A-Level Computer Science project: a two-wheeled robot that balances using an LQR controller designed in MATLAB, and doubles as a revision timer." />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://giorgi.uk/projects/self-balancing-robot.html" />
-  <meta property="og:image" content="https://giorgi.uk/projects/inverted-pendulum-sketch.png" />
-  <meta property="og:image:type" content="image/png" />
-  <meta property="og:image:width" content="1097" />
-  <meta property="og:image:height" content="1103" />
-  <meta property="og:image:alt" content="Hand-drawn diagram of the forces on an inverted pendulum" />
+  <meta property="og:image" content="https://giorgi.uk/projects/atlas-balancing.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1000" />
+  <meta property="og:image:height" content="1334" />
+  <meta property="og:image:alt" content="Atlas, a two-wheeled self-balancing robot, balancing on a desk" />
   <meta property="og:locale" content="en_GB" />
   <meta property="og:site_name" content="Giorgi Suramlishvili" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Atlas, a self-balancing desk robot · Giorgi Suramlishvili" />
   <meta name="twitter:description" content="A two-wheeled robot that balances using an LQR controller designed in MATLAB." />
-  <meta name="twitter:image" content="https://giorgi.uk/projects/inverted-pendulum-sketch.png" />
+  <meta name="twitter:image" content="https://giorgi.uk/projects/atlas-balancing.jpg" />
   <script type="application/ld+json">
   [
     {
@@ -41,10 +50,10 @@
       "headline": "Atlas: a self-balancing desk robot controlled with LQR",
       "description": "A two-wheeled self-balancing desk robot on an ESP32-S3, controlled by a linear quadratic regulator with gains designed in MATLAB, built by Giorgi Suramlishvili as his A-Level Computer Science project.",
       "url": "https://giorgi.uk/projects/self-balancing-robot.html",
-      "image": "https://giorgi.uk/projects/inverted-pendulum-sketch.png",
+      "image": "https://giorgi.uk/projects/atlas-balancing.jpg",
       "dateCreated": "2025-09-01",
       "datePublished": "2025-09-01",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-21",
       "inLanguage": "en-GB",
       "author": { "@type": "Person", "@id": "https://giorgi.uk/#giorgi", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" },
       "about": ["Robotics", "LQR Control", "Linear Quadratic Regulator", "State-Space Models", "MATLAB", "Inverted Pendulum", "ESP32-S3", "FreeRTOS", "A-Level Computer Science"],
@@ -64,7 +73,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="../site.css?v=8" />
+  <link rel="stylesheet" href="../site.css?v=15" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -72,10 +81,11 @@
   <nav class="nav" aria-label="Main">
     <div class="wrap nav-inner">
       <a class="brand" href="../index.html" aria-label="Giorgi Suramlishvili, home">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
-        <span>Giorgi Suramlishvili</span>
+        <span class="cube-scene" aria-hidden="true"><span class="cube"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span>
+        <span class="brand-name">Giorgi Suramlishvili</span>
       </a>
       <div class="nav-links" id="primary-links">
+        <a href="../index.html#about" data-section="about">About</a>
         <div class="nav-work">
           <a href="../index.html#work" data-section="work">Projects</a>
           <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -88,7 +98,6 @@
             <a class="all" href="../index.html#work">All projects</a>
           </div>
         </div>
-        <a href="../index.html#about" data-section="about">About</a>
         <a href="../index.html#track" data-section="track">Experience</a>
         <a href="../index.html#contact" data-section="contact">Contact</a>
       </div>
@@ -103,46 +112,19 @@
 
       <header class="p-head">
         <div>
-          <p class="p-kicker">A-Level Computer Science project, started 2025</p>
+          <p class="p-kicker">A-Level Computer Science project, 2025&ndash;26</p>
           <h1 class="p-title">Atlas, a <span class="nowrap">self-balancing</span> desk robot</h1>
-          <p class="p-standfirst">A two-wheeled robot that has to keep itself upright on my desk. It balances using an LQR controller, with the gains worked out in MATLAB from a model of the robot. When it isn't balancing, its job is to be a revision timer.</p>
+          <p class="p-standfirst">A two-wheeled robot that keeps itself upright on my desk. It&rsquo;s built and it balances, using an LQR controller with the gains worked out in MATLAB from a model of the robot. It&rsquo;s also a revision timer, counting down study sessions on its round screen. Now I&rsquo;m writing up the documentation.</p>
           <dl class="p-facts">
             <div><dt>Controller</dt><dd>LQR (it started as PID)</dd></div>
             <div><dt>Gains from</dt><dd>MATLAB</dd></div>
             <div><dt>Microcontroller</dt><dd>ESP32-S3</dd></div>
-            <div><dt>Tilt sensor</dt><dd>MPU-6050</dd></div>
+            <div><dt>Tilt sensor</dt><dd>MPU-6500</dd></div>
           </dl>
         </div>
         <figure class="p-figure">
-          <div class="frame dots pad">
-            <svg viewBox="0 0 440 360" role="img" aria-labelledby="atlas-title atlas-desc">
-              <title id="atlas-title">The balance problem, side on</title>
-              <desc id="atlas-desc">A robot body leans at an angle theta above its wheel. The controller drives the wheel along the ground, distance x, to bring the body back upright.</desc>
-              <g fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path class="d-stroke" d="M40 300H400" stroke-width="2"/>
-                <path class="d-faint" d="M60 300l-10 12M100 300l-10 12M140 300l-10 12M180 300l-10 12M220 300l-10 12M260 300l-10 12M300 300l-10 12M340 300l-10 12M380 300l-10 12" stroke-width="1.4"/>
-                <path class="d-accent" d="M220 262V52" stroke-width="1.6" stroke-dasharray="4 6"/>
-                <g transform="rotate(-11 220 262)">
-                  <rect class="d-stroke d-fill-paper" x="178" y="86" width="84" height="152" rx="14" stroke-width="2.2"/>
-                  <circle class="d-stroke" cx="220" cy="134" r="23" stroke-width="2"/>
-                  <path class="d-dim" d="M196 186H244M196 200H232" stroke-width="1.6"/>
-                  <path class="d-stroke" d="M220 238V262" stroke-width="2.2"/>
-                </g>
-                <circle class="d-stroke d-fill-paper" cx="220" cy="262" r="36" stroke-width="2.2"/>
-                <circle class="d-stroke" cx="220" cy="262" r="24" stroke-width="1.2"/>
-                <path class="d-accent" d="M220 112A150 150 0 0 0 191.4 114.8" stroke-width="2"/>
-                <path class="d-accent" d="M220 336H316M306 330l10 6-10 6" stroke-width="2"/>
-              </g>
-              <circle class="d-fill-ink" cx="220" cy="262" r="4.5"/>
-              <text class="d-label d-label-accent" x="200" y="100" font-style="italic">&theta;</text>
-              <text class="d-label-sm" x="230" y="66">upright</text>
-              <text class="d-label d-label-accent" x="326" y="341" font-style="italic">x</text>
-              <text class="d-label-sm" x="58" y="190">the body leans</text>
-              <text class="d-label-sm" x="266" y="254">the wheels drive</text>
-              <text class="d-label-sm" x="266" y="270">underneath it</text>
-            </svg>
-          </div>
-          <figcaption>Not a photo of Atlas: the problem it has to solve. Keep &theta; near zero without rolling too far along x.</figcaption>
+          <div class="frame tall"><img src="atlas-balancing.jpg" width="1000" height="1334" alt="Atlas balancing on my desk: a black 3D-printed body on two yellow wheels, with its round screen showing a 25-minute Maths timer" fetchpriority="high" decoding="async" /></div>
+          <figcaption>Balancing on my desk, with a 25-minute Maths session ready to start.</figcaption>
         </figure>
       </header>
 
@@ -165,7 +147,45 @@
         <div class="p-main">
           <section class="p-sec" id="lqr">
             <h2>Why LQR instead of PID</h2>
-            <p class="intro">My first plan was a PID controller on the lean angle, with a complementary filter to estimate the angle. I've switched Atlas to an LQR controller instead.</p>
+            <p class="intro">My first plan was a PID controller on the lean angle, with a complementary filter to estimate the angle. I switched Atlas to an LQR controller instead.</p>
+            <figure class="fig">
+              <div class="frame dots pad">
+                <svg viewBox="76 52 404 336" role="img" aria-labelledby="atlas-title atlas-desc">
+                  <title id="atlas-title">Atlas side on, leaning over</title>
+                  <desc id="atlas-desc">The body leans at angle theta from upright. Gravity, mg, pulls down at the centre of mass and tips it further over. The motors push the wheels with force F, and the wheels roll a distance x from where they started, to get back underneath the body.</desc>
+                  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path class="d-stroke" d="M92 320H460" stroke-width="2"/>
+                    <path class="d-faint" d="M108 320l-9 10M132 320l-9 10M156 320l-9 10M180 320l-9 10M204 320l-9 10M228 320l-9 10M252 320l-9 10M276 320l-9 10M300 320l-9 10M324 320l-9 10M348 320l-9 10M372 320l-9 10M396 320l-9 10M420 320l-9 10M444 320l-9 10" stroke-width="1.3"/>
+                    <!-- body, tipped 14 degrees about the axle -->
+                    <g transform="rotate(14 250 284)">
+                      <rect class="d-stroke d-fill-paper" x="204" y="112" width="92" height="160" rx="16" stroke-width="2.2"/>
+                      <path class="d-dim" d="M250 112V84" stroke-width="1.2"/>
+                      <circle class="d-stroke d-fill-paper" cx="250" cy="179" r="8" stroke-width="1.6"/>
+                      <path class="d-fill-ink" d="M250 179v-8a8 8 0 0 1 8 8zM250 179v8a8 8 0 0 1-8-8z"/>
+                    </g>
+                    <path class="d-accent" d="M250 284V84" stroke-width="1.6" stroke-dasharray="4 6"/>
+                    <path class="d-accent" d="M250 94A190 190 0 0 1 296 99.6" stroke-width="2"/>
+                    <circle class="d-stroke d-fill-paper" cx="250" cy="284" r="36" stroke-width="2.4"/>
+                    <circle class="d-dim" cx="250" cy="284" r="25" stroke-width="1.2"/>
+                    <path class="d-bad" d="M275.4 192v54m-5.5-7.5 5.5 7.5 5.5-7.5" stroke-width="2"/>
+                    <path class="d-stroke" d="M306 284h52m-8-5.5 8 5.5-8 5.5" stroke-width="2"/>
+                    <path class="d-dim" d="M285 180.5 338 172" stroke-width="1"/>
+                    <path class="d-dim" d="M150 326v30M250 326v30" stroke-width="1.2"/>
+                    <path class="d-accent" d="M152 348h95m-8-5.5 8 5.5-8 5.5" stroke-width="2"/>
+                  </g>
+                  <circle class="d-fill-ink" cx="250" cy="284" r="4.5"/>
+                  <text class="d-label d-label-accent" x="277" y="80" text-anchor="middle" font-style="italic">&theta;</text>
+                  <text class="d-label-sm" x="243" y="92" text-anchor="end">upright</text>
+                  <text class="d-label d-label-bad" x="284" y="232" font-style="italic">mg</text>
+                  <text class="d-label-sm" x="342" y="176">centre of mass</text>
+                  <text class="d-label" x="366" y="289" font-style="italic">F</text>
+                  <text class="d-label-sm" x="366" y="306">from the motors</text>
+                  <text class="d-label d-label-accent" x="200" y="374" text-anchor="middle" font-style="italic">x</text>
+                  <text class="d-label-sm" x="150" y="374" text-anchor="middle">start</text>
+                </svg>
+              </div>
+              <figcaption>Side on. Gravity tips the body further over, so the motors have to drive the wheels back underneath it. The job is to keep &theta; near zero without rolling too far along x.</figcaption>
+            </figure>
             <p>A PID loop on the angle only looks at one number. It can push the wheels to stop the robot falling, but it doesn't know the robot is slowly rolling off across the desk, and its three gains have to be found by trial and error.</p>
             <p>LQR looks at all four states at once: how far the wheels have moved, how fast they're going, the lean angle, and how fast it's leaning. I don't guess the gains. I decide how much I care about each state and how much motor effort I'm willing to spend, and the maths gives me the best gains for that trade-off.</p>
             <div class="callout">
@@ -177,7 +197,7 @@
           <section class="p-sec" id="control">
             <h2>How the controller is designed</h2>
             <ol class="steps">
-              <li><h3>Measure the four states</h3><p>The MPU-6050 gives the lean angle and how fast it's changing. The wheel encoders give how far the robot has moved and how fast.</p></li>
+              <li><h3>Measure the four states</h3><p>The MPU-6500 gives the lean angle and how fast it's changing. The wheel encoders give how far the robot has moved and how fast.</p></li>
               <li><h3>Model the robot</h3><p>I modelled Atlas as a body sitting on a pair of wheels and used Newton's laws to write it in state-space form, <math><mover><mi>x</mi><mo>&#729;</mo></mover><mo>=</mo><mi>A</mi><mi>x</mi><mo>+</mo><mi>B</mi><mi>u</mi></math>. The body's moment of inertia comes from treating it as a box, <math><mfrac><mrow><mi>m</mi><mo stretchy="false">(</mo><msup><mi>h</mi><mn>2</mn></msup><mo>+</mo><msup><mi>d</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><mn>12</mn></mfrac></math>, rather than measuring it.</p></li>
               <li><h3>Choose the weights</h3><p>Q and R come from Bryson's rule, which sets each weight from the largest value I'm happy to see: 10&nbsp;cm of drift, 0.5&nbsp;m/s, 5&deg; of lean, 90&deg;/s, and 4&nbsp;V on the motors.</p></li>
               <li><h3>Let MATLAB solve it</h3><p>A MATLAB script solves the Riccati equation and gives the gain vector K. I wrote it without any toolboxes, so it also runs in Octave.</p></li>
@@ -190,8 +210,9 @@
             <table class="data">
               <thead><tr><th scope="col">Part</th><th scope="col">What I used</th><th scope="col">What it's for</th></tr></thead>
               <tbody>
-                <tr><th scope="row">Microcontroller</th><td>ESP32-S3 (WROOM-2)</td><td>Runs the balance loop and everything else</td></tr>
-                <tr><th scope="row">Tilt sensor</th><td>MPU-6050</td><td>Accelerometer and gyro for the lean angle and rate</td></tr>
+                <tr><th scope="row">Microcontroller</th><td>ESP32-S3 dev board (N16R8)</td><td>Runs the balance loop and everything else</td></tr>
+                <tr><th scope="row">Tilt sensor</th><td>MPU-6500</td><td>Accelerometer and gyro for the lean angle and rate. My first IMU board was dead, so this is the replacement</td></tr>
+                <tr><th scope="row">Motors</th><td>2 &times; JGA25-370 with encoders</td><td>Geared wheel motors. The encoders measure how far each wheel has turned</td></tr>
                 <tr><th scope="row">Motor driver</th><td>DRV8833</td><td>Drives the two wheel motors</td></tr>
                 <tr><th scope="row">Distance sensor</th><td>VL53L0X</td><td>Sees obstacles in front</td></tr>
                 <tr><th scope="row">Edge sensor</th><td>TCRT5000</td><td>Stops it driving forward off the desk</td></tr>
@@ -206,7 +227,7 @@
           <section class="p-sec" id="timer">
             <h2>More than balancing</h2>
             <p>For a Computer Science project it has to do something useful too, so Atlas is also a revision timer. It times study sessions and breaks, plays a chime and a spoken reminder when a break is due, and keeps a weekly chart of how much I've done against a goal.</p>
-            <p>It also does a full spin on the spot to say hello, which turned out to be harder than it sounds: turning uses a separate controller on the wheel encoders that has to keep its heading while the LQR loop keeps it upright.</p>
+            <p>It also does a full spin on the spot to say hello. That's harder than it sounds, because turning needs its own controller on the wheel encoders, and that has to hold the heading while the LQR loop is busy keeping it upright.</p>
           </section>
 
           <section class="p-sec" id="build-status">
@@ -215,16 +236,17 @@
             <ul class="status">
               <li><span>Chassis and electronics</span><span class="badge done">Built</span></li>
               <li><span>LQR design in MATLAB</span><span class="badge done">Done</span></li>
-              <li><span>Balancing on the real robot</span><span class="badge now">Testing</span></li>
-              <li><span>Revision timer, screen and sound</span><span class="badge now">In progress</span></li>
+              <li><span>Balancing on the real robot</span><span class="badge done">Balancing</span></li>
+              <li><span>Revision timer on the round screen</span><span class="badge done">Working</span></li>
+              <li><span>Documentation</span><span class="badge now">Writing it now</span></li>
               <li><span>Talking to the light switch</span><span class="badge later">Later</span></li>
             </ul>
           </section>
 
           <section class="p-sec" id="next-steps">
             <h2>What's next</h2>
-            <p>The big one is getting it to balance reliably on the desk and hold its position instead of drifting, then tuning the weights until it feels calm rather than twitchy. After that come the timer features on the round screen.</p>
-            <p>Longer term, I'd like it to talk to my <a href="light-switch.html">light switch</a> over MQTT. I'll add photos and test results here as it comes together.</p>
+            <p>It balances now. Getting there wasn't quick: the gearboxes on the motors have a bit of slack in them, and my first set of gains made it shake badly until I tuned it down. The main job now is the documentation for my Computer Science project, writing up how it works and how I tested it.</p>
+            <p>Longer term, I'd like it to talk to my <a href="light-switch.html">light switch</a> over MQTT. I'll add more photos and test results here as I write it up.</p>
             <a class="arrow-link" href="../index.html#contact">Ask me about Atlas <span class="arr" aria-hidden="true">&rarr;</span></a>
           </section>
 
@@ -247,6 +269,6 @@
     </div>
   </footer>
 
-  <script src="../site.js?v=7"></script>
+  <script src="../site.js?v=15"></script>
 </body>
 </html>

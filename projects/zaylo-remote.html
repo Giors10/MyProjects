@@ -6,11 +6,20 @@
   <title>Zaylo Remote app · Giorgi Suramlishvili</title>
   <meta name="description" content="Zaylo Remote is the web app that controls my light switch and blinds: live MQTT updates, shared homes on Firebase and Bluetooth rescue for devices that lose Wi-Fi. Try the demo with pretend devices. By Giorgi Suramlishvili." />
   <meta name="author" content="Giorgi Suramlishvili" />
-  <meta name="keywords" content="Giorgi Suramlishvili, Zaylo Remote, progressive web app, PWA, smart home app, MQTT over WebSockets, Firebase, Web Bluetooth, ESP32, home automation, Bristol" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="robots" content="max-image-preview:large" />
   <meta name="theme-color" content="#fbfbf8" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
+  <script>
+    // set the theme before anything is drawn so dark mode doesn't flash white
+    (function () {
+      var r = document.documentElement, t;
+      r.className += ' js';
+      try { t = localStorage.getItem('gs-theme'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      r.setAttribute('data-theme', t);
+      r.style.colorScheme = t;
+    })();
+  </script>
   <link rel="canonical" href="https://giorgi.uk/projects/zaylo-remote.html" />
   <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png" />
@@ -44,7 +53,7 @@
       "image": "https://giorgi.uk/projects/zaylo-app.jpg",
       "dateCreated": "2025-01-01",
       "datePublished": "2025-01-01",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-21",
       "inLanguage": "en-GB",
       "author": { "@type": "Person", "@id": "https://giorgi.uk/#giorgi", "name": "Giorgi Suramlishvili", "url": "https://giorgi.uk/" },
       "about": ["Progressive Web Apps", "MQTT", "Firebase", "Web Bluetooth", "Home automation", "JavaScript"],
@@ -64,7 +73,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="../site.css?v=8" />
+  <link rel="stylesheet" href="../site.css?v=15" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -72,10 +81,11 @@
   <nav class="nav" aria-label="Main">
     <div class="wrap nav-inner">
       <a class="brand" href="../index.html" aria-label="Giorgi Suramlishvili, home">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
-        <span>Giorgi Suramlishvili</span>
+        <span class="cube-scene" aria-hidden="true"><span class="cube"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span>
+        <span class="brand-name">Giorgi Suramlishvili</span>
       </a>
       <div class="nav-links" id="primary-links">
+        <a href="../index.html#about" data-section="about">About</a>
         <div class="nav-work">
           <a href="../index.html#work" data-section="work">Projects</a>
           <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -88,7 +98,6 @@
             <a class="all" href="../index.html#work">All projects</a>
           </div>
         </div>
-        <a href="../index.html#about" data-section="about">About</a>
         <a href="../index.html#track" data-section="track">Experience</a>
         <a href="../index.html#contact" data-section="contact">Contact</a>
       </div>
@@ -187,14 +196,11 @@
 
           <section class="p-sec" id="section-3">
             <h2>What's going on inside</h2>
-            <div class="notes">
-              <div><h3>One state store</h3><p>A single store holds the devices, the home and the user. When a device changes, or someone else's phone sends a command, every screen updates from it. <code>sessionStorage</code> carries the state between pages.</p></div>
-              <div><h3>Accounts and shared homes</h3><p>A home groups the devices that belong together, and invites let other people in the house join with their own account. Firestore rules only let members of a home see its devices.</p></div>
-              <div><h3>Live updates over MQTT</h3><p>Commands go out through the broker and the app listens for state coming back, so the controls stay in step with the hardware. How fast that feels depends on the connection.</p></div>
-              <div><h3>Bluetooth rescue</h3><p>In a browser with Web Bluetooth, I can connect straight to a nearby device, read its logs and give it new Wi-Fi details. It's my way back in when it can't reach the router.</p></div>
-              <div><h3>Demo mode</h3><p>The demo uses pretend switches and blinds, so anyone can try the controls without touching my hardware. The blind positions move, but they aren't coming from a real motor.</p></div>
-              <div><h3>Installable</h3><p>A service worker caches the app's files and it can be added to the home screen. Live updates still need the network, and the browser has to keep the page running.</p></div>
-            </div>
+            <p>Everything hangs off one shared store that holds the devices, the home and the user. When a device changes, or someone else's phone sends a command, every screen updates from that one place, and <code>sessionStorage</code> carries it between pages.</p>
+            <p>A home groups the devices that belong together. Other people in the house join with an invite and their own account, and the Firestore rules only let members of a home see its devices.</p>
+            <p>Commands go out through the broker and the app listens for the state coming back from the device, so the controls stay in step with what the hardware is actually doing.</p>
+            <p>The Bluetooth rescue needs a browser with Web Bluetooth, so Chrome or Edge rather than Safari. It connects straight to a device nearby, shows its logs and sends it new Wi-Fi details. That's my way back in when something can't reach the router.</p>
+            <p>A service worker caches the files, so it can go on the home screen and open like a normal app. The demo at the top of this page swaps the broker and Firebase for pretend ones, so the blinds really do move, just not any real ones.</p>
           </section>
 
           <section class="p-sec" id="section-4">
@@ -238,6 +244,6 @@
     </div>
   </footer>
 
-  <script src="../site.js?v=7"></script>
+  <script src="../site.js?v=15"></script>
 </body>
 </html>

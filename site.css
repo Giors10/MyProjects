@@ -25,9 +25,16 @@
   --sans: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
-  --wrap: 1200px;
-  --gutter: 40px;
+  --wrap: 1440px;
+  --gutter: clamp(24px, 3.6vw, 56px);
   --nav-h: 64px;
+
+  /* the cube: hue and saturation here, the lightness of each face comes from site.js */
+  --cube-h: 230;
+  --cube-s: 74%;
+
+  --out: cubic-bezier(.2, .7, .2, 1);
+  --spring: cubic-bezier(.3, 1.5, .5, 1);
   color-scheme: light;
 }
 
@@ -49,6 +56,7 @@ html[data-theme="dark"] {
   --good: #72c995;
   --bad: #f2897c;
   --code-bg: #1d2025;
+  --cube-s: 84%;
   color-scheme: dark;
 }
 
@@ -211,9 +219,17 @@ html[data-theme="dark"] .hl { color: var(--hl-ink); }
   font: 600 16px/1 var(--sans);
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.25s ease, transform 0.25s var(--out);
 }
-.button:hover { background: var(--blue-2); border-color: var(--blue-2); color: #fff; }
+.button:hover {
+  background: var(--blue-2);
+  border-color: var(--blue-2);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px -12px color-mix(in srgb, var(--blue) 80%, transparent);
+}
+.button:active { transform: translateY(0) scale(0.98); box-shadow: none; transition-duration: 0.08s; }
+.button.ghost:hover { box-shadow: 0 10px 22px -16px rgba(20, 22, 26, 0.4); }
 html[data-theme="dark"] .button { color: #0e1222; }
 html[data-theme="dark"] .button:hover { color: #0e1222; }
 html[data-theme="dark"] .button.ghost, html[data-theme="dark"] .button.ghost:hover { color: var(--ink); }
@@ -228,6 +244,26 @@ html[data-theme="dark"] .button.ghost, html[data-theme="dark"] .button.ghost:hov
   z-index: 50;
   background: var(--paper);
   border-bottom: 1px solid var(--rule);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+/* After you scroll a bit the bar turns into frosted glass (site.js adds .is-stuck). */
+.nav.is-stuck {
+  background: color-mix(in srgb, var(--paper) 80%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 30px -28px rgba(20, 22, 26, 0.6);
+}
+/* How far through a write-up you are. Only on the project pages. */
+.nav-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--blue);
+  transform: scaleX(var(--read, 0));
+  transform-origin: 0 50%;
+  pointer-events: none;
 }
 .nav-inner {
   position: relative;
@@ -251,9 +287,7 @@ html[data-theme="dark"] .button.ghost, html[data-theme="dark"] .button.ghost:hov
   white-space: nowrap;
 }
 .brand:hover { color: var(--ink); }
-.brand-mark { width: 28px; height: 28px; flex: none; border-radius: 7px; }
-.brand-mark .rod { transform-origin: 14.6px 22.4px; transition: transform 0.4s cubic-bezier(.3, 1.6, .5, 1); }
-.brand:hover .brand-mark .rod { transform: rotate(-22deg); }
+.brand .cube-scene { --s: 16px; margin: 0 -2px 0 -4px; }
 
 .nav-links {
   display: flex;
@@ -456,7 +490,7 @@ html[data-theme="dark"] .theme-toggle svg { transform: rotate(180deg); }
   align-items: center;
   min-height: calc(100vh - var(--nav-h));
   min-height: calc(100svh - var(--nav-h));
-  padding: 56px 0 104px;
+  padding: 56px 0 88px;
 }
 .hero-inner {
   display: grid;
@@ -464,57 +498,55 @@ html[data-theme="dark"] .theme-toggle svg { transform: rotate(180deg); }
   gap: 72px;
   align-items: center;
 }
-.hero-kicker {
+.hero-title {
+  margin: 0 0 28px;
+  font-size: clamp(46px, 6.6vw, 94px);
+  font-stretch: 85%;
+  font-weight: 760;
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+}
+/* My name sits above the big line, small, with a blue dash in front. */
+.hero-name {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 0 22px;
+  margin-bottom: 24px;
   color: var(--ink-2);
   font-size: 16px;
+  font-stretch: 100%;
   font-weight: 600;
+  line-height: 1.3;
   letter-spacing: 0.005em;
 }
-.hero-kicker::before {
+.hero-name::before {
   content: "";
   width: 22px;
   height: 2px;
   border-radius: 2px;
   background: var(--blue);
 }
-.hero-kicker span { color: var(--ink-3); font-weight: 400; }
-.hero-title {
-  margin: 0 0 26px;
-  font-size: clamp(42px, 5.4vw, 76px);
-  font-stretch: 86%;
-  font-weight: 750;
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
+.hero-name small { color: var(--ink-3); font-size: 1em; font-weight: 400; }
+/* Each line slides up from behind its own edge when the page loads. */
+.hero-title .line { display: block; overflow: clip; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.hero-title .line > span { display: block; }
 .hero-lede {
-  max-width: 31em;
+  max-width: 34em;
   margin: 0 0 34px;
   color: var(--ink-2);
   font-size: clamp(18px, 1.55vw, 20.5px);
   line-height: 1.6;
 }
 .hero-links { display: flex; flex-wrap: wrap; gap: 12px; }
-.hero-scroll {
-  position: absolute;
-  left: 50%;
-  bottom: 28px;
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  color: var(--ink-3);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  transform: translateX(-50%);
-}
-.hero-scroll svg { width: 16px; height: 16px; animation: heroNudge 2.4s ease-in-out infinite; }
-.hero-scroll:hover { color: var(--blue); }
-@keyframes heroNudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+/* Load-in for the opening screen. Only with JS on (the head script adds .js),
+   so nothing is ever stuck invisible. */
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes lineUp { from { transform: translateY(108%); } to { transform: none; } }
+.js .hero-title .line > span { animation: lineUp 0.9s cubic-bezier(.16, 1, .3, 1) 0.05s both; }
+.js .hero-title .line + .line > span { animation-delay: 0.14s; }
+.js .hero-lede,
+.js .hero-links,
+.js .now { animation: rise 0.8s var(--out) 0.3s both; }
 
 .now {
   position: relative;
@@ -560,10 +592,23 @@ html[data-theme="dark"] .theme-toggle svg { transform: rotate(180deg); }
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 48px;
   align-items: end;
+  position: relative;
   margin-bottom: 44px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--ink);
 }
+/* The line under each heading draws itself in from the left. */
+.section-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: 0 50%;
+  transition: transform 1.3s cubic-bezier(.65, 0, .15, 1) 0.15s;
+}
+.section-head.will-reveal:not(.is-in)::after { transform: scaleX(0); }
 .section-head h2 { font-size: clamp(34px, 4vw, 52px); letter-spacing: -0.03em; }
 .section-head p { max-width: 36em; margin: 0 0 4px; justify-self: end; color: var(--ink-3); font-size: 16px; }
 
@@ -647,7 +692,7 @@ html[data-theme="dark"] .theme-toggle svg { transform: rotate(180deg); }
 .project h3 { font-size: clamp(28px, 3vw, 40px); letter-spacing: -0.025em; margin-bottom: 14px; }
 .project h3 a { text-decoration: none; }
 .project h3 a:hover { color: var(--blue); }
-.project-text > p { max-width: 34em; }
+.project-text > p { max-width: 38em; }
 .tools {
   display: flex;
   flex-wrap: wrap;
@@ -702,7 +747,7 @@ html[data-theme="dark"] .theme-toggle svg { transform: rotate(180deg); }
 .card h3 { font-size: clamp(25px, 2.4vw, 32px); margin-bottom: 12px; letter-spacing: -0.02em; }
 .card h3 a { text-decoration: none; }
 .card h3 a:hover { color: var(--blue); }
-.card p { max-width: 34em; }
+.card p { max-width: 40em; }
 .card .arrow-link { margin-top: auto; align-self: flex-start; }
 
 .about {
@@ -711,10 +756,36 @@ html[data-theme="dark"] .theme-toggle svg { transform: rotate(180deg); }
   gap: 72px;
   align-items: start;
 }
-.about-photo { margin: 0; position: sticky; top: calc(var(--nav-h) + 32px); }
-.about-photo img { width: 100%; border-radius: 12px; }
+/* The photo is a print taped to the page, slightly wonky. It straightens up on hover. */
+.about-photo {
+  position: sticky;
+  top: calc(var(--nav-h) + 44px);
+  margin: 0;
+  padding: 10px 10px 12px;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(20, 22, 26, 0.08), 0 24px 46px -28px rgba(20, 22, 26, 0.5);
+  rotate: -1.8deg;
+  transition: rotate 0.7s var(--spring), translate 0.7s var(--spring), box-shadow 0.4s ease;
+}
+.about-photo:hover { rotate: 0deg; translate: 0 -4px; box-shadow: 0 1px 2px rgba(20, 22, 26, 0.08), 0 34px 60px -30px rgba(20, 22, 26, 0.5); }
+.about-photo::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: -13px;
+  left: 50%;
+  width: 96px;
+  height: 26px;
+  translate: -50% 0;
+  rotate: 3deg;
+  background: rgba(255, 226, 94, 0.55);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+html[data-theme="dark"] .about-photo { background: #ecebe5; }
+.about-photo img { width: 100%; border-radius: 2px; }
 .about-photo figcaption { margin-top: 10px; color: var(--ink-3); font-size: 14px; }
-.about-text { max-width: 40em; }
+.about-text { max-width: 46em; }
 .about-text > p { font-size: 18.5px; line-height: 1.65; }
 .facts {
   display: grid;
@@ -737,11 +808,15 @@ html[data-theme="dark"] .theme-toggle svg { transform: rotate(180deg); }
 }
 .xp-item:first-child { padding-top: 6px; }
 .xp-when { color: var(--ink-3); font-size: 15px; line-height: 1.5; }
+/* A photo under the date, for the entries I've got one for. */
+.xp-photo { margin: 18px 0 0; }
+.xp-photo img { width: 100%; border-radius: 10px; }
+.xp-photo figcaption { margin-top: 8px; color: var(--ink-3); font-size: 13.5px; line-height: 1.4; }
 .xp-when strong { display: block; color: var(--blue); font-weight: 650; }
-.xp-body { max-width: 44em; }
+.xp-body { max-width: 52em; }
 .xp-body h3 { font-size: 26px; letter-spacing: -0.02em; margin-bottom: 4px; }
 .xp-body .role { margin: 0 0 14px; color: var(--ink-3); font-size: 15.5px; }
-.xp-body > p:last-child { margin-bottom: 0; }
+.xp-body > :last-child { margin-bottom: 0; }
 .xp-new {
   display: inline-block;
   margin-left: 10px;
@@ -913,7 +988,7 @@ details.is-closing > summary::after { transform: rotate(0deg); background-size: 
   letter-spacing: -0.032em;
 }
 .p-standfirst {
-  max-width: 30em;
+  max-width: 34em;
   margin: 0 0 28px;
   color: var(--ink);
   font-size: clamp(19px, 1.7vw, 22px);
@@ -970,8 +1045,8 @@ html[data-theme="dark"] .p-figure .frame.bordered { border-color: transparent; }
 
 .p-layout {
   display: grid;
-  grid-template-columns: 210px minmax(0, 1fr);
-  gap: 72px;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 80px;
   padding-top: 56px;
 }
 .toc { position: relative; }
@@ -995,8 +1070,25 @@ html[data-theme="dark"] .p-figure .frame.bordered { border-color: transparent; }
 }
 .toc li a:hover { color: var(--ink); }
 .toc li a.active { border-left-color: var(--blue); color: var(--ink); font-weight: 600; }
+/* With JS a single marker slides between the links instead. */
+.toc ol { position: relative; }
+.toc-marker {
+  position: absolute;
+  left: -1px;
+  top: 0;
+  width: 2px;
+  height: var(--h, 0);
+  border-radius: 2px;
+  background: var(--blue);
+  transform: translateY(var(--y, 0));
+  opacity: 0;
+  transition: transform 0.45s var(--out), height 0.45s var(--out), opacity 0.2s ease;
+}
+.toc-marker.on { opacity: 1; }
+.toc ol:has(.toc-marker) li a.active { border-left-color: transparent; }
+.toc li a { transition: color 0.2s ease; }
 
-.p-main { min-width: 0; max-width: 860px; overflow-x: clip; }
+.p-main { min-width: 0; max-width: 1000px; overflow-x: clip; }
 .p-sec { padding-bottom: 64px; }
 .p-sec + .p-sec { padding-top: 56px; border-top: 1px solid var(--rule); }
 .p-sec > h2 {
@@ -1005,7 +1097,7 @@ html[data-theme="dark"] .p-figure .frame.bordered { border-color: transparent; }
   letter-spacing: -0.024em;
 }
 .p-sec h3 { margin: 36px 0 10px; font-size: 21px; letter-spacing: -0.012em; }
-.p-sec > p, .p-sec > ul:not([class]), .p-sec > ol:not([class]), .prose { max-width: 40em; }
+.p-sec > p, .p-sec > ul:not([class]), .p-sec > ol:not([class]), .prose { max-width: 46em; }
 .p-sec > p.intro { color: var(--ink); font-size: 19px; line-height: 1.55; }
 .p-sec ul:not([class]), .p-sec ol:not([class]) { padding-left: 22px; }
 .p-sec ul:not([class]) li, .p-sec ol:not([class]) li { margin-bottom: 8px; padding-left: 4px; }
@@ -1016,9 +1108,11 @@ html[data-theme="dark"] .p-figure .frame.bordered { border-color: transparent; }
 .fig { margin: 32px 0; }
 .fig > img, .fig > .frame { border-radius: 12px; }
 .fig > .frame { overflow: hidden; }
-.fig figcaption { max-width: 44em; margin-top: 12px; color: var(--ink-3); font-size: 14.5px; line-height: 1.55; }
+.fig figcaption { max-width: 50em; margin-top: 12px; color: var(--ink-3); font-size: 14.5px; line-height: 1.55; }
 .fig figcaption b { color: var(--ink-2); }
 .fig.sketch > .frame { padding: 4%; background: #fff; border: 1px solid var(--rule); }
+.fig > .frame.pad { padding: 4% 6%; }
+.fig > .frame.pad svg { max-width: 480px; margin: 0 auto; }
 .fig.sketch img { margin: 0 auto; max-height: 720px; width: auto; }
 
 .side-by-side {
@@ -1044,7 +1138,7 @@ html[data-theme="dark"] .side-by-side .frame,
 html[data-theme="dark"] .fig.sketch > .frame { background: #f4f4f0; border-color: transparent; }
 
 .callout {
-  max-width: 40em;
+  max-width: 46em;
   margin: 28px 0;
   padding: 18px 22px;
   border-left: 3px solid var(--blue);
@@ -1085,7 +1179,7 @@ html[data-theme="dark"] .fig.sketch > .frame { background: #f4f4f0; border-color
 }
 .numbers .n small { font-size: 0.5em; font-weight: 600; margin-left: 2px; }
 .numbers h3 { margin: 0 0 4px; font-size: 18px; }
-.numbers p { margin: 0; font-size: 16px; max-width: 40em; }
+.numbers p { margin: 0; font-size: 16px; max-width: 46em; }
 
 /* Device and system diagrams (inline SVG). */
 .diagram {
@@ -1147,7 +1241,7 @@ table.data td.pin, table.data .pin { font-family: var(--mono); font-size: 14px; 
 .mode-item summary > span:not(.mode-number) { color: var(--ink-3); font-size: 15.5px; }
 .mode-item[open] summary strong, .mode-item summary:hover strong { color: var(--blue); }
 .mode-body { padding: 0 44px 24px 52px; }
-.mode-body p { max-width: 40em; }
+.mode-body p { max-width: 46em; }
 .mode-route { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 34px; margin: 4px 0 0; padding: 0; list-style: none; }
 .mode-route li { position: relative; padding: 6px 13px; border: 1px solid var(--rule-2); border-radius: 999px; font-size: 14.5px; line-height: 1.4; }
 .mode-route li:nth-child(2) { border-color: var(--blue); background: var(--blue-soft); color: var(--blue); font-weight: 600; }
@@ -1226,7 +1320,39 @@ table.data td.pin, table.data .pin { font-family: var(--mono); font-size: 14px; 
   gap: 12px;
   margin: 28px 0;
 }
-.weights div { padding: 18px 18px 16px; border: 1px solid var(--rule); border-radius: 12px; }
+.weights div { padding: 18px 18px 16px; border: 1px solid var(--rule); border-top-width: 4px; border-radius: 12px; }
+/* The four weights as one bar, so you can see how the score splits up.
+   Each card underneath gets the same shade along its top edge. */
+.weight-bar {
+  display: flex;
+  gap: 3px;
+  height: 34px;
+  margin: 18px 0 14px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.weight-bar span {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 13.5px;
+  font-weight: 650;
+}
+.weight-bar span:nth-child(1) { flex: 40; }
+.weight-bar span:nth-child(2) { flex: 35; }
+.weight-bar span:nth-child(3) { flex: 15; }
+.weight-bar span:nth-child(4) { flex: 10; }
+.weight-bar span:nth-child(1), .weights div:nth-child(1) { --shade: var(--blue); }
+.weight-bar span:nth-child(2), .weights div:nth-child(2) { --shade: color-mix(in srgb, var(--blue) 78%, var(--paper)); }
+.weight-bar span:nth-child(3), .weights div:nth-child(3) { --shade: color-mix(in srgb, var(--blue) 56%, var(--paper)); }
+.weight-bar span:nth-child(4), .weights div:nth-child(4) { --shade: color-mix(in srgb, var(--blue) 36%, var(--paper)); }
+.weight-bar span { background: var(--shade); color: var(--ink); }
+.weight-bar span:nth-child(-n+2) { color: #fff; }
+html[data-theme="dark"] .weight-bar span:nth-child(-n+2) { color: #0e1222; }
+.weights div { border-top-color: var(--shade); }
 .weights b { display: block; color: var(--blue); font-size: 32px; font-stretch: 85%; font-weight: 750; line-height: 1; }
 .weights strong { display: block; margin: 14px 0 4px; font-size: 16.5px; }
 .weights p { margin: 0; font-size: 14.5px; line-height: 1.5; }
@@ -1348,7 +1474,7 @@ table.data td.pin, table.data .pin { font-family: var(--mono); font-size: 14px; 
   border-left: 1px dashed var(--rule-2);
 }
 .steps h3 { margin: 2px 0 6px; font-size: 19px; }
-.steps p { margin: 0; max-width: 40em; }
+.steps p { margin: 0; max-width: 46em; }
 
 .next-up {
   display: grid;
@@ -1375,7 +1501,7 @@ table.data td.pin, table.data .pin { font-family: var(--mono); font-size: 14px; 
 
 /* ---------- paper (inverted pendulum) ---------- */
 
-.paper .p-main { max-width: 800px; }
+.paper .p-main { max-width: 920px; }
 .paper .p-sec > p { max-width: none; }
 .paper .p-sec { font-size: 17.5px; }
 .paper .p-sec > h2 .num { margin-right: 12px; color: var(--blue); font-variant-numeric: tabular-nums; }
@@ -1507,6 +1633,101 @@ pre.code .fn { color: #ffd76a; }
 .d-label-good { fill: var(--good); }
 .d-label-bad { fill: var(--bad); }
 
+/* ---------- the cube ---------- */
+
+/* Six faces in proper 3D. The resting angle is the usual isometric view
+   (turned 45° and tipped forward 35.26°). Once site.js loads it takes over
+   the transform and works out how bright each face is from where it points,
+   so the shading stays right while it spins. The --lit values here are only
+   for the resting pose, in case the script never runs. */
+.cube-scene {
+  --s: 18px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--s) * 1.75);
+  height: calc(var(--s) * 1.75);
+  perspective: calc(var(--s) * 16);
+}
+.cube {
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+  transform-style: preserve-3d;
+  transform: rotateX(-35.264deg) rotateY(45deg);
+}
+.cube > i {
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--s) * 0.1);
+  background: hsl(var(--cube-h) var(--cube-s) var(--lit, 40%));
+  box-shadow: inset 0 0 0 max(0.5px, calc(var(--s) * 0.02)) rgb(255 255 255 / 0.16);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.cube .f1 { transform: translateZ(calc(var(--s) / 2)); --lit: 32%; }
+.cube .f2 { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+.cube .f3 { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+.cube .f4 { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); --lit: 51%; }
+.cube .f5 { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); --lit: 70%; }
+.cube .f6 { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
+
+/* The big one on the 404 page. Press it and it spins, or flick it. */
+.cube-toy {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.cube-toy .cube-scene { transition: scale 0.3s var(--spring); }
+.cube-toy:hover .cube-scene { scale: 1.1; }
+.cube-toy:active .cube-scene { scale: 0.9; transition-duration: 0.1s; }
+
+/* ---------- things coming into view ---------- */
+
+/* site.js puts .will-reveal on anything that starts below the fold and adds
+   .is-in when it scrolls into view, then takes both off again once it's done.
+   Nothing that's already on screen when the page loads gets hidden. */
+/* The starting positions only apply until .is-in arrives. (The photo's used to
+   be plain .about-photo.will-reveal, which beat the finished state, so it sat
+   still while fading in and then jumped when the classes came off.) */
+.will-reveal:not(.is-in) { opacity: 0; transform: translateY(28px); }
+.about-photo.will-reveal:not(.is-in) { transform: translateY(24px) rotate(-3deg); }
+.will-reveal.is-in {
+  transition: opacity 0.8s var(--out), transform 1.05s var(--out), rotate 0.7s var(--spring), translate 0.7s var(--spring);
+  transition-delay: var(--delay, 0s), var(--delay, 0s), 0s, 0s;
+}
+
+/* The pinned-on sketch straightens up a bit when you hover the picture. */
+.project-media .inset { transition: rotate 0.6s var(--spring); }
+.project-media:hover .inset { rotate: 1.5deg; }
+
+/* ---------- page and theme changes ---------- */
+
+/* Moving between pages fades instead of flashing white (Chrome, Edge and Safari). */
+@view-transition { navigation: auto; }
+.nav { view-transition-name: nav; }
+::view-transition-old(root) { animation: 0.18s ease both pageOut; }
+::view-transition-new(root) { animation: 0.5s var(--out) both pageIn; }
+@keyframes pageOut { to { opacity: 0; } }
+@keyframes pageIn { from { opacity: 0; transform: translateY(12px); } }
+
+/* Switching theme spreads out in a circle from the button. */
+html.theme-anim .nav { view-transition-name: none; }
+html.theme-anim::view-transition-old(root),
+html.theme-anim::view-transition-new(root) { mix-blend-mode: normal; }
+html.theme-anim::view-transition-old(root) { animation: none; }
+html.theme-anim::view-transition-new(root) { animation: 0.7s cubic-bezier(.45, 0, .2, 1) both themeIn; }
+@keyframes themeIn {
+  from { clip-path: circle(0 at var(--tx) var(--ty)); }
+  to { clip-path: circle(var(--tr) at var(--tx) var(--ty)); }
+}
+
 /* ---------- 404 ---------- */
 
 .nf { padding-top: 120px; padding-bottom: 40px; }
@@ -1514,7 +1735,9 @@ pre.code .fn { color: #ffd76a; }
 .nf h1 { font-size: clamp(30px, 4vw, 46px); margin-bottom: 16px; }
 .nf p { max-width: 34em; font-size: 18.5px; }
 .nf-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
-.nf-fallen { width: 160px; margin: 0 0 32px; color: var(--ink); }
+.nf .cube-toy { margin: 0 0 18px -18px; padding: 18px; }
+.nf .cube-scene { --s: 74px; }
+.nf-hint { color: var(--ink-3); font-size: 14px; }
 
 /* ---------- responsive ---------- */
 
@@ -1534,7 +1757,6 @@ pre.code .fn { color: #ffd76a; }
   .hero { padding: 48px 0 64px; }
   .hero-inner { grid-template-columns: 1fr; gap: 40px; }
   .now { max-width: 560px; }
-  .hero-scroll { display: none; }
   .project, .project:nth-of-type(even) { grid-template-columns: 1fr; gap: 28px; }
   .project:nth-of-type(even) .project-media { order: 0; }
   .p-head { grid-template-columns: 1fr; }
@@ -1565,7 +1787,7 @@ pre.code .fn { color: #ffd76a; }
 
 @media (max-width: 820px) {
   :root { --gutter: 24px; --nav-h: 60px; }
-  .nav-inner { gap: 10px; }
+  .nav-inner { gap: 8px; }
   .nav-toggle { display: grid; }
   .nav-links {
     position: absolute;
@@ -1621,10 +1843,10 @@ pre.code .fn { color: #ffd76a; }
   :root { --gutter: 20px; }
   body { font-size: 16.5px; }
   .brand { font-size: 16px; gap: 9px; }
-  .brand-mark { width: 26px; height: 26px; }
   .hero { padding: 36px 0 48px; }
-  .hero-kicker { margin-bottom: 18px; font-size: 15px; }
+  .hero-name { margin-bottom: 18px; font-size: 15px; }
   .hero-title { margin-bottom: 20px; }
+  .about-photo { rotate: -1.2deg; }
   .hero-links .button { flex: 1 1 auto; }
   .now { padding: 20px 20px 16px; }
   .section { padding-top: 84px; }
@@ -1638,6 +1860,7 @@ pre.code .fn { color: #ffd76a; }
   .about-text > p { font-size: 17px; }
   .facts { grid-template-columns: 1fr; }
   .xp-item, .edu { grid-template-columns: 1fr; gap: 8px; }
+  .xp-photo { max-width: 300px; margin: 12px 0 8px; }
   .xp-more-body { padding-left: 0; }
   .xp-body h3 { font-size: 23px; }
   .subjects { grid-template-columns: 1fr 1fr; }
@@ -1679,21 +1902,29 @@ pre.code .fn { color: #ffd76a; }
   .defs .def-row { grid-template-columns: 52px minmax(0, 1fr); gap: 12px; }
   .weights { grid-template-columns: 1fr 1fr; }
   .weights b { font-size: 26px; }
+  .weight-bar span { padding: 0 6px; font-size: 12.5px; }
   .results .v { font-size: 22px; }
   .worked > li { padding-left: 44px; }
   .nf { padding-top: 72px; }
+}
+
+@media (max-width: 370px) {
+  .brand-name { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     scroll-behavior: auto !important;
   }
+  @view-transition { navigation: none; }
 }
 
 @media print {
-  .nav, .skip-link, .toc, .theme-toggle, .footer, .next-up { display: none !important; }
+  .nav, .skip-link, .toc, .theme-toggle, .footer, .next-up, .cube-toy { display: none !important; }
+  .will-reveal { opacity: 1 !important; transform: none !important; }
   body { background: #fff; color: #000; }
   .p-layout { display: block; }
   .diagram svg.connection-svg { display: block; }

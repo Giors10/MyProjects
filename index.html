@@ -6,15 +6,21 @@
   <title>Giorgi Suramlishvili · Projects from Bristol</title>
   <meta name="description" content="Giorgi Suramlishvili is a sixth-form student in Bristol, UK. Write-ups of his smart light switch, blinds controller, the Zaylo Remote app and Atlas, a self-balancing robot controlled with LQR." />
   <meta name="author" content="Giorgi Suramlishvili" />
-  <meta name="keywords" content="Giorgi Suramlishvili, Giorgi Suramlishvili Bristol, A-Level student Bristol, smart light switch, smart blinds ESP32, self-balancing robot, LQR control, inverted pendulum, ESP32-C6, ESP32-S3, KiCad, Fusion 360, MATLAB, embedded C++, Rolls-Royce work experience" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="geo.region" content="GB-ENG" />
-  <meta name="geo.placename" content="Bristol, England" />
+  <meta name="robots" content="max-image-preview:large" />
   <meta name="theme-color" content="#fbfbf8" />
   <meta name="color-scheme" content="light dark" />
-  <script>(function(){try{var t=localStorage.getItem('gs-theme');if(t!=='dark'&&t!=='light')t=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var r=document.documentElement;r.setAttribute('data-theme',t);r.style.colorScheme=t;}catch(e){}})();</script>
-  <!-- Google Search Console: create a property for giorgi.uk, choose the HTML-tag method, paste the code here and uncomment. -->
-  <!-- <meta name="google-site-verification" content="PASTE_YOUR_CODE_HERE" /> -->
+  <script>
+    // set the theme before anything is drawn so dark mode doesn't flash white
+    (function () {
+      var r = document.documentElement, t;
+      r.className += ' js';
+      try { t = localStorage.getItem('gs-theme'); } catch (e) {}
+      if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      r.setAttribute('data-theme', t);
+      r.style.colorScheme = t;
+    })();
+  </script>
+  <!-- TODO: Search Console verification tag -->
   <link rel="canonical" href="https://giorgi.uk/" />
   <link rel="sitemap" type="application/xml" href="https://giorgi.uk/sitemap.xml" />
   <link rel="alternate" type="text/markdown" href="https://giorgi.uk/llms.txt" title="Plain-text summary" />
@@ -48,7 +54,6 @@
     "@type": "Person",
     "@id": "https://giorgi.uk/#giorgi",
     "name": "Giorgi Suramlishvili",
-    "alternateName": ["Giorgi", "Giorgi S."],
     "givenName": "Giorgi",
     "familyName": "Suramlishvili",
     "url": "https://giorgi.uk/",
@@ -78,10 +83,9 @@
     "description": "Giorgi Suramlishvili is a sixth-form student in Bristol, UK who designs and builds his own devices: a smart light switch, a stepper-motor blinds controller, the Zaylo Remote app that controls them, and Atlas, a self-balancing desk robot controlled with LQR.",
     "email": "suramgiorgi10@gmail.com",
     "knowsAbout": [
-      "Engineering", "Electronics", "PCB Design", "CAD", "Embedded Firmware", "Robotics",
-      "Control Theory", "LQR Control", "PID Control", "State-Space Models", "MATLAB",
-      "C++", "Python", "ESP32", "KiCad", "Fusion 360", "3D Printing", "Home Automation",
-      "MQTT", "Web Bluetooth", "Progressive Web Apps", "Firebase"
+      "Electronics", "PCB Design", "CAD", "Embedded Firmware", "Robotics",
+      "Control Theory", "LQR Control", "PID Control", "MATLAB",
+      "C++", "Python", "ESP32", "KiCad", "Fusion 360", "3D Printing", "MQTT"
     ],
     "hasOccupation": {
       "@type": "Occupation",
@@ -117,7 +121,7 @@
     "isPartOf": { "@id": "https://giorgi.uk/#website" },
     "about": { "@id": "https://giorgi.uk/#giorgi" },
     "mainEntity": { "@id": "https://giorgi.uk/#giorgi" },
-    "dateModified": "2026-10-12"
+    "dateModified": "2026-10-21"
   },
   {
     "@context": "https://schema.org",
@@ -137,7 +141,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,85..100,400..800;1,85..100,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" />
-  <link rel="stylesheet" href="site.css?v=8" />
+  <link rel="stylesheet" href="site.css?v=15" />
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
@@ -145,10 +149,11 @@
   <nav class="nav" aria-label="Main">
     <div class="wrap nav-inner">
       <a class="brand" href="index.html" aria-label="Giorgi Suramlishvili, home">
-        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#2440d0"/><rect x="6.5" y="26.7" width="19" height="1.6" rx=".8" fill="#fff" fill-opacity=".6"/><g class="rod"><path d="M14.6 22.4 20.8 7.6" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="21.2" cy="6.7" r="3.7" fill="#ffd84a"/></g><circle cx="14.6" cy="22.4" r="4.3" fill="#fff"/><circle cx="14.6" cy="22.4" r="1.45" fill="#2440d0"/></svg>
-        <span>Giorgi Suramlishvili</span>
+        <span class="cube-scene" aria-hidden="true"><span class="cube"><i class="f1"></i><i class="f2"></i><i class="f3"></i><i class="f4"></i><i class="f5"></i><i class="f6"></i></span></span>
+        <span class="brand-name">Giorgi Suramlishvili</span>
       </a>
       <div class="nav-links" id="primary-links">
+        <a href="#about" data-section="about">About</a>
         <div class="nav-work">
           <a href="#work" data-section="work">Projects</a>
           <button class="work-toggle" type="button" aria-expanded="false" aria-controls="work-dropdown" aria-label="Show the project list"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -161,7 +166,6 @@
             <a class="all" href="#work">All projects</a>
           </div>
         </div>
-        <a href="#about" data-section="about">About</a>
         <a href="#track" data-section="track">Experience</a>
         <a href="#contact" data-section="contact">Contact</a>
       </div>
@@ -174,12 +178,15 @@
     <header class="hero">
       <div class="wrap hero-inner">
         <div class="hero-main">
-          <p class="hero-kicker">Giorgi Suramlishvili <span>&middot; Bristol, UK</span></p>
-          <h1 class="hero-title">Giorgi&rsquo;s project portfolio</h1>
-          <p class="hero-lede">I&rsquo;m a sixth-form student in Bristol, and this is where I write up the things I build. It started when I was 13 with a box that flips my light switch using a servo, and grew into a blinds motor, an app to run both, and now a robot that balances on two wheels.</p>
+          <h1 class="hero-title">
+            <span class="hero-name">Giorgi Suramlishvili<span class="sr-only">:</span></span>
+            <span class="line"><span>My project</span></span>
+            <span class="line"><span>portfolio</span></span>
+          </h1>
+          <p class="hero-lede">I&rsquo;m a sixth-form student in Bristol and this is where I write up what I make. It started when I was 13 with a box that presses my light switch using a servo. Since then I&rsquo;ve built a motor for my blinds, an app to run both of them, and a robot that balances on two wheels.</p>
           <div class="hero-links">
-            <a class="button" href="#work">See the projects</a>
-            <a class="button ghost" href="#about">About me</a>
+            <a class="button" href="#about">About me</a>
+            <a class="button ghost" href="#work">See the projects</a>
           </div>
         </div>
         <aside class="now" aria-labelledby="now-title">
@@ -188,23 +195,45 @@
             <time datetime="2026-10">October 2026</time>
           </div>
           <ul>
-            <li>Working on <a href="projects/self-balancing-robot.html">Atlas</a>, my self-balancing desk robot. I&rsquo;ve moved its controller from PID to LQR.</li>
+            <li>Writing up the documentation for <a href="projects/self-balancing-robot.html">Atlas</a>, my self-balancing robot. It&rsquo;s built, and it balances.</li>
             <li>Just back from a week of work experience at <a href="#track">Rolls-Royce in Bristol</a>.</li>
             <li>Doing A-Levels in Maths, Further Maths, Physics and Computer Science.</li>
           </ul>
         </aside>
       </div>
-      <a class="hero-scroll" href="#work" aria-label="Scroll down to the projects">
-        <span>Scroll</span>
-        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
     </header>
+
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="wrap">
+        <header class="section-head">
+          <h2 id="about-title">About me</h2>
+          <p>Born in Tbilisi, grew up in Bristol.</p>
+        </header>
+        <div class="about">
+          <figure class="about-photo">
+            <img src="portrait.jpg" width="449" height="598" alt="Giorgi Suramlishvili" loading="lazy" decoding="async" />
+          </figure>
+          <div class="about-text">
+            <p>I started the light switch when I was 13. It was supposed to be a quick fix for my room. It ended up being how I learned CAD, electronics and programming, mostly all at the same time.</p>
+            <p>Now I&rsquo;m doing Maths, Further Maths, Physics and Computer Science. Atlas is my Computer Science project, and it&rsquo;s the reason I ended up reading about state-space models and the Riccati equation in my spare time.</p>
+            <p>Most things start in Fusion 360 for the case, then KiCad if there&rsquo;s a board, then C++ on an ESP32. If there&rsquo;s maths involved I check it in Python or MATLAB first, because being wrong on a laptop is a lot cheaper than being wrong on a robot.</p>
+            <p>Outside of that I play water polo four times a week and tennis once a week, and game when there&rsquo;s time left. Next, I want to study electrical engineering.</p>
+            <dl class="facts">
+              <div><dt>Based in</dt><dd>Bristol, UK</dd></div>
+              <div><dt>Languages</dt><dd>English and Georgian</dd></div>
+              <div><dt>Usually working in</dt><dd>Fusion 360, KiCad, C++, Python, MATLAB</dd></div>
+              <div><dt>Go-to microcontroller</dt><dd>ESP32 (the C6 and S3)</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="section" id="work" aria-labelledby="work-title">
       <div class="wrap">
         <header class="section-head">
           <h2 id="work-title">Projects</h2>
-          <p>In the order I built them. Each one has a full write-up with diagrams, wiring and notes on the firmware.</p>
+          <p>Oldest first. Each one has its own page with the diagrams, the wiring and how the firmware works.</p>
         </header>
 
         <article class="project">
@@ -218,7 +247,7 @@
           <div class="project-text">
             <p class="project-meta"><span class="year">2022&ndash;23</span><span>Three versions</span><span>Finished</span></p>
             <h3><a href="projects/light-switch.html">The light switch</a></h3>
-            <p>A small box that sits over my bedroom light switch and presses it with a servo, so I never had to touch the mains wiring. The final version has a 24&nbsp;GHz radar that notices when someone is sitting still at the desk, an OLED screen, two touch pads, five modes and app control.</p>
+            <p>A box that sits over the light switch in my bedroom and presses it with a servo, so I never had to go near the mains. By the third version it had a 24&nbsp;GHz radar that knows I&rsquo;m at my desk even when I&rsquo;m sitting completely still, a small OLED screen, two touch pads and five modes.</p>
             <ul class="tools" aria-label="Made with">
               <li>ESP32-C6</li><li>C++</li><li>Fusion 360</li><li>3D printing</li><li>mmWave radar</li><li>MQTT</li>
             </ul>
@@ -231,13 +260,13 @@
             <img class="main" src="projects/blinds-photo.jpg" width="724" height="1100" alt="" loading="lazy" decoding="async" />
             <figure class="inset right">
               <img src="projects/blinds-design.jpg" width="1473" height="1726" alt="" loading="lazy" decoding="async" />
-              <figcaption>My sketch of the enclosure</figcaption>
+              <figcaption>My sketch of the case</figcaption>
             </figure>
           </a>
           <div class="project-text">
             <p class="project-meta"><span class="year">2025</span><span>Version 1</span><span>Custom PCB</span></p>
             <h3><a href="projects/blinds-control.html">The blinds controller</a></h3>
-            <p>A stepper motor that pulls the bead chain on my existing roller blind, so the blind didn't need replacing. I designed a PCB in KiCad to tidy up the wiring. It runs its own schedules, including one that opens the blind slowly in the morning and one that closes it once the light switch reports the room has been empty for a while.</p>
+            <p>A stepper motor that pulls the bead chain on the roller blind I already had, so the blind itself didn&rsquo;t need replacing. I designed a PCB for it in KiCad to tidy up the wiring. It opens the blind slowly in the morning, and closes it once the light switch says the room&rsquo;s been empty for a while.</p>
             <ul class="tools" aria-label="Made with">
               <li>ESP32-C6</li><li>TMC2209</li><li>KiCad</li><li>Fusion 360</li><li>C++</li>
             </ul>
@@ -252,7 +281,7 @@
           <div class="project-text">
             <p class="project-meta"><span class="year">2025&ndash;26</span><span>Web app</span><span>Working demo</span></p>
             <h3><a href="projects/zaylo-remote.html">Zaylo Remote</a></h3>
-            <p>The app that controls the switch and the blinds. It's a web app you can install on a phone. Devices update live over MQTT, accounts and shared homes run on Firebase, and if a device drops off Wi-Fi I can reconnect it over Bluetooth without taking it off the wall. The write-up has a demo you can try with pretend devices.</p>
+            <p>The app for the switch and the blinds. It&rsquo;s a web app you can install on your phone. The devices update live over MQTT, logins and shared homes go through Firebase, and if one of them drops off the Wi-Fi I can fix it over Bluetooth without taking it off the wall. Its page has a demo with fake devices you can play with.</p>
             <ul class="tools" aria-label="Made with">
               <li>JavaScript</li><li>PWA</li><li>MQTT</li><li>Firebase</li><li>Web Bluetooth</li>
             </ul>
@@ -263,26 +292,11 @@
         <div class="pair">
           <article class="card">
             <a class="card-media dots" href="projects/self-balancing-robot.html" tabindex="-1" aria-hidden="true">
-              <svg viewBox="0 0 320 230">
-                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M50 206H270"/>
-                  <path d="M160 176V38" stroke="var(--blue)" stroke-width="1.6" stroke-dasharray="4 6"/>
-                  <g transform="rotate(10 160 178)">
-                    <rect x="128" y="60" width="64" height="104" rx="10"/>
-                    <circle cx="160" cy="96" r="16"/>
-                    <path d="M140 132H180M140 142H170" stroke-width="1.4" opacity=".5"/>
-                    <path d="M160 164V178"/>
-                  </g>
-                  <circle cx="160" cy="180" r="26"/>
-                  <circle cx="160" cy="180" r="4" fill="currentColor"/>
-                  <path d="M160 66A112 112 0 0 1 179.4 67.7" stroke="var(--blue)"/>
-                </g>
-                <text x="184" y="60" fill="var(--blue)" font-size="16" font-style="italic" font-family="Georgia, serif">&theta;</text>
-              </svg>
+              <img src="projects/atlas-balancing.jpg" width="1000" height="1334" alt="" loading="lazy" decoding="async" />
             </a>
-            <p class="project-meta"><span class="year">2025&ndash;now</span><span>A-Level Computer Science project</span></p>
+            <p class="project-meta"><span class="year">2025&ndash;26</span><span>A-Level CS project</span><span>Balancing</span></p>
             <h3><a href="projects/self-balancing-robot.html">Atlas, a self-balancing desk robot</a></h3>
-            <p>A two-wheeled robot that has to keep itself upright. I've switched it from PID to an LQR controller, with the gains worked out in MATLAB from a model of the robot. When it isn't balancing, its job is to be a revision timer on my desk.</p>
+            <p>A two-wheeled robot that keeps itself upright. It started out on PID and now uses LQR, with the gains worked out in MATLAB from a model of the robot. It&rsquo;s built and balancing, it doubles as a revision timer for my desk, and I&rsquo;m writing up the documentation now.</p>
             <a class="arrow-link" href="projects/self-balancing-robot.html">Read about Atlas <span class="arr" aria-hidden="true">&rarr;</span></a>
           </article>
           <article class="card">
@@ -291,35 +305,9 @@
             </a>
             <p class="project-meta"><span class="year">2026</span><span>Paper</span><span>16 pages</span></p>
             <h3><a href="projects/inverted-pendulum.html">Controlling an inverted pendulum</a></h3>
-            <p>I wrote this to properly understand the maths behind Atlas. It starts with PID, then builds up LQR from the state-space model: the A and B matrices, controllability, the Riccati equation and a worked example with real numbers.</p>
+            <p>I wrote this to actually understand the maths behind Atlas. It goes from PID to LQR: the state-space model, where the A and B matrices come from, controllability, the Riccati equation, and a worked example with real numbers.</p>
             <a class="arrow-link" href="projects/inverted-pendulum.html">Read the paper <span class="arr" aria-hidden="true">&rarr;</span></a>
           </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="about" aria-labelledby="about-title">
-      <div class="wrap">
-        <header class="section-head">
-          <h2 id="about-title">About me</h2>
-          <p>Born in Tbilisi, grew up in Bristol.</p>
-        </header>
-        <div class="about">
-          <figure class="about-photo">
-            <img src="portrait.jpg" width="449" height="598" alt="Giorgi Suramlishvili" loading="lazy" decoding="async" />
-          </figure>
-          <div class="about-text">
-            <p>I started the light switch when I was 13. It was meant to be a quick fix for my room, but it turned into my excuse to learn CAD, electronics and programming all at once.</p>
-            <p>I'm now doing Maths, Further Maths, Physics and Computer Science. Atlas, the balancing robot, is my Computer Science project, and it's the reason I ended up reading about state-space models and the Riccati equation.</p>
-            <p>Most of my projects go through Fusion 360 for the enclosure, KiCad if there's a board, and C++ on an ESP32. I use Python or MATLAB when I want to check the maths before I trust it on real hardware.</p>
-            <p>Away from the desk I play water polo four times a week and tennis once a week, and I game when there's time left over. I want to study electrical engineering, and since the week at Rolls-Royce I've been looking at degree apprenticeships as well as university.</p>
-            <dl class="facts">
-              <div><dt>Based in</dt><dd>Bristol, UK</dd></div>
-              <div><dt>Languages</dt><dd>English and Georgian</dd></div>
-              <div><dt>Usually working in</dt><dd>Fusion 360, KiCad, C++, Python, MATLAB</dd></div>
-              <div><dt>Go-to microcontroller</dt><dd>ESP32 (the C6 and S3)</dd></div>
-            </dl>
-          </div>
         </div>
       </div>
     </section>
@@ -333,17 +321,22 @@
 
         <ol class="xp">
           <li class="xp-item">
-            <p class="xp-when"><strong>October 2026</strong>5&ndash;9 October</p>
+            <div class="xp-side">
+              <p class="xp-when"><strong>October 2026</strong>5&ndash;9 October</p>
+              <figure class="xp-photo">
+                <img src="rolls-royce-pitch.jpg" width="720" height="955" alt="Giorgi at a podium under the Rolls-Royce sign, presenting his team's idea" loading="lazy" decoding="async" />
+                <figcaption>Pitching our idea, 8 October.</figcaption>
+              </figure>
+            </div>
             <div class="xp-body">
               <h3>Rolls-Royce, Bristol <span class="xp-new">Latest</span></h3>
               <p class="role">Work experience week</p>
-              <p>Talks, site visits and a group project, covering engineering, advanced manufacturing, project management and aviation safety.</p>
+              <p>A week of talks, site visits and a group project, covering engineering, advanced manufacturing, project management and aviation safety.</p>
               <ul class="xp-points">
-                <li>Went round the CTF, where Rolls-Royce makes the composite fan blades for UltraFan, and sat in on a seminar about how aviation safety investigations work.</li>
-                <li>Built a project in a team of five and presented it to Rolls-Royce engineers for feedback.</li>
+                <li>Went round the CTF, where Rolls-Royce makes the composite fan blades for UltraFan, and sat in on a seminar about how aviation safety investigations are run.</li>
+                <li>In a team of five, came up with an idea for making STEM accessible to more people, then pitched it to Rolls-Royce engineers and got their feedback.</li>
                 <li>Finished at Aerospace Bristol, following the engines from early piston designs up to the Olympus 593 from Concorde.</li>
               </ul>
-              <p>Hearing from Alexia Williams MBE, who started at Rolls-Royce as a degree apprentice, and from the apprentices there now, made me take that route seriously.</p>
             </div>
           </li>
           <li class="xp-item">
@@ -351,8 +344,8 @@
             <div class="xp-body">
               <h3>MBDA, Filton</h3>
               <p class="role">Engineering work experience</p>
-              <p>A week with the engineering teams at MBDA. The biggest thing I took away was how the mechanical, electrical and software engineers on one project depend on each other, and how much of the job is documentation: every design decision is written down and checked against the standards they work to before anything moves forward.</p>
-              <p>I also got to look at some of the electronics that go into their systems, which is the side of engineering I enjoy most. At the end of the week I put together a concept for a future missile and presented it to senior staff.</p>
+              <p>A week with the engineering teams at MBDA. What surprised me most was how much of the job is documentation. Every design decision gets written down and checked against their standards before anything moves on, and the mechanical, electrical and software people all rely on each other&rsquo;s paperwork.</p>
+              <p>I also got to see some of the electronics that go into their systems, which is the side I enjoy most. On the last day I presented a concept for a future missile to senior staff.</p>
             </div>
           </li>
           <li class="xp-item">
@@ -360,8 +353,8 @@
             <div class="xp-body">
               <h3>University of Bristol</h3>
               <p class="role">Work experience in the maths department</p>
-              <p>A week in the maths department working on problems beyond the school syllabus. I wrote Python scripts to work through the maths, then learned LaTeX to write the results up as a proper research-style document, with the files organised the way the researchers there keep theirs.</p>
-              <p>It was my first real look at how maths is actually done at university.</p>
+              <p>A week in the maths department on problems well past the school syllabus. I used Python to work through them, then learned LaTeX to write the results up properly, laid out the way the researchers there do theirs.</p>
+              <p>It was the first time I&rsquo;d done maths without a textbook telling me which method to use.</p>
             </div>
           </li>
         </ol>
@@ -379,7 +372,7 @@
             </div>
             <div>
               <h4>Particle Physics Masterclass</h4>
-              <p>A day in Bristol of talks and a hands-on exercise analysing real collision data from CERN.</p>
+              <p>A day of talks in Bristol, then analysing real collision data from CERN.</p>
             </div>
           </div>
         </details>
@@ -412,7 +405,7 @@
         <div class="contact">
           <div>
             <h2 id="contact-title">Get in touch</h2>
-            <p>Email is the easiest way to reach me. I'm always happy to talk about the builds, or about work experience and placements.</p>
+            <p>Email is the best way to get hold of me, whether it&rsquo;s about one of the builds or about work experience and placements.</p>
           </div>
           <div class="contact-links">
             <a class="email" href="mailto:suramgiorgi10@gmail.com">suramgiorgi10@gmail.com</a>
@@ -430,6 +423,6 @@
     </div>
   </footer>
 
-  <script src="site.js?v=7"></script>
+  <script src="site.js?v=15"></script>
 </body>
 </html>
